@@ -1,0 +1,65 @@
+[
+    {
+        "label": "math",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "math",
+        "description": "math",
+        "detail": "math",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "tkinter",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "customtkinter",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "customtkinter",
+        "description": "customtkinter",
+        "detail": "customtkinter",
+        "documentation": {}
+    },
+    {
+        "label": "GeneradorUTN",
+        "kind": 6,
+        "importPath": "ProyectoSimulacion",
+        "description": "ProyectoSimulacion",
+        "peekOfCode": "class GeneradorUTN:\n    \"\"\"Generador Congruencial Mixto con semilla dinámica (pseudoaleatorización)\"\"\"\n    def __init__(self, semilla=None):\n        # Si no se define una semilla, usa los milisegundos del reloj del sistema\n        if semilla is None:\n            self.n = int(time.time() * 1000) % 10000 \n        else:\n            self.n = semilla\n        self.a = 4309  \n        self.c = 2311  ",
+        "detail": "ProyectoSimulacion",
+        "documentation": {}
+    },
+    {
+        "label": "AppSimulador",
+        "kind": 6,
+        "importPath": "ProyectoSimulacion",
+        "description": "ProyectoSimulacion",
+        "peekOfCode": "class AppSimulador(ctk.CTk):\n    def __init__(self):\n        super().__init__()\n        self.title(\"Simulador - Reciclado e-waste\")\n        self.geometry(\"1000x600\")\n        ctk.set_appearance_mode(\"dark\")\n        ctk.set_default_color_theme(\"blue\")\n        self.pestanas = ctk.CTkTabview(self)\n        self.pestanas.pack(padx=20, pady=20, fill=\"both\", expand=True)\n        self.T_USUARIO = \"Vista de Usuario\"",
+        "detail": "ProyectoSimulacion",
+        "documentation": {}
+    },
+    {
+        "label": "simular_proceso_dispositivo",
+        "kind": 2,
+        "importPath": "ProyectoSimulacion",
+        "description": "ProyectoSimulacion",
+        "peekOfCode": "def simular_proceso_dispositivo(u_generador, es_camara=True):\n    \"\"\"Lógica de simulación para un dispositivo individual\"\"\"\n    u1 = u_generador.proximo_u()\n    es_recuperable = u1 <= 0.72\n    u2 = u_generador.proximo_u()\n    if es_recuperable:\n        # Precios base estimados\n        v_min, v_max = 1500, 8500\n        valor = v_min + (v_max - v_min) * u2\n    else:",
+        "detail": "ProyectoSimulacion",
+        "documentation": {}
+    }
+]
