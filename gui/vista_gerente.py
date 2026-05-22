@@ -75,7 +75,7 @@ class VistaGerente(ctk.CTkFrame):
         self.in_horas = ctk.CTkEntry(frame, width=280,
                                      placeholder_text="Ej: 8  (número > 0)")
         self.in_horas.pack(anchor="w", pady=(2, 14))
-        self.in_horas.insert(0, str(self.params.horas_trabajo))
+        self.in_horas.insert(0, str(self.params.operativo.horas_trabajo))
 
         # ── Campo: Cantidad de empleados ───────────────────────────────
         ctk.CTkLabel(frame, text="Cantidad de empleados *",
@@ -83,7 +83,7 @@ class VistaGerente(ctk.CTkFrame):
         self.in_empleados = ctk.CTkEntry(frame, width=280,
                                          placeholder_text="Ej: 5  (entero > 0)")
         self.in_empleados.pack(anchor="w", pady=(2, 14))
-        self.in_empleados.insert(0, str(self.params.cantidad_empleados))
+        self.in_empleados.insert(0, str(self.params.operativo.cantidad_empleados))
 
         # ── Campo: Energía consumida ───────────────────────────────────
         ctk.CTkLabel(frame, text="Energía consumida (kWh) *",
@@ -91,7 +91,7 @@ class VistaGerente(ctk.CTkFrame):
         self.in_energia = ctk.CTkEntry(frame, width=280,
                                        placeholder_text="Ej: 100  (número ≥ 0)")
         self.in_energia.pack(anchor="w", pady=(2, 14))
-        self.in_energia.insert(0, str(self.params.energia_consumida))
+        self.in_energia.insert(0, str(self.params.operativo.energia_consumida))
 
         # ── Campo: Coeficiente de pérdida ──────────────────────────────
         ctk.CTkLabel(frame, text="Coeficiente de pérdida del proceso *",
@@ -101,7 +101,7 @@ class VistaGerente(ctk.CTkFrame):
         self.in_coef_perdida = ctk.CTkEntry(frame, width=280,
                                             placeholder_text="Ej: 0.05")
         self.in_coef_perdida.pack(anchor="w", pady=(2, 14))
-        self.in_coef_perdida.insert(0, str(self.params.coeficiente_perdida))
+        self.in_coef_perdida.insert(0, str(self.params.operativo.coeficiente_perdida))
 
         # ── Campo: Tipo de maquinaria ──────────────────────────────────
         ctk.CTkLabel(frame, text="Tipo de maquinaria *",
@@ -113,7 +113,7 @@ class VistaGerente(ctk.CTkFrame):
             font=("Arial", 13)
         )
         self.opt_maquinaria.pack(anchor="w", pady=(2, 25))
-        self.opt_maquinaria.set(self.params.tipo_maquinaria)
+        self.opt_maquinaria.set(self.params.operativo.tipo_maquinaria)
 
         # Nota de campos obligatorios
         ctk.CTkLabel(frame, text="* Campos obligatorios",
@@ -250,11 +250,11 @@ class VistaGerente(ctk.CTkFrame):
             return
 
         # ── Aplicar parámetros al objeto compartido ────────────────────
-        self.params.horas_trabajo = horas
-        self.params.cantidad_empleados = empleados
-        self.params.energia_consumida = energia
-        self.params.coeficiente_perdida = coef
-        self.params.tipo_maquinaria = self.opt_maquinaria.get()
+        self.params.operativo.horas_trabajo = horas
+        self.params.operativo.cantidad_empleados = empleados
+        self.params.operativo.energia_consumida = energia
+        self.params.operativo.coeficiente_perdida = coef
+        self.params.operativo.tipo_maquinaria = self.opt_maquinaria.get()
         self.params.parametros_cargados = True
 
         # ── Actualizar indicador visual ────────────────────────────────
@@ -269,7 +269,7 @@ class VistaGerente(ctk.CTkFrame):
             f"• Empleados: {empleados}\n"
             f"• Energía: {energia:.1f} kWh\n"
             f"• Coef. pérdida: {coef:.3f}\n"
-            f"• Maquinaria: {self.params.tipo_maquinaria}"
+            f"• Maquinaria: {self.params.operativo.tipo_maquinaria}"
         )
         self.lbl_resumen.configure(text=resumen, text_color="#E0E0E0")
 

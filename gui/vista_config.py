@@ -64,14 +64,14 @@ class VistaConfig(ctk.CTkFrame):
                      font=("Arial", 11), text_color="#888888").pack(pady=(0, 15))
 
         precios = [
-            ("Oro ($/kg)",              "precio_oro",              self.params.precio_oro),
-            ("Vidrio ($/kg)",           "precio_vidrio",           self.params.precio_vidrio),
-            ("Lentes ($/unidad)",       "precio_lentes",           self.params.precio_lentes),
-            ("Cobre ($/kg)",            "precio_cobre",            self.params.precio_cobre),
-            ("Aluminio ($/kg)",         "precio_aluminio",         self.params.precio_aluminio),
-            ("Plástico ($/kg)",         "precio_plastico",         self.params.precio_plastico),
-            ("Almacenamiento mín $/GB", "precio_almacenamiento_min", self.params.precio_almacenamiento_min),
-            ("Almacenamiento máx $/GB", "precio_almacenamiento_max", self.params.precio_almacenamiento_max),
+            ("Oro ($/kg)",              "precio_oro",              self.params.precios.precio_oro),
+            ("Vidrio ($/kg)",           "precio_vidrio",           self.params.precios.precio_vidrio),
+            ("Lentes ($/unidad)",       "precio_lentes",           self.params.precios.precio_lentes),
+            ("Cobre ($/kg)",            "precio_cobre",            self.params.precios.precio_cobre),
+            ("Aluminio ($/kg)",         "precio_aluminio",         self.params.precios.precio_aluminio),
+            ("Plástico ($/kg)",         "precio_plastico",         self.params.precios.precio_plastico),
+            ("Almacenamiento mín $/GB", "precio_almacenamiento_min", self.params.precios.precio_almacenamiento_min),
+            ("Almacenamiento máx $/GB", "precio_almacenamiento_max", self.params.precios.precio_almacenamiento_max),
         ]
         for etiqueta, key, valor in precios:
             self._campo(col1, etiqueta, key, valor)
@@ -86,9 +86,9 @@ class VistaConfig(ctk.CTkFrame):
                      font=("Arial", 11), text_color="#888888").pack(pady=(0, 15))
 
         tasas = [
-            ("Placas sanas",   "tasa_placas_sanas",  self.params.tasa_placas_sanas),
-            ("Ópticas sanas",  "tasa_opticas_sanas", self.params.tasa_opticas_sanas),
-            ("Discos sanos",   "tasa_discos_sanos",  self.params.tasa_discos_sanos),
+            ("Placas sanas",   "tasa_placas_sanas",  self.params.tasas.tasa_placas_sanas),
+            ("Ópticas sanas",  "tasa_opticas_sanas", self.params.tasas.tasa_opticas_sanas),
+            ("Discos sanos",   "tasa_discos_sanos",  self.params.tasas.tasa_discos_sanos),
         ]
         for etiqueta, key, valor in tasas:
             self._campo(col2, etiqueta, key, valor)
@@ -99,8 +99,8 @@ class VistaConfig(ctk.CTkFrame):
                      font=("Arial", 11), text_color="#888888").pack(pady=(0, 15))
 
         rendimientos = [
-            ("Rendimiento Plástico", "rendimiento_plastico", self.params.rendimiento_plastico),
-            ("Rendimiento Metal",    "rendimiento_metal",    self.params.rendimiento_metal),
+            ("Rendimiento Plástico", "rendimiento_plastico", self.params.composicion.rendimiento_plastico),
+            ("Rendimiento Metal",    "rendimiento_metal",    self.params.composicion.rendimiento_metal),
         ]
         for etiqueta, key, valor in rendimientos:
             self._campo(col2, etiqueta, key, valor)
@@ -115,13 +115,13 @@ class VistaConfig(ctk.CTkFrame):
                      font=("Arial", 11), text_color="#888888").pack(pady=(0, 15))
 
         composicion = [
-            ("Cámara — Plástico",  "camara_fraccion_plastico", self.params.camara_fraccion_plastico),
-            ("Cámara — Placas",    "camara_fraccion_placas",   self.params.camara_fraccion_placas),
-            ("Cámara — Metal",     "camara_fraccion_metal",    self.params.camara_fraccion_metal),
-            ("Cámara — Ópticos",   "camara_fraccion_opticos",  self.params.camara_fraccion_opticos),
-            ("DVR — HDD",          "dvr_fraccion_hdd",         self.params.dvr_fraccion_hdd),
-            ("DVR — Metal",        "dvr_fraccion_metal",       self.params.dvr_fraccion_metal),
-            ("DVR — Placas",       "dvr_fraccion_placas",      self.params.dvr_fraccion_placas),
+            ("Cámara — Plástico",  "camara_fraccion_plastico", self.params.composicion.camara_fraccion_plastico),
+            ("Cámara — Placas",    "camara_fraccion_placas",   self.params.composicion.camara_fraccion_placas),
+            ("Cámara — Metal",     "camara_fraccion_metal",    self.params.composicion.camara_fraccion_metal),
+            ("Cámara — Ópticos",   "camara_fraccion_opticos",  self.params.composicion.camara_fraccion_opticos),
+            ("DVR — HDD",          "dvr_fraccion_hdd",         self.params.composicion.dvr_fraccion_hdd),
+            ("DVR — Metal",        "dvr_fraccion_metal",       self.params.composicion.dvr_fraccion_metal),
+            ("DVR — Placas",       "dvr_fraccion_placas",      self.params.composicion.dvr_fraccion_placas),
         ]
         for etiqueta, key, valor in composicion:
             self._campo(col3, etiqueta, key, valor)
@@ -228,7 +228,12 @@ class VistaConfig(ctk.CTkFrame):
 
         # Aplicar todos los valores al objeto params
         for key, valor in valores.items():
-            setattr(self.params, key, valor)
+            if key in self._PRECIOS_KEYS:
+                setattr(self.params.precios, key, valor)
+            elif key in {"tasa_placas_sanas", "tasa_opticas_sanas", "tasa_discos_sanos"}:
+                setattr(self.params.tasas, key, valor)
+            else:
+                setattr(self.params.composicion, key, valor)
 
         self.lbl_estado.configure(
             text="✔  Configuración guardada correctamente.",

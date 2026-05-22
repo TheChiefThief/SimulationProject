@@ -13,6 +13,7 @@ actúa como fuente única de verdad del estado del sistema.
 import customtkinter as ctk
 
 from core.parametros import ParametrosSistema
+from core.simulacion_service import SimulacionService
 from gui.vista_usuario import VistaUsuario
 from gui.vista_gerente import VistaGerente
 from gui.vista_config import VistaConfig
@@ -44,6 +45,9 @@ class AppSimulador(ctk.CTk):
         # Estado compartido entre todas las vistas
         self.params = ParametrosSistema()
 
+        # Servicio de simulación (inyectable para testing)
+        self.simulacion_service = SimulacionService(self.params)
+
         self._construir_tabs()
 
     # ------------------------------------------------------------------
@@ -62,7 +66,8 @@ class AppSimulador(ctk.CTk):
         # ── Vista de Usuario ───────────────────────────────────────────
         self.vista_usuario = VistaUsuario(
             self.tabview.tab(self.T_USUARIO),
-            params=self.params
+            params=self.params,
+            simulacion_service=self.simulacion_service
         )
         self.vista_usuario.pack(fill="both", expand=True)
 

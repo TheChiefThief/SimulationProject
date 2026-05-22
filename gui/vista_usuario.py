@@ -15,8 +15,8 @@ Validaciones de entrada:
 
 import customtkinter as ctk
 
-from core.simulacion import simular_lote
 from core.parametros import ParametrosSistema
+from core.simulacion_service import SimulacionService
 from gui.ventana_resultados import VentanaResultados
 
 
@@ -26,9 +26,11 @@ class VistaUsuario(ctk.CTkFrame):
     Se monta dentro del CTkTabview de la ventana principal.
     """
 
-    def __init__(self, parent, params: ParametrosSistema):
+    def __init__(self, parent, params: ParametrosSistema,
+                 simulacion_service: SimulacionService):
         super().__init__(parent, fg_color="transparent")
         self.params = params
+        self.simulacion_service = simulacion_service
         self._ventana_resultado_activa = None
 
         self.grid_columnconfigure(0, weight=1)
@@ -171,7 +173,7 @@ class VistaUsuario(ctk.CTkFrame):
 
         # Ejecutar simulación
         try:
-            resultado = simular_lote(self.params, n_camaras, n_dvrs)
+            resultado = self.simulacion_service.simular_lote(n_camaras, n_dvrs)
         except RuntimeError as e:
             self.lbl_error.configure(text=f"⛔ {e}")
             return

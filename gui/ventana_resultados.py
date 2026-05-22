@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from core.simulacion import ResultadoLote
+from core.resultados import ResultadoLote
 
 matplotlib.use("TkAgg")
 

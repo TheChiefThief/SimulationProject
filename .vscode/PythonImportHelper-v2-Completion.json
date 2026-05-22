@@ -1,11 +1,210 @@
 [
     {
-        "label": "math",
-        "kind": 6,
+        "label": "ParametrosOperativo",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
         "isExtraImport": true,
-        "importPath": "math",
-        "description": "math",
-        "detail": "math",
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "PreciosParametros",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
+        "isExtraImport": true,
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "ComposicionParametros",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
+        "isExtraImport": true,
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "TasasRecuperacionParametros",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
+        "isExtraImport": true,
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosOperativo",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
+        "isExtraImport": true,
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "ComposicionParametros",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
+        "isExtraImport": true,
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosOperativo",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
+        "isExtraImport": true,
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "PreciosParametros",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
+        "isExtraImport": true,
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "TasasRecuperacionParametros",
+        "importPath": "core.parametros_dominio",
+        "description": "core.parametros_dominio",
+        "isExtraImport": true,
+        "detail": "core.parametros_dominio",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoLote",
+        "importPath": "core.resultados",
+        "description": "core.resultados",
+        "isExtraImport": true,
+        "detail": "core.resultados",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoCamara",
+        "importPath": "core.resultados",
+        "description": "core.resultados",
+        "isExtraImport": true,
+        "detail": "core.resultados",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoDVR",
+        "importPath": "core.resultados",
+        "description": "core.resultados",
+        "isExtraImport": true,
+        "detail": "core.resultados",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoLote",
+        "importPath": "core.resultados",
+        "description": "core.resultados",
+        "isExtraImport": true,
+        "detail": "core.resultados",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoLote",
+        "importPath": "core.resultados",
+        "description": "core.resultados",
+        "isExtraImport": true,
+        "detail": "core.resultados",
+        "documentation": {}
+    },
+    {
+        "label": "GeneradorCongruencialLineal",
+        "importPath": "core.gcl",
+        "description": "core.gcl",
+        "isExtraImport": true,
+        "detail": "core.gcl",
+        "documentation": {}
+    },
+    {
+        "label": "GeneradorCongruencialLineal",
+        "importPath": "core.gcl",
+        "description": "core.gcl",
+        "isExtraImport": true,
+        "detail": "core.gcl",
+        "documentation": {}
+    },
+    {
+        "label": "GeneradorCongruencialLineal",
+        "importPath": "core.gcl",
+        "description": "core.gcl",
+        "isExtraImport": true,
+        "detail": "core.gcl",
+        "documentation": {}
+    },
+    {
+        "label": "GeneradorCongruencialLineal",
+        "importPath": "core.gcl",
+        "description": "core.gcl",
+        "isExtraImport": true,
+        "detail": "core.gcl",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
         "documentation": {}
     },
     {
@@ -18,12 +217,35 @@
         "documentation": {}
     },
     {
-        "label": "tkinter",
-        "kind": 6,
+        "label": "Callable",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "importPath": "tkinter",
-        "description": "tkinter",
-        "detail": "tkinter",
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "SimuladorCamara",
+        "importPath": "core.simuladores",
+        "description": "core.simuladores",
+        "isExtraImport": true,
+        "detail": "core.simuladores",
+        "documentation": {}
+    },
+    {
+        "label": "SimuladorDVR",
+        "importPath": "core.simuladores",
+        "description": "core.simuladores",
+        "isExtraImport": true,
+        "detail": "core.simuladores",
+        "documentation": {}
+    },
+    {
+        "label": "CalculadorIndicadores",
+        "importPath": "core.indicadores",
+        "description": "core.indicadores",
+        "isExtraImport": true,
+        "detail": "core.indicadores",
         "documentation": {}
     },
     {
@@ -36,30 +258,390 @@
         "documentation": {}
     },
     {
-        "label": "GeneradorUTN",
+        "label": "SimulacionService",
+        "importPath": "core.simulacion_service",
+        "description": "core.simulacion_service",
+        "isExtraImport": true,
+        "detail": "core.simulacion_service",
+        "documentation": {}
+    },
+    {
+        "label": "SimulacionService",
+        "importPath": "core.simulacion_service",
+        "description": "core.simulacion_service",
+        "isExtraImport": true,
+        "detail": "core.simulacion_service",
+        "documentation": {}
+    },
+    {
+        "label": "VistaUsuario",
+        "importPath": "gui.vista_usuario",
+        "description": "gui.vista_usuario",
+        "isExtraImport": true,
+        "detail": "gui.vista_usuario",
+        "documentation": {}
+    },
+    {
+        "label": "VistaGerente",
+        "importPath": "gui.vista_gerente",
+        "description": "gui.vista_gerente",
+        "isExtraImport": true,
+        "detail": "gui.vista_gerente",
+        "documentation": {}
+    },
+    {
+        "label": "VistaConfig",
+        "importPath": "gui.vista_config",
+        "description": "gui.vista_config",
+        "isExtraImport": true,
+        "detail": "gui.vista_config",
+        "documentation": {}
+    },
+    {
+        "label": "tkinter",
         "kind": 6,
-        "importPath": "ProyectoSimulacion",
-        "description": "ProyectoSimulacion",
-        "peekOfCode": "class GeneradorUTN:\n    \"\"\"Generador Congruencial Mixto con semilla dinámica (pseudoaleatorización)\"\"\"\n    def __init__(self, semilla=None):\n        # Si no se define una semilla, usa los milisegundos del reloj del sistema\n        if semilla is None:\n            self.n = int(time.time() * 1000) % 10000 \n        else:\n            self.n = semilla\n        self.a = 4309  \n        self.c = 2311  ",
-        "detail": "ProyectoSimulacion",
+        "isExtraImport": true,
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib",
+        "description": "matplotlib",
+        "detail": "matplotlib",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.pyplot",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.pyplot",
+        "description": "matplotlib.pyplot",
+        "detail": "matplotlib.pyplot",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.ticker",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.ticker",
+        "description": "matplotlib.ticker",
+        "detail": "matplotlib.ticker",
+        "documentation": {}
+    },
+    {
+        "label": "FigureCanvasTkAgg",
+        "importPath": "matplotlib.backends.backend_tkagg",
+        "description": "matplotlib.backends.backend_tkagg",
+        "isExtraImport": true,
+        "detail": "matplotlib.backends.backend_tkagg",
+        "documentation": {}
+    },
+    {
+        "label": "VentanaResultados",
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "isExtraImport": true,
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "pytest",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pytest",
+        "description": "pytest",
+        "detail": "pytest",
+        "documentation": {}
+    },
+    {
+        "label": "AppSimulador",
+        "importPath": "gui.app",
+        "description": "gui.app",
+        "isExtraImport": true,
+        "detail": "gui.app",
+        "documentation": {}
+    },
+    {
+        "label": "AppSimulador",
+        "importPath": "gui.app",
+        "description": "gui.app",
+        "isExtraImport": true,
+        "detail": "gui.app",
+        "documentation": {}
+    },
+    {
+        "label": "CalculadorIndicadores",
+        "kind": 6,
+        "importPath": "core.indicadores.calculador",
+        "description": "core.indicadores.calculador",
+        "peekOfCode": "class CalculadorIndicadores:\n    \"\"\"\n    Calcula indicadores de eficiencia industrial de forma independiente.\n    Métodos estáticos para no requerir estado, permitiendo reutilización.\n    \"\"\"\n    @staticmethod\n    def calcular(\n        parametros_operativo: ParametrosOperativo,\n        lote: ResultadoLote,\n        precios=None,",
+        "detail": "core.indicadores.calculador",
+        "documentation": {}
+    },
+    {
+        "label": "ComposicionParametros",
+        "kind": 6,
+        "importPath": "core.parametros_dominio.composicion",
+        "description": "core.parametros_dominio.composicion",
+        "peekOfCode": "class ComposicionParametros:\n    \"\"\"Contenedor independiente para composición de materiales por dispositivo.\"\"\"\n    def __init__(self):\n        # Cámaras: fracciones del peso total\n        self.camara_fraccion_plastico: float = 0.60\n        self.camara_fraccion_placas: float = 0.20\n        self.camara_fraccion_metal: float = 0.10\n        self.camara_fraccion_opticos: float = 0.10\n        # DVRs: fracciones del peso total\n        self.dvr_fraccion_hdd: float = 0.45",
+        "detail": "core.parametros_dominio.composicion",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosOperativo",
+        "kind": 6,
+        "importPath": "core.parametros_dominio.operativo",
+        "description": "core.parametros_dominio.operativo",
+        "peekOfCode": "class ParametrosOperativo:\n    \"\"\"Contenedor independiente para parámetros operativos cargados por el gerente.\"\"\"\n    def __init__(self):\n        self.horas_trabajo: float = 8.0\n        self.cantidad_empleados: int = 5\n        self.energia_consumida: float = 100.0     # kWh\n        self.coeficiente_perdida: float = 0.05    # 5% de pérdida (fracción 0–1)\n        self.tipo_maquinaria: str = \"Proceso Manual\"\n    def validar(self) -> list[str]:\n        \"\"\"Valida que los parámetros operativos sean válidos.\"\"\"",
+        "detail": "core.parametros_dominio.operativo",
+        "documentation": {}
+    },
+    {
+        "label": "PreciosParametros",
+        "kind": 6,
+        "importPath": "core.parametros_dominio.precios",
+        "description": "core.parametros_dominio.precios",
+        "peekOfCode": "class PreciosParametros:\n    \"\"\"Contenedor independiente para todos los precios del sistema (ARS).\"\"\"\n    def __init__(self):\n        self.precio_oro: float = 210_000.0        # ARS/kg\n        self.precio_vidrio: float = 150_000.0     # ARS/kg\n        self.precio_lentes: float = 60_000.0      # ARS/unidad\n        self.precio_cobre: float = 8_500.0        # ARS/kg\n        self.precio_aluminio: float = 1_500.0     # ARS/kg\n        self.precio_plastico: float = 60.0        # ARS/kg\n        self.precio_almacenamiento_min: float = 50.0   # ARS/GB",
+        "detail": "core.parametros_dominio.precios",
+        "documentation": {}
+    },
+    {
+        "label": "TasasRecuperacionParametros",
+        "kind": 6,
+        "importPath": "core.parametros_dominio.tasas_recuperacion",
+        "description": "core.parametros_dominio.tasas_recuperacion",
+        "peekOfCode": "class TasasRecuperacionParametros:\n    \"\"\"Contenedor independiente para tasas de recuperación de componentes.\"\"\"\n    def __init__(self):\n        # Tasas de recuperación (fracción 0–1)\n        self.tasa_placas_sanas: float = 0.75\n        self.tasa_opticas_sanas: float = 0.70\n        self.tasa_discos_sanos: float = 0.65\n    def validar(self) -> list[str]:\n        \"\"\"Valida que todas las tasas estén en [0, 1].\"\"\"\n        errores = []",
+        "detail": "core.parametros_dominio.tasas_recuperacion",
+        "documentation": {}
+    },
+    {
+        "label": "SimuladorCamara",
+        "kind": 6,
+        "importPath": "core.simuladores.simulador_camara",
+        "description": "core.simuladores.simulador_camara",
+        "peekOfCode": "class SimuladorCamara:\n    \"\"\"\n    Simulador independiente para procesamiento de cámaras de seguridad.\n    Encapsula la lógica de árbol de decisiones para cada cámara:\n    - Estado general (recuperable/desguace)\n    - Componentes ópticos (sano/dañado)\n    - Placas (funcionales/parcial)\n    Cada instancia es independiente y puede ser testeada en aislamiento.\n    \"\"\"\n    def __init__(self, parametros: ParametrosSistema):",
+        "detail": "core.simuladores.simulador_camara",
+        "documentation": {}
+    },
+    {
+        "label": "SimuladorDVR",
+        "kind": 6,
+        "importPath": "core.simuladores.simulador_dvr",
+        "description": "core.simuladores.simulador_dvr",
+        "peekOfCode": "class SimuladorDVR:\n    \"\"\"\n    Simulador independiente para procesamiento de DVRs.\n    Encapsula la lógica de árbol de decisiones para cada DVR:\n    - Estado general (recuperable/desguace)\n    - HDD (operativo/inoperativo)\n    - Placas (funcionales/parcial)\n    Cada instancia es independiente y puede ser testeada en aislamiento.\n    \"\"\"\n    def __init__(self, parametros: ParametrosSistema):",
+        "detail": "core.simuladores.simulador_dvr",
+        "documentation": {}
+    },
+    {
+        "label": "GeneradorCongruencialLineal",
+        "kind": 6,
+        "importPath": "core.gcl",
+        "description": "core.gcl",
+        "peekOfCode": "class GeneradorCongruencialLineal:\n    \"\"\"\n    Generador Congruencial Lineal (GCL) puro.\n    Genera números pseudoaleatorios sin usar ninguna librería de aleatorización.\n    Parámetros del método:\n        a = 1664525      (multiplicador)\n        c = 1013904223   (incremento)\n        m = 2^32         (módulo)\n    \"\"\"\n    # Constantes con período completo (Numerical Recipes)",
+        "detail": "core.gcl",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "kind": 6,
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "peekOfCode": "class ParametrosSistema:\n    \"\"\"\n    Agregador de parámetros del simulador usando composición de dominios.\n    Componentes:\n        precios      : PreciosParametros - todos los precios en ARS\n        composicion  : ComposicionParametros - fracciones de materiales\n        tasas        : TasasRecuperacionParametros - tasas de recuperación\n        operativo    : ParametrosOperativo - parámetros operativos\n        parametros_cargados : Bool - indica si los parámetros están listos\n    Cada dominio es independiente y testeable por separado.",
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoCamara",
+        "kind": 6,
+        "importPath": "core.resultados",
+        "description": "core.resultados",
+        "peekOfCode": "class ResultadoCamara:\n    \"\"\"Resultado del procesamiento de una cámara individual.\"\"\"\n    def __init__(self):\n        self.recuperable: bool = False\n        self.optica_sana: bool = False\n        self.placa_sana: bool = False\n        # Valores recuperados (ARS)\n        self.valor_lentes: float = 0.0\n        self.valor_placas: float = 0.0\n        self.valor_plastico: float = 0.0",
+        "detail": "core.resultados",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoDVR",
+        "kind": 6,
+        "importPath": "core.resultados",
+        "description": "core.resultados",
+        "peekOfCode": "class ResultadoDVR:\n    \"\"\"Resultado del procesamiento de un DVR individual.\"\"\"\n    def __init__(self):\n        self.recuperable: bool = False\n        self.hdd_operativo: bool = False\n        self.placa_sana: bool = False\n        # Valores recuperados (ARS)\n        self.valor_hdd: float = 0.0\n        self.valor_placas: float = 0.0\n        self.valor_metal: float = 0.0",
+        "detail": "core.resultados",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoLote",
+        "kind": 6,
+        "importPath": "core.resultados",
+        "description": "core.resultados",
+        "peekOfCode": "class ResultadoLote:\n    \"\"\"Resultado agregado de un lote completo de dispositivos.\"\"\"\n    def __init__(self):\n        # Cantidades procesadas\n        self.n_camaras: int = 0\n        self.n_dvrs: int = 0\n        # Conteos de estados\n        self.camaras_recuperables: int = 0\n        self.camaras_desguazadas: int = 0\n        self.dvrs_recuperables: int = 0",
+        "detail": "core.resultados",
+        "documentation": {}
+    },
+    {
+        "label": "SimulacionService",
+        "kind": 6,
+        "importPath": "core.simulacion_service",
+        "description": "core.simulacion_service",
+        "peekOfCode": "class SimulacionService:\n    \"\"\"\n    Servicio de simulación que orquesta todos los componentes.\n    Actúa como facade hacia la GUI, permitiendo:\n    - Inyección de dependencias (especialmente GCL)\n    - Separación clara de responsabilidades\n    - Testabilidad mediante mocks\n    - Punto único de entrada para simulación\n    Patrón: Service Locator + Facade\n    \"\"\"",
+        "detail": "core.simulacion_service",
         "documentation": {}
     },
     {
         "label": "AppSimulador",
         "kind": 6,
-        "importPath": "ProyectoSimulacion",
-        "description": "ProyectoSimulacion",
-        "peekOfCode": "class AppSimulador(ctk.CTk):\n    def __init__(self):\n        super().__init__()\n        self.title(\"Simulador - Reciclado e-waste\")\n        self.geometry(\"1000x600\")\n        ctk.set_appearance_mode(\"dark\")\n        ctk.set_default_color_theme(\"blue\")\n        self.pestanas = ctk.CTkTabview(self)\n        self.pestanas.pack(padx=20, pady=20, fill=\"both\", expand=True)\n        self.T_USUARIO = \"Vista de Usuario\"",
-        "detail": "ProyectoSimulacion",
+        "importPath": "gui.app",
+        "description": "gui.app",
+        "peekOfCode": "class AppSimulador(ctk.CTk):\n    \"\"\"\n    Ventana raíz de la aplicación de simulación de reciclaje RAEE.\n    Gestiona el ciclo de vida de la GUI y coordina la comunicación\n    entre las vistas mediante el objeto ParametrosSistema compartido.\n    \"\"\"\n    T_USUARIO = \"Vista de Usuario\"\n    T_GERENTE = \"Vista del Gerente\"\n    T_CONFIG = \"Configuración\"\n    def __init__(self):",
+        "detail": "gui.app",
         "documentation": {}
     },
     {
-        "label": "simular_proceso_dispositivo",
+        "label": "VentanaResultados",
+        "kind": 6,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "class VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):\n        super().__init__(parent)\n        self.resultado = resultado\n        self.title(\"Informe de Simulación — Resultados\")\n        self.geometry(\"1200x680\")",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLORES_TORTA",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLORES_TORTA = [\"#4FC3F7\", \"#81C784\", \"#FFB74D\", \"#F06292\", \"#CE93D8\", \"#80CBC4\"]\nCOLOR_BARRAS = \"#4FC3F7\"\nCOLOR_FONDO = \"#1a2530\"\nCOLOR_TEXTO = \"#E0E0E0\"\nCOLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_BARRAS",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLOR_BARRAS = \"#4FC3F7\"\nCOLOR_FONDO = \"#1a2530\"\nCOLOR_TEXTO = \"#E0E0E0\"\nCOLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_FONDO",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLOR_FONDO = \"#1a2530\"\nCOLOR_TEXTO = \"#E0E0E0\"\nCOLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):\n        super().__init__(parent)",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_TEXTO",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLOR_TEXTO = \"#E0E0E0\"\nCOLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):\n        super().__init__(parent)\n        self.resultado = resultado",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_GRID",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):\n        super().__init__(parent)\n        self.resultado = resultado\n        self.title(\"Informe de Simulación — Resultados\")",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "VistaConfig",
+        "kind": 6,
+        "importPath": "gui.vista_config",
+        "description": "gui.vista_config",
+        "peekOfCode": "class VistaConfig(ctk.CTkFrame):\n    \"\"\"\n    Frame que encapsula la Vista de Configuración del sistema.\n    Se monta dentro del CTkTabview de la ventana principal.\n    \"\"\"\n    def __init__(self, parent, params: ParametrosSistema,\n                 callback_config_guardada=None):\n        \"\"\"\n        Args:\n            parent:                  Widget padre.",
+        "detail": "gui.vista_config",
+        "documentation": {}
+    },
+    {
+        "label": "VistaGerente",
+        "kind": 6,
+        "importPath": "gui.vista_gerente",
+        "description": "gui.vista_gerente",
+        "peekOfCode": "class VistaGerente(ctk.CTkFrame):\n    \"\"\"\n    Frame que encapsula la Vista del Gerente/Administrador.\n    Se monta dentro del CTkTabview de la ventana principal.\n    \"\"\"\n    def __init__(self, parent, params: ParametrosSistema,\n                 callback_parametros_cargados=None):\n        \"\"\"\n        Args:\n            parent:                       Widget padre (el tab del tabview).",
+        "detail": "gui.vista_gerente",
+        "documentation": {}
+    },
+    {
+        "label": "VistaUsuario",
+        "kind": 6,
+        "importPath": "gui.vista_usuario",
+        "description": "gui.vista_usuario",
+        "peekOfCode": "class VistaUsuario(ctk.CTkFrame):\n    \"\"\"\n    Frame que encapsula toda la Vista de Usuario.\n    Se monta dentro del CTkTabview de la ventana principal.\n    \"\"\"\n    def __init__(self, parent, params: ParametrosSistema,\n                 simulacion_service: SimulacionService):\n        super().__init__(parent, fg_color=\"transparent\")\n        self.params = params\n        self.simulacion_service = simulacion_service",
+        "detail": "gui.vista_usuario",
+        "documentation": {}
+    },
+    {
+        "label": "TestComposicionParametros",
+        "kind": 6,
+        "importPath": "tests.test_parametros_dominio.test_composicion",
+        "description": "tests.test_parametros_dominio.test_composicion",
+        "peekOfCode": "class TestComposicionParametros:\n    \"\"\"Suite de tests para validación de composición.\"\"\"\n    def test_init_fracciones_validas(self):\n        \"\"\"Verifica que las fracciones por defecto sumen ~1.\"\"\"\n        composicion = ComposicionParametros()\n        suma_camara = (\n            composicion.camara_fraccion_plastico\n            + composicion.camara_fraccion_placas\n            + composicion.camara_fraccion_metal\n            + composicion.camara_fraccion_opticos",
+        "detail": "tests.test_parametros_dominio.test_composicion",
+        "documentation": {}
+    },
+    {
+        "label": "TestParametrosOperativo",
+        "kind": 6,
+        "importPath": "tests.test_parametros_dominio.test_operativo",
+        "description": "tests.test_parametros_dominio.test_operativo",
+        "peekOfCode": "class TestParametrosOperativo:\n    \"\"\"Suite de tests para validación de parámetros operativos.\"\"\"\n    def test_init_default_valores(self):\n        \"\"\"Verifica que los valores por defecto sean coherentes.\"\"\"\n        operativo = ParametrosOperativo()\n        assert operativo.horas_trabajo == 8.0\n        assert operativo.cantidad_empleados == 5\n        assert operativo.energia_consumida == 100.0\n        assert operativo.coeficiente_perdida == 0.05\n    def test_validar_default(self):",
+        "detail": "tests.test_parametros_dominio.test_operativo",
+        "documentation": {}
+    },
+    {
+        "label": "TestPreciosParametros",
+        "kind": 6,
+        "importPath": "tests.test_parametros_dominio.test_precios",
+        "description": "tests.test_parametros_dominio.test_precios",
+        "peekOfCode": "class TestPreciosParametros:\n    \"\"\"Suite de tests para validación de precios.\"\"\"\n    def test_init_default_valores(self):\n        \"\"\"Verifica que los precios por defecto sean coherentes.\"\"\"\n        precios = PreciosParametros()\n        assert precios.precio_oro == 210_000.0\n        assert precios.precio_cobre == 8_500.0\n        assert precios.precio_plastico == 60.0\n        assert precios.precio_almacenamiento_min < precios.precio_almacenamiento_max\n    def test_validar_todos_positivos(self):",
+        "detail": "tests.test_parametros_dominio.test_precios",
+        "documentation": {}
+    },
+    {
+        "label": "TestTasasRecuperacionParametros",
+        "kind": 6,
+        "importPath": "tests.test_parametros_dominio.test_tasas",
+        "description": "tests.test_parametros_dominio.test_tasas",
+        "peekOfCode": "class TestTasasRecuperacionParametros:\n    \"\"\"Suite de tests para validación de tasas de recuperación.\"\"\"\n    def test_init_default_valores(self):\n        \"\"\"Verifica que las tasas por defecto estén en [0, 1].\"\"\"\n        tasas = TasasRecuperacionParametros()\n        assert 0.0 <= tasas.tasa_placas_sanas <= 1.0\n        assert 0.0 <= tasas.tasa_opticas_sanas <= 1.0\n        assert 0.0 <= tasas.tasa_discos_sanos <= 1.0\n    def test_validar_default(self):\n        \"\"\"Verifica que los valores por defecto pasen validación.\"\"\"",
+        "detail": "tests.test_parametros_dominio.test_tasas",
+        "documentation": {}
+    },
+    {
+        "label": "parametros_default",
         "kind": 2,
-        "importPath": "ProyectoSimulacion",
-        "description": "ProyectoSimulacion",
-        "peekOfCode": "def simular_proceso_dispositivo(u_generador, es_camara=True):\n    \"\"\"Lógica de simulación para un dispositivo individual\"\"\"\n    u1 = u_generador.proximo_u()\n    es_recuperable = u1 <= 0.72\n    u2 = u_generador.proximo_u()\n    if es_recuperable:\n        # Precios base estimados\n        v_min, v_max = 1500, 8500\n        valor = v_min + (v_max - v_min) * u2\n    else:",
-        "detail": "ProyectoSimulacion",
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def parametros_default():\n    \"\"\"Crea una instancia de ParametrosSistema con valores por defecto.\"\"\"\n    params = ParametrosSistema()\n    params.parametros_cargados = True  # Ya cargados para tests\n    return params\n@pytest.fixture\ndef gcl_seeded():\n    \"\"\"Crea un GCL con semilla fija para reproducibilidad.\"\"\"\n    return GeneradorCongruencialLineal(semilla=12345)\n@pytest.fixture",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "gcl_seeded",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def gcl_seeded():\n    \"\"\"Crea un GCL con semilla fija para reproducibilidad.\"\"\"\n    return GeneradorCongruencialLineal(semilla=12345)\n@pytest.fixture\ndef gcl_factory():\n    \"\"\"Factory para crear GCLs con semilla fija.\"\"\"\n    def _factory(semilla=12345):\n        return GeneradorCongruencialLineal(semilla=semilla)\n    return _factory",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "gcl_factory",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def gcl_factory():\n    \"\"\"Factory para crear GCLs con semilla fija.\"\"\"\n    def _factory(semilla=12345):\n        return GeneradorCongruencialLineal(semilla=semilla)\n    return _factory",
+        "detail": "tests.conftest",
         "documentation": {}
     }
 ]
