@@ -12,11 +12,13 @@ Contiene:
 """
 
 import tkinter as tk
+from tkinter import filedialog, messagebox
 import customtkinter as ctk
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import pandas as pd
 
 from core.resultados import ResultadoLote
 
@@ -149,6 +151,67 @@ class VentanaResultados(ctk.CTkToplevel):
         ]
         for etiqueta, valor in datos_ind:
             self._fila(scroll, etiqueta, valor, destacar=(etiqueta == "Rango de Mejora"))
+
+        # Botón Exportar
+        self._separador(scroll)
+        btn_exportar = ctk.CTkButton(
+            scroll, text="📥  Exportar a Excel",
+            font=("Arial", 14, "bold"), fg_color="#388E3C", hover_color="#2E7D32",
+            command=self._exportar_excel
+        )
+        btn_exportar.pack(pady=(15, 10))
+
+    def _exportar_excel(self):
+        """Exporta los resultados a un archivo Excel en una única hoja consolidada."""
+        try:
+            filepath = filedialog.asksaveasfilename(
+                defaultextension=".xlsx",
+                filetypes=[("Archivos de Excel", "*.xlsx"), ("Todos los archivos", "*.*")],
+                title="Exportar Resultados a Excel"
+            )
+            if not filepath:
+                return
+            
+            r = self.resultado
+            
+            # Construir un único DataFrame con todos los datos y secciones separadas
+            datos_completos = [
+                {"Categoría": "LOTE PROCESADO", "Métrica": "Semilla GCL", "Valor": r.semilla_gcl},
+                {"Categoría": "LOTE PROCESADO", "Métrica": "Cámaras Ingresadas", "Valor": r.n_camaras},
+                {"Categoría": "LOTE PROCESADO", "Métrica": "DVRs Ingresados", "Valor": r.n_dvrs},
+                {"Categoría": "LOTE PROCESADO", "Métrica": "Cámaras Recuperables", "Valor": r.camaras_recuperables},
+                {"Categoría": "LOTE PROCESADO", "Métrica": "Cámaras Desguazadas", "Valor": r.camaras_desguazadas},
+                {"Categoría": "LOTE PROCESADO", "Métrica": "DVRs Recuperables", "Valor": r.dvrs_recuperables},
+                {"Categoría": "LOTE PROCESADO", "Métrica": "DVRs Desguazados", "Valor": r.dvrs_desguazados},
+                {"Categoría": "", "Métrica": "", "Valor": ""},  # Fila en blanco
+                
+                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Lentes recuperados (ARS)", "Valor": r.valor_lentes},
+                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Placas cámaras (ARS)", "Valor": r.valor_placas_camara},
+                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Placas DVRs (ARS)", "Valor": r.valor_placas_dvr},
+                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Discos HDD (ARS)", "Valor": r.valor_hdd},
+                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Plástico (ARS)", "Valor": r.valor_plastico},
+                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Metal (ARS)", "Valor": r.valor_metal},
+                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "VALOR TOTAL RECUPERADO (ARS)", "Valor": r.valor_total},
+                {"Categoría": "", "Métrica": "", "Valor": ""},  # Fila en blanco
+                
+                {"Categoría": "MASA RECUPERADA", "Métrica": "Plástico recuperado (kg)", "Valor": r.kg_plastico},
+                {"Categoría": "MASA RECUPERADA", "Métrica": "Metal recuperado (kg)", "Valor": r.kg_metal},
+                {"Categoría": "", "Métrica": "", "Valor": ""},  # Fila en blanco
+                
+                {"Categoría": "INDICADORES DE EFICIENCIA OPERATIVA", "Métrica": "Coef. de Productividad (u/h/emp)", "Valor": r.coef_productividad},
+                {"Categoría": "INDICADORES DE EFICIENCIA OPERATIVA", "Métrica": "Eficacia (%)", "Valor": r.eficacia},
+                {"Categoría": "INDICADORES DE EFICIENCIA OPERATIVA", "Métrica": "Eficiencia (%)", "Valor": r.eficiencia},
+                {"Categoría": "INDICADORES DE EFICIENCIA OPERATIVA", "Métrica": "Rango de Mejora (%)", "Valor": r.rango_mejora},
+            ]
+            
+            df = pd.DataFrame(datos_completos)
+            
+            with pd.ExcelWriter(filepath, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name='Reporte Completo', index=False)
+            
+            messagebox.showinfo("Exportación Exitosa", f"Todos los resultados se exportaron correctamente a:\n{filepath}")
+        except Exception as e:
+            messagebox.showerror("Error de Exportación", f"Ocurrió un error al exportar:\n{e}")
 
     def _seccion(self, parent, titulo: str):
         """Agrega un encabezado de sección al informe."""
