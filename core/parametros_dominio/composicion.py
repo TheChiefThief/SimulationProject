@@ -16,9 +16,17 @@ class ComposicionParametros:
         self.dvr_fraccion_metal: float = 0.30
         self.dvr_fraccion_placas: float = 0.25
 
-        # Peso promedio por dispositivo (kg)
+        # Peso promedio por dispositivo (kg) — referencia del documento
         self.peso_camara: float = 1.14
         self.peso_dvr: float = 1.12
+
+        # Rangos de peso para muestreo por distribución Uniforme
+        # Cámara: centrado en ~1.14 kg según datos de diseño
+        self.peso_camara_min: float = 0.8
+        self.peso_camara_max: float = 1.5
+        # DVR: centrado en ~1.12 kg según datos de diseño
+        self.peso_dvr_min: float = 0.9
+        self.peso_dvr_max: float = 1.4
 
         # Rendimientos de procesamiento
         self.rendimiento_plastico: float = 0.80

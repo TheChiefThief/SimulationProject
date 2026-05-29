@@ -45,6 +45,7 @@ class VistaGerente(ctk.CTkFrame):
         super().__init__(parent, fg_color="transparent")
         self.params = params
         self.callback = callback_parametros_cargados
+        self.presets = {}  # Almacena los presets de la sesión actual
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -120,13 +121,47 @@ class VistaGerente(ctk.CTkFrame):
         ctk.CTkLabel(frame, text="* Campos obligatorios",
                      font=("Arial", 11), text_color="#888888").pack(anchor="w", pady=(0, 10))
 
-        # Botón guardar
+        # ── Acciones (Guardar, Defaults) ───────────────────────────────
+        acciones_frame = ctk.CTkFrame(frame, fg_color="transparent")
+        acciones_frame.pack(anchor="w", pady=(15, 5))
+
         self.btn_guardar = ctk.CTkButton(
-            frame, text="💾  Cargar Parámetros",
-            width=200, font=("Arial", 14, "bold"),
+            acciones_frame, text="💾  Cargar Parámetros",
+            width=150, font=("Arial", 13, "bold"),
             command=self._cargar_parametros
         )
-        self.btn_guardar.pack(anchor="w")
+        self.btn_guardar.pack(side="left", padx=(0, 10))
+
+        self.btn_defaults = ctk.CTkButton(
+            acciones_frame, text="🔄  Valores Base",
+            width=130, font=("Arial", 13), fg_color="#F57C00", hover_color="#EF6C00",
+            command=self._cargar_valores_por_defecto
+        )
+        self.btn_defaults.pack(side="left")
+
+        # ── Presets ───────────────────────────────────────────────────
+        presets_frame = ctk.CTkFrame(frame, fg_color="transparent")
+        presets_frame.pack(anchor="w", pady=(5, 10))
+
+        self.combo_presets = ctk.CTkOptionMenu(
+            presets_frame, values=["Preset 1", "Preset 2", "Preset 3"], width=110,
+            font=("Arial", 12)
+        )
+        self.combo_presets.pack(side="left", padx=(0, 10))
+
+        self.btn_guardar_preset = ctk.CTkButton(
+            presets_frame, text="Guardar Preset", width=100, font=("Arial", 12),
+            fg_color="#4DB6AC", hover_color="#009688", text_color="#111111",
+            command=self._guardar_preset
+        )
+        self.btn_guardar_preset.pack(side="left", padx=(0, 10))
+
+        self.btn_cargar_preset = ctk.CTkButton(
+            presets_frame, text="Cargar Preset", width=100, font=("Arial", 12),
+            fg_color="#29B6F6", hover_color="#0288D1", text_color="#111111",
+            command=self._cargar_preset
+        )
+        self.btn_cargar_preset.pack(side="left")
 
         # Etiqueta de error
         self.lbl_error = ctk.CTkLabel(
@@ -149,9 +184,9 @@ class VistaGerente(ctk.CTkFrame):
         # Indicador de estado principal
         self.lbl_indicador = ctk.CTkLabel(
             frame,
-            text="⛔  Sin parámetros cargados",
+            text="✔  Usando valores por defecto",
             font=("Arial", 16, "bold"),
-            text_color="#EF5350"
+            text_color="#66BB6A"
         )
         self.lbl_indicador.pack(anchor="w", pady=(0, 15))
 
@@ -274,3 +309,62 @@ class VistaGerente(ctk.CTkFrame):
             entry.delete(0, "end")
             entry.insert(0, valor)
             entry.configure(state="readonly")
+
+    # ------------------------------------------------------------------
+    # Presets y Valores por Defecto
+    # ------------------------------------------------------------------
+
+    def _cargar_valores_por_defecto(self):
+        """Restaura los valores iniciales predeterminados (hardcodeados o desde params defaults)."""
+        self.in_horas.delete(0, "end")
+        self.in_horas.insert(0, "8.0")
+        
+        self.in_empleados.delete(0, "end")
+        self.in_empleados.insert(0, "5")
+        
+        self.in_energia.delete(0, "end")
+        self.in_energia.insert(0, "150.0")
+        
+        self.in_coef_perdida.delete(0, "end")
+        self.in_coef_perdida.insert(0, "0.05")
+        
+        self.opt_maquinaria.set("Proceso Manual")
+        self._cargar_parametros()
+        messagebox.showinfo("Valores Base", "Se han restaurado los valores por defecto del sistema.")
+
+    def _guardar_preset(self):
+        """Guarda la configuración actual de entradas en el slot seleccionado."""
+        nombre = self.combo_presets.get()
+        self.presets[nombre] = (
+            self.in_horas.get(),
+            self.in_empleados.get(),
+            self.in_energia.get(),
+            self.in_coef_perdida.get(),
+            self.opt_maquinaria.get()
+        )
+        messagebox.showinfo("Preset Guardado", f"Se guardaron los valores actuales en '{nombre}'.")
+
+    def _cargar_preset(self):
+        """Carga en los campos la configuración guardada en el slot seleccionado."""
+        nombre = self.combo_presets.get()
+        if nombre not in self.presets:
+            messagebox.showwarning("Preset Vacío", f"El '{nombre}' no tiene valores guardados.\nGuarde uno primero.")
+            return
+            
+        horas, emp, energia, coef, maq = self.presets[nombre]
+        
+        self.in_horas.delete(0, "end")
+        self.in_horas.insert(0, horas)
+        
+        self.in_empleados.delete(0, "end")
+        self.in_empleados.insert(0, emp)
+        
+        self.in_energia.delete(0, "end")
+        self.in_energia.insert(0, energia)
+        
+        self.in_coef_perdida.delete(0, "end")
+        self.in_coef_perdida.insert(0, coef)
+        
+        self.opt_maquinaria.set(maq)
+        self._cargar_parametros()
+        messagebox.showinfo("Preset Cargado", f"Se cargaron correctamente los valores de '{nombre}'.")

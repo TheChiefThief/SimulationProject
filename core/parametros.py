@@ -35,7 +35,7 @@ class ParametrosSistema:
         self.composicion = ComposicionParametros()
         self.tasas = TasasRecuperacionParametros()
         self.operativo = ParametrosOperativo()
-        self.parametros_cargados: bool = False
+        self.parametros_cargados: bool = True  # Por defecto habilitado con valores base
 
     def validar(self) -> list[str]:
         """

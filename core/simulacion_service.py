@@ -1,4 +1,34 @@
-"""core/simulacion_service.py - Servicio que orquesta la simulación completa."""
+"""
+core/simulacion_service.py
+---------------------------
+Servicio que orquesta la simulación completa de reciclaje RAEE.
+
+Entrada: B (kg) — peso total del lote de basura electrónica.
+El loop procesa dispositivos individuales (con peso P muestreado de
+una distribución Uniforme según tipo) acumulando hasta alcanzar B.
+
+Probabilidades reales (datos de investigación):
+  - P(reventa)        = 0.25
+  - P(es DVR)         = 0.113
+  - P(HDD sano)       = 0.55
+  - P(óptica sana)    = 0.70
+  - P(placa sana cám) = 0.22
+  - P(placa sana DVR) = 0.27
+
+Tiempos reales por estación (distribución Exponencial, en minutos):
+  - D1 Revisión general        : media = 3  min
+  - D2 Desarme cámara/óptica   : media = 2  min
+  - D3 Recuperación óptico     : media = 27 min
+  - D4 Recuperación placas     : media = 90 min
+  - D5 Desarme DVR             : media = 10 min
+  - D6 Recuperación HDD        : media = 3  min
+
+Composición de materiales al desguazar (por peso del dispositivo):
+  - Cobre    : 20%
+  - Aluminio :  3%
+  - Oro      :  1%
+  - Plástico : 60%
+"""
 
 from typing import Callable
 
@@ -7,10 +37,30 @@ from core.parametros import ParametrosSistema
 from core.resultados import ResultadoLote
 
 
+# ── Tiempos reales por estación (media de distribución Exponencial, min) ──
+_D1_REVISION = 3.0
+_D2_OPTICA = 2.0
+_D3_OPT_MATERIAL = 27.0
+_D4_PLACAS = 90.0
+_D5_DVR = 10.0
+_D6_HDD = 3.0
+
+# ── Probabilidades reales (datos de investigación) ────────────────────────
+_P_REVENTA = 0.25
+_P_ES_DVR = 0.113
+_P_HDD_SANO = 0.55
+_P_OPTICA_SANA = 0.70
+_P_PLACA_SANA_CAM = 0.22
+_P_PLACA_SANA_DVR = 0.27
+
+# ── Umbral de cuello de botella ───────────────────────────────────────────
+_UMBRAL_BOTELLA = 0.85
+
+
 class SimulacionService:
     """
     Servicio de simulación que orquesta todos los componentes.
-    Implementa el flujo general de simulación basado en el diagrama.
+    Implementa el flujo del diagrama con entrada por peso B (kg).
     """
 
     def __init__(
@@ -18,53 +68,82 @@ class SimulacionService:
         parametros: ParametrosSistema,
         gcl_factory: Callable[[], GeneradorCongruencialLineal] = None,
     ):
-        """
-        Inicializa el servicio de simulación.
-
-        Args:
-            parametros: ParametrosSistema compartido con la aplicación.
-            gcl_factory: Factory para crear GeneradorCongruencialLineal.
-        """
         self.parametros = parametros
         self.gcl_factory = gcl_factory or GeneradorCongruencialLineal
 
-    def _procesar_material(self, resultado: ResultadoLote, p: float):
-        """Aplica las fórmulas del subdiagrama de Recuperación de Material."""
-        cobre = p * 0.2
+    # ------------------------------------------------------------------
+    # Métodos internos de cálculo
+    # ------------------------------------------------------------------
+
+    def _procesar_material(self, resultado: ResultadoLote, p: float) -> None:
+        """
+        Aplica las fórmulas del subdiagrama de Recuperación de Material.
+        Composición (datos reales): Cobre 20%, Aluminio 3%, Oro 1%, Plástico 60%.
+
+        Args:
+            resultado : ResultadoLote acumulador.
+            p         : Peso del dispositivo (kg).
+        """
+        precios = self.parametros.precios
+
+        cobre = p * 0.20
         aluminio = p * 0.03
         oro = p * 0.01
-        plastico = p * 0.6
-        
+        plastico = p * 0.60
+
         resultado.peso_cobre += cobre
         resultado.peso_aluminio += aluminio
         resultado.peso_oro += oro
         resultado.peso_plastico += plastico
         resultado.peso_metal += (cobre + aluminio + oro)
-        
-        vc = cobre * 8500
-        va = aluminio * 1500
-        vo = oro * 210000
-        vp = plastico * 60
-        
+
+        vc = cobre * precios.precio_cobre
+        va = aluminio * precios.precio_aluminio
+        vo = oro * precios.precio_oro
+        vp = plastico * precios.precio_plastico
+
         resultado.valor_cobre += vc
         resultado.valor_aluminio += va
         resultado.valor_oro += vo
         resultado.valor_plastico += vp
-        
-        vm = vc + va + vo
-        resultado.pmt += vm
+
+        resultado.pmt += (vc + va + vo)
         resultado.pt += vp
 
-    def simular_lote(self, n_total: int) -> ResultadoLote:
+    def _muestrear_peso_camara(self, gcl: GeneradorCongruencialLineal) -> float:
+        """P ~ Uniforme(peso_camara_min, peso_camara_max)."""
+        c = self.parametros.composicion
+        return gcl.siguiente_rango(c.peso_camara_min, c.peso_camara_max)
+
+    def _muestrear_peso_dvr(self, gcl: GeneradorCongruencialLineal) -> float:
+        """P ~ Uniforme(peso_dvr_min, peso_dvr_max)."""
+        c = self.parametros.composicion
+        return gcl.siguiente_rango(c.peso_dvr_min, c.peso_dvr_max)
+
+    # ------------------------------------------------------------------
+    # Simulación principal
+    # ------------------------------------------------------------------
+
+    def simular_lote(self, b_kg: float) -> ResultadoLote:
         """
-        Ejecuta la simulación completa de un lote de dispositivos.
-        Sigue estrictamente el flujo del diagrama general.
+        Ejecuta la simulación de un lote de basura electrónica.
+
+        Flujo (diagrama general):
+          MIENTRAS peso_acumulado < B:
+            D1 → Revisión: ¿Reventa?
+              SÍ → CAMREC / DvrREC, acumular P, continuar
+              NO → ¿Es DVR?
+                SÍ → Procesar DVR (D5, HDD, Placas, Material)
+                NO → Procesar Cámara (D2, Óptica, Placas, Material)
 
         Args:
-            n_total: Cantidad de dispositivos del lote.
+            b_kg: B — peso total del lote en kg.
 
         Returns:
-            ResultadoLote con agregados y métricas.
+            ResultadoLote con todos los resultados agregados.
+
+        Raises:
+            RuntimeError: Si los parámetros no fueron cargados.
         """
         if not self.parametros.parametros_cargados:
             raise RuntimeError(
@@ -75,130 +154,151 @@ class SimulacionService:
         gcl = self.gcl_factory()
         resultado = ResultadoLote()
         resultado.semilla_gcl = gcl.semilla
-        resultado.n_total = n_total
+        resultado.b_kg_input = b_kg
 
-        # Bucle central I = 1 a N_total
-        for _ in range(n_total):
-            # Estación 1: Revisión General (Exponencial media 3 min)
-            e1 = gcl.siguiente_exponencial(3.0)
+        peso_acumulado = 0.0
+
+        # ── Loop principal: procesar dispositivos hasta alcanzar B ─────
+        while peso_acumulado < b_kg:
+
+            # ── Estación 1: Revisión General (D1 ~ Exp(3 min)) ─────────
+            d1 = gcl.siguiente_exponencial(_D1_REVISION)
             resultado.c1 += 1
-            resultado.tdr += e1
+            resultado.tdr += d1
 
-            # Revisión: ¿Funciona bien? (Reventa 25%)
-            if gcl.siguiente_u() < 0.25:
+            # ── Decisión: ¿Reventa? (P=0.25) ───────────────────────────
+            if gcl.siguiente_u() < _P_REVENTA:
                 resultado.equipos_reventa += 1
-                # Separar en tipo (DVR 11.3%)
-                if gcl.siguiente_u() < 0.113:
-                    resultado.dvrs_reventa += 1
-                else:
-                    resultado.camaras_reventa += 1
-                continue  # Pasa al siguiente dispositivo, no se desguaza
 
-            # Procesar / Tratar (Desguace)
-            if gcl.siguiente_u() < 0.113:
-                # Es DVR
+                if gcl.siguiente_u() < _P_ES_DVR:
+                    resultado.dvr_rec += 1
+                    resultado.dvrs_reventa += 1
+                    p = self._muestrear_peso_dvr(gcl)
+                else:
+                    resultado.cam_rec += 1
+                    resultado.camaras_reventa += 1
+                    p = self._muestrear_peso_camara(gcl)
+
+                peso_acumulado += p
+                continue
+
+            # ── Decisión: ¿Es DVR? (P=0.113) ───────────────────────────
+            if gcl.siguiente_u() < _P_ES_DVR:
+                # ── Procesamiento DVR ───────────────────────────────────
+                p = self._muestrear_peso_dvr(gcl)
+                peso_acumulado += p
+                resultado.cant_dvr += 1
+                resultado.camaras_desguazadas += 0  # alias no aplica
                 resultado.dvrs_desguazados += 1
-                p = gcl.siguiente_rango(0.8, 2.0)  # Peso estimado DVR Uniforme
                 resultado.mt += p
-                
-                # Estación 5: DVR Desarme General
-                d5 = gcl.siguiente_exponencial(10.0)
+
+                # D5: Desarme DVR General (Exp(10 min))
+                d5 = gcl.siguiente_exponencial(_D5_DVR)
                 resultado.c5 += 1
                 resultado.tdd += d5
-                
-                # HDD Sano (0.68) o Roto
+
+                # HDD: ¿Sano? (P=0.55)
                 resultado.hdd_t += 1
-                if gcl.siguiente_u() < 0.68:
-                    # Sano: N = 250 + 1750*U (Uniforme 250 a 2000 GB)
-                    _ = gcl.siguiente_rango(250, 2000)
+                if gcl.siguiente_u() < _P_HDD_SANO:
                     resultado.hdd_f += 1
+                    # Capacidad C ~ Uniforme(250, 2000) GB
+                    _capacidad_gb = gcl.siguiente_entero(250, 2000)
                 else:
-                    # Roto: Estación 6 (HDD Desguace Material)
-                    d6 = gcl.siguiente_exponencial(3.0)
+                    # D6: Recuperación material HDD (Exp(3 min))
+                    d6 = gcl.siguiente_exponencial(_D6_HDD)
                     resultado.c6 += 1
                     resultado.thd += d6
-                
-                # Placas Sanas (0.27) o Rotas
+
+                # Placas DVR: ¿Sanas? (P=0.27)
                 resultado.placas_t += 1
-                if gcl.siguiente_u() < 0.27:
-                    resultado.placas_f += 1  # Sana
+                if gcl.siguiente_u() < _P_PLACA_SANA_DVR:
+                    resultado.placas_f += 1
                 else:
-                    # Rota: Estación 4 (Placas Desguace)
-                    d4 = gcl.siguiente_exponencial(0.5)
+                    # D4: Recuperación placas (Exp(90 min))
+                    d4 = gcl.siguiente_exponencial(_D4_PLACAS)
                     resultado.c4 += 1
                     resultado.tp += d4
-                
+
                 self._procesar_material(resultado, p)
 
             else:
-                # Es Cámara
+                # ── Procesamiento Cámara ────────────────────────────────
+                p = self._muestrear_peso_camara(gcl)
+                peso_acumulado += p
+                resultado.cant_cam += 1
                 resultado.camaras_desguazadas += 1
-                p = gcl.siguiente_rango(0.2, 1.5)  # Peso Cámara Uniforme
                 resultado.mt += p
-                
-                # Estación 2: Cámara Desarme Óptica
-                d2 = gcl.siguiente_exponencial(2.0)
+
+                # D2: Desarme Cámara / Óptica (Exp(2 min))
+                d2 = gcl.siguiente_exponencial(_D2_OPTICA)
                 resultado.c2 += 1
                 resultado.tdo += d2
-                
-                # Óptica Sana (0.70) o Rota
-                if gcl.siguiente_u() < 0.70:
-                    resultado.peso_vidrio += (p * 0.3)  # Sana
+
+                # Óptica: ¿Sana? (P=0.70)
+                if gcl.siguiente_u() < _P_OPTICA_SANA:
+                    resultado.peso_vidrio += (p * 0.30)
                 else:
-                    # Rota: Estación 3 (Óptica Material)
-                    d3 = gcl.siguiente_exponencial(2.0)
+                    # D3: Recuperación componente óptico (Exp(27 min))
+                    d3 = gcl.siguiente_exponencial(_D3_OPT_MATERIAL)
                     resultado.c3 += 1
                     resultado.tco += d3
-                
-                # Placas Sanas (0.52) o Rotas
+
+                # Placas Cámara: ¿Sanas? (P=0.22)
                 resultado.placas_t += 1
-                if gcl.siguiente_u() < 0.52:
-                    resultado.placas_f += 1  # Sana
+                if gcl.siguiente_u() < _P_PLACA_SANA_CAM:
+                    resultado.placas_f += 1
                 else:
-                    # Rota: Estación 4 (Placas Desguace)
-                    d4 = gcl.siguiente_exponencial(0.5)
+                    # D4: Recuperación placas (Exp(90 min))
+                    d4 = gcl.siguiente_exponencial(_D4_PLACAS)
                     resultado.c4 += 1
                     resultado.tp += d4
-                
+
                 self._procesar_material(resultado, p)
 
-        # Cálculo de Ocupaciones / Eficiencia y Cuellos de Botella (OE > 0.85)
-        # Se calcula asumiendo el tiempo real vs el tiempo esperado si estuviera 100% ocupado.
-        resultado.pe1 = (resultado.tdr / (resultado.c1 * 3.0)) if resultado.c1 > 0 else 0
-        if resultado.pe1 > 0.85:
-            resultado.cuellos_botella.append("Estación 1 (Revisión)")
-            
-        resultado.pe2 = (resultado.tdo / (resultado.c2 * 2.0)) if resultado.c2 > 0 else 0
-        if resultado.pe2 > 0.85:
-            resultado.cuellos_botella.append("Estación 2 (Óptica)")
-            
-        resultado.pe3 = (resultado.tco / (resultado.c3 * 2.0)) if resultado.c3 > 0 else 0
-        if resultado.pe3 > 0.85:
-            resultado.cuellos_botella.append("Estación 3 (Óptica Material)")
-            
-        resultado.pe4 = (resultado.tp / (resultado.c4 * 0.5)) if resultado.c4 > 0 else 0
-        if resultado.pe4 > 0.85:
-            resultado.cuellos_botella.append("Estación 4 (Placas)")
-            
-        resultado.pe5 = (resultado.tdd / (resultado.c5 * 10.0)) if resultado.c5 > 0 else 0
-        if resultado.pe5 > 0.85:
-            resultado.cuellos_botella.append("Estación 5 (DVR)")
-            
-        resultado.pe6 = (resultado.thd / (resultado.c6 * 3.0)) if resultado.c6 > 0 else 0
-        if resultado.pe6 > 0.85:
-            resultado.cuellos_botella.append("Estación 6 (HDD)")
+        # ── Fin del loop: registrar totales ───────────────────────────
+        resultado.peso_acumulado = peso_acumulado
+        resultado.n_total = (
+            resultado.cant_cam + resultado.cant_dvr + resultado.equipos_reventa
+        )
 
-        # Simulación de Demanda (Poisson)
-        # Calcula horas necesarias (h) para vender/procesar todo el lote 
-        # asumiendo una demanda de 0.3 clientes por hora.
+        # ── Cálculo de Ocupación y Productividad de Estaciones ──────────────
+        jornada_minutos = self.parametros.operativo.horas_trabajo * 60.0
+
+        # Ocupación: (TiempoAcumulado / JornadaEnMinutos) * 100
+        resultado.ocupacion_1 = (resultado.tdr / jornada_minutos) * 100 if jornada_minutos > 0 else 0.0
+        resultado.ocupacion_2 = (resultado.tdo / jornada_minutos) * 100 if jornada_minutos > 0 else 0.0
+        resultado.ocupacion_3 = (resultado.tco / jornada_minutos) * 100 if jornada_minutos > 0 else 0.0
+        resultado.ocupacion_4 = (resultado.tp / jornada_minutos) * 100 if jornada_minutos > 0 else 0.0
+        resultado.ocupacion_5 = (resultado.tdd / jornada_minutos) * 100 if jornada_minutos > 0 else 0.0
+        resultado.ocupacion_6 = (resultado.thd / jornada_minutos) * 100 if jornada_minutos > 0 else 0.0
+
+        # Productividad: (Cantidad * DemoraExponencial) / TiempoAcumulado
+        resultado.productividad_1 = (resultado.c1 * _D1_REVISION) / resultado.tdr if resultado.tdr > 0 else 0.0
+        resultado.productividad_2 = (resultado.c2 * _D2_OPTICA) / resultado.tdo if resultado.tdo > 0 else 0.0
+        resultado.productividad_3 = (resultado.c3 * _D3_OPT_MATERIAL) / resultado.tco if resultado.tco > 0 else 0.0
+        resultado.productividad_4 = (resultado.c4 * _D4_PLACAS) / resultado.tp if resultado.tp > 0 else 0.0
+        resultado.productividad_5 = (resultado.c5 * _D5_DVR) / resultado.tdd if resultado.tdd > 0 else 0.0
+        resultado.productividad_6 = (resultado.c6 * _D6_HDD) / resultado.thd if resultado.thd > 0 else 0.0
+
+        estaciones = [
+            ("Estación 1 — Revisión General",      resultado.ocupacion_1),
+            ("Estación 2 — Cámara/Óptica",         resultado.ocupacion_2),
+            ("Estación 3 — Recuperación Óptica",   resultado.ocupacion_3),
+            ("Estación 4 — Recuperación Placas",   resultado.ocupacion_4),
+            ("Estación 5 — Desarme DVR",            resultado.ocupacion_5),
+            ("Estación 6 — Recuperación HDD",      resultado.ocupacion_6),
+        ]
+        for nombre, ocup in estaciones:
+            if ocup > (_UMBRAL_BOTELLA * 100):
+                resultado.cuellos_botella.append(nombre)
+
+        # ── Simulación de Demanda (Poisson λ=0.3 clientes/hora) ───────
         h = 0
         cp = 0
-        # Ponemos un límite por seguridad en caso de N_total gigantesco para que no cuelgue
-        while cp < n_total and h < 1000000:
-            cl = gcl.siguiente_poisson(0.3)
-            cp += cl
+        limite_seg = resultado.n_total * 100 + 1000
+        while cp < resultado.n_total and h < limite_seg:
+            cp += gcl.siguiente_poisson(0.3)
             h += 1
-            
         resultado.horas_demanda = h
         resultado.clientes_totales = cp
 
