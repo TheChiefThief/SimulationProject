@@ -9,6 +9,7 @@ abrir sus reportes detallados y volver a exportarlas a Excel.
 from tkinter import messagebox
 import customtkinter as ctk
 
+from core.logger import registrar_error
 from core.historial_simulador import HistorialSimulador
 from gui.ventana_resultados import VentanaResultados
 
@@ -212,7 +213,9 @@ class VistaHistorial(ctk.CTkFrame):
         if self._ventana_resultado_activa is not None:
             try:
                 self._ventana_resultado_activa.destroy()
-            except Exception:
+            except Exception as e:
+                # registros de errores
+                registrar_error("Error al destruir la ventana de resultados en VistaHistorial", e)
                 pass
 
         self._ventana_resultado_activa = VentanaResultados(self, resultado_obj)
@@ -223,10 +226,14 @@ class VistaHistorial(ctk.CTkFrame):
         # Para evitar abrir la ventana, implementamos una llamada directa reutilizando la lógica
         # de VentanaResultados._exportar_excel
         from gui.ventana_resultados import VentanaResultados
-        v_temp = VentanaResultados(self, resultado_obj)
-        v_temp.withdraw()  # Ocultar ventana para que no se note
-        v_temp._exportar_excel()
-        v_temp.destroy()
+        try:
+            v_temp = VentanaResultados(self, resultado_obj)
+            v_temp.withdraw()  # Ocultar ventana para que no se note
+            v_temp._exportar_excel()
+            v_temp.destroy()
+        except Exception as e:
+            # registros de errores
+            registrar_error("Error al exportar individualmente a Excel desde VistaHistorial", e)
 
     def _eliminar_registro(self, registro_id: str):
         """Elimina un único registro del historial."""

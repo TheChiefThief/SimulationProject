@@ -22,6 +22,7 @@ y se notifica a todas las vistas dependientes.
 
 import customtkinter as ctk
 from tkinter import messagebox
+from core.logger import registrar_error
 from core.parametros import ParametrosSistema
 from core.validador import Validador
 
@@ -258,6 +259,8 @@ class VistaGerente(ctk.CTkFrame):
             )
 
         except ValueError as e:
+            # registros de errores
+            registrar_error("Error de validación de parámetros operativos en VistaGerente", e)
             mensaje_error = str(e)
             self.lbl_error.configure(text=f"⚠ {mensaje_error}")
             messagebox.showerror("Error de Operación", mensaje_error)

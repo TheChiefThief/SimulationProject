@@ -16,6 +16,7 @@ import matplotlib.ticker as mticker
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 
+from core.logger import registrar_error
 from core.resultados import ResultadoLote
 
 matplotlib.use("TkAgg")
@@ -355,4 +356,6 @@ class VentanaResultados(ctk.CTkToplevel):
             messagebox.showinfo("Exportación Exitosa", f"Archivo Excel guardado en:\n{filepath}")
 
         except Exception as e:
+            # registros de errores
+            registrar_error("Error al exportar los resultados a Excel en VentanaResultados", e)
             messagebox.showwarning("Aviso", f"No se pudo exportar a Excel:\n{e}")

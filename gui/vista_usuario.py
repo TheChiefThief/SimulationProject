@@ -12,6 +12,7 @@ El botón Ejecutar funciona desde el inicio con valores por defecto.
 import customtkinter as ctk
 from tkinter import messagebox
 
+from core.logger import registrar_error
 from core.parametros import ParametrosSistema
 from core.simulacion_service import SimulacionService
 from core.validador import Validador
@@ -174,6 +175,8 @@ class VistaUsuario(ctk.CTkFrame):
                 min_valor=0.1
             )
         except ValueError as e:
+            # registros de errores
+            registrar_error("Error de validación del lote B (kg) en VistaUsuario", e)
             msg = str(e)
             self.lbl_error.configure(text=f"⚠ {msg}")
             messagebox.showwarning("Aviso de entrada", msg)
@@ -182,6 +185,8 @@ class VistaUsuario(ctk.CTkFrame):
         try:
             resultado = self.simulacion_service.simular_lote(b_kg)
         except RuntimeError as e:
+            # registros de errores
+            registrar_error("Error en la ejecución de la simulación en VistaUsuario", e)
             self.lbl_error.configure(text=f"⛔ {e}")
             return
 
@@ -192,6 +197,8 @@ class VistaUsuario(ctk.CTkFrame):
             if self.callback_simulacion_ejecutada:
                 self.callback_simulacion_ejecutada()
         except Exception as e:
+            # registros de errores
+            registrar_error("Error al guardar la simulación en el historial desde VistaUsuario", e)
             print(f"Error al guardar en el historial: {e}")
 
         # Actualizar resumen
@@ -209,7 +216,9 @@ class VistaUsuario(ctk.CTkFrame):
         if self._ventana_resultado_activa is not None:
             try:
                 self._ventana_resultado_activa.destroy()
-            except Exception:
+            except Exception as e:
+                # registros de errores
+                registrar_error("Error al intentar destruir la ventana de resultados activa en VistaUsuario", e)
                 pass
         self._ventana_resultado_activa = VentanaResultados(self, resultado)
 

@@ -18,6 +18,7 @@ compartido. Todos los campos tienen validación:
 
 import customtkinter as ctk
 from tkinter import messagebox
+from core.logger import registrar_error
 from core.parametros import ParametrosSistema
 from core.validador import Validador
 
@@ -244,6 +245,8 @@ class VistaConfig(ctk.CTkFrame):
             )
 
         except ValueError as e:
+            # registros de errores
+            registrar_error("Error de validación de configuración en VistaConfig", e)
             mensaje_error = str(e)
             self.lbl_estado.configure(
                 text=f"⚠ {mensaje_error}",
