@@ -22,10 +22,14 @@ class VistaUsuario(ctk.CTkFrame):
     """Frame de la Vista de Usuario — entrada por peso B (kg)."""
 
     def __init__(self, parent, params: ParametrosSistema,
-                 simulacion_service: SimulacionService):
+                 simulacion_service: SimulacionService,
+                 callback_simulacion_ejecutada=None,
+                 callback_ver_historial=None):
         super().__init__(parent, fg_color="transparent")
         self.params = params
         self.simulacion_service = simulacion_service
+        self.callback_simulacion_ejecutada = callback_simulacion_ejecutada
+        self.callback_ver_historial = callback_ver_historial
         self._ventana_resultado_activa = None
 
         self.grid_columnconfigure(0, weight=1)
@@ -36,7 +40,7 @@ class VistaUsuario(ctk.CTkFrame):
         self._construir_panel_derecho()
 
     # ------------------------------------------------------------------
-    # Construcción de UI
+    # UI Construction
     # ------------------------------------------------------------------
 
     def _construir_panel_izquierdo(self):
@@ -86,6 +90,15 @@ class VistaUsuario(ctk.CTkFrame):
             text_color="#EF5350", wraplength=280
         )
         self.lbl_error.pack(anchor="w", pady=(10, 0))
+
+        # Botón ver historial
+        self.btn_ver_historial = ctk.CTkButton(
+            frame, text="📋 Ver Historial",
+            width=200, font=("Arial", 14, "bold"),
+            fg_color="#37474F", hover_color="#455A64",
+            command=self._ir_a_historial
+        )
+        self.btn_ver_historial.pack(anchor="w", pady=(5, 0))
 
     def _construir_panel_derecho(self):
         """Panel de resumen rápido de resultados."""
@@ -140,6 +153,11 @@ class VistaUsuario(ctk.CTkFrame):
                 text_color="#FF7043"
             )
 
+    def _ir_a_historial(self):
+        """Redirige al tab del historial si está configurado."""
+        if self.callback_ver_historial:
+            self.callback_ver_historial()
+
     def _ejecutar(self):
         """Valida la entrada B (kg) y ejecuta la simulación."""
         self.lbl_error.configure(text="")
@@ -166,6 +184,15 @@ class VistaUsuario(ctk.CTkFrame):
         except RuntimeError as e:
             self.lbl_error.configure(text=f"⛔ {e}")
             return
+
+        # Guardar en el historial
+        try:
+            from core.historial_simulador import HistorialSimulador
+            HistorialSimulador.guardar_simulacion(self.params, resultado)
+            if self.callback_simulacion_ejecutada:
+                self.callback_simulacion_ejecutada()
+        except Exception as e:
+            print(f"Error al guardar en el historial: {e}")
 
         # Actualizar resumen
         self._set_entry(self.out_peso,

@@ -30,6 +30,7 @@ class AppSimulador(ctk.CTk):
     T_USUARIO = "Vista de Usuario"
     T_GERENTE = "Vista del Gerente"
     T_CONFIG = "Configuración"
+    T_HISTORIAL = "Historial"
 
     def __init__(self):
         super().__init__()
@@ -73,12 +74,15 @@ class AppSimulador(ctk.CTk):
         self.tabview.add(self.T_USUARIO)
         self.tabview.add(self.T_GERENTE)
         self.tabview.add(self.T_CONFIG)
+        self.tabview.add(self.T_HISTORIAL)
 
         # ── Vista de Usuario ───────────────────────────────────────────
         self.vista_usuario = VistaUsuario(
             self.tabview.tab(self.T_USUARIO),
             params=self.params,
-            simulacion_service=self.simulacion_service
+            simulacion_service=self.simulacion_service,
+            callback_simulacion_ejecutada=self._on_simulacion_ejecutada,
+            callback_ver_historial=self._on_ver_historial
         )
         self.vista_usuario.pack(fill="both", expand=True)
 
@@ -98,6 +102,13 @@ class AppSimulador(ctk.CTk):
         )
         self.vista_config.pack(fill="both", expand=True)
 
+        # ── Vista de Historial ─────────────────────────────────────────
+        from gui.vista_historial import VistaHistorial
+        self.vista_historial = VistaHistorial(
+            self.tabview.tab(self.T_HISTORIAL)
+        )
+        self.vista_historial.pack(fill="both", expand=True)
+
     # ------------------------------------------------------------------
     # Callbacks de comunicación entre vistas
     # ------------------------------------------------------------------
@@ -115,3 +126,12 @@ class AppSimulador(ctk.CTk):
         Puede usarse para propagar cambios si fuera necesario.
         """
         pass  # Extensible para futuras necesidades
+
+    def _on_simulacion_ejecutada(self):
+        """Llamado cuando se ejecuta una simulación para recargar el historial."""
+        if hasattr(self, "vista_historial"):
+            self.vista_historial.recargar_historial()
+
+    def _on_ver_historial(self):
+        """Redirige al usuario al tab del historial."""
+        self.tabview.set(self.T_HISTORIAL)
