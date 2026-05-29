@@ -21,8 +21,9 @@ y se notifica a todas las vistas dependientes.
 """
 
 import customtkinter as ctk
-
+from tkinter import messagebox
 from core.parametros import ParametrosSistema
+from core.validador import Validador
 
 
 class VistaGerente(ctk.CTkFrame):
@@ -195,58 +196,36 @@ class VistaGerente(ctk.CTkFrame):
             entry.pack(anchor="w", pady=(2, 10))
             self._entries_indicadores[key] = entry
 
-    # ------------------------------------------------------------------
-    # Lógica de carga y validación
-    # ------------------------------------------------------------------
-
     def _cargar_parametros(self):
         """Valida todos los campos y carga los parámetros en el sistema."""
         self.lbl_error.configure(text="")
 
-        # ── Validar: Horas de trabajo ──────────────────────────────────
-        horas, err = self._validar_float_positivo(
-            self.in_horas.get(), "Horas de trabajo", estrictamente_positivo=True
-        )
-        if err:
-            self.lbl_error.configure(text=err)
-            return
-
-        # ── Validar: Cantidad de empleados ─────────────────────────────
-        empleados_f, err = self._validar_float_positivo(
-            self.in_empleados.get(), "Cantidad de empleados",
-            estrictamente_positivo=True
-        )
-        if err:
-            self.lbl_error.configure(text=err)
-            return
-        empleados = int(empleados_f)
-        if empleados <= 0:
-            self.lbl_error.configure(
-                text="⚠ La cantidad de empleados debe ser un entero mayor a 0."
+        try:
+            # ── Validar: Horas de trabajo ──────────────────────────────────
+            # Se limita de 0.1 a 8.0 según requerimiento del profesor ("como maximo 8 horas")
+            horas = Validador.validar_float(
+                self.in_horas.get(), "Horas de trabajo por jornada", min_valor=0.1, max_valor=8.0
             )
-            return
 
-        # ── Validar: Energía consumida ─────────────────────────────────
-        energia, err = self._validar_float_positivo(
-            self.in_energia.get(), "Energía consumida",
-            estrictamente_positivo=False  # puede ser 0
-        )
-        if err:
-            self.lbl_error.configure(text=err)
-            return
-
-        # ── Validar: Coeficiente de pérdida ───────────────────────────
-        coef, err = self._validar_float_positivo(
-            self.in_coef_perdida.get(), "Coeficiente de pérdida",
-            estrictamente_positivo=False
-        )
-        if err:
-            self.lbl_error.configure(text=err)
-            return
-        if not (0.0 <= coef <= 1.0):
-            self.lbl_error.configure(
-                text="⚠ El coeficiente de pérdida debe estar entre 0.0 y 1.0."
+            # ── Validar: Cantidad de empleados ─────────────────────────────
+            empleados = Validador.validar_entero(
+                self.in_empleados.get(), "Cantidad de empleados", min_valor=1, max_valor=1000
             )
+
+            # ── Validar: Energía consumida ─────────────────────────────────
+            energia = Validador.validar_float(
+                self.in_energia.get(), "Energía consumida (kWh)", min_valor=0.0, max_valor=100000.0
+            )
+
+            # ── Validar: Coeficiente de pérdida ───────────────────────────
+            coef = Validador.validar_fraccion(
+                self.in_coef_perdida.get(), "Coeficiente de pérdida"
+            )
+
+        except ValueError as e:
+            mensaje_error = str(e)
+            self.lbl_error.configure(text=f"⚠ {mensaje_error}")
+            messagebox.showerror("Error de Operación", mensaje_error)
             return
 
         # ── Aplicar parámetros al objeto compartido ────────────────────
@@ -295,38 +274,3 @@ class VistaGerente(ctk.CTkFrame):
             entry.delete(0, "end")
             entry.insert(0, valor)
             entry.configure(state="readonly")
-
-    # ------------------------------------------------------------------
-    # Validadores estáticos
-    # ------------------------------------------------------------------
-
-    @staticmethod
-    def _validar_float_positivo(texto: str, nombre: str,
-                                estrictamente_positivo: bool = True):
-        """
-        Valida que un texto sea un número float válido.
-
-        Args:
-            texto:                 Texto del campo de entrada.
-            nombre:                Nombre del campo (para el mensaje de error).
-            estrictamente_positivo: Si True, rechaza el valor 0.
-
-        Returns:
-            Tupla (float, None) si válido.
-            Tupla (None, str_error) si inválido.
-        """
-        texto = texto.strip()
-        if not texto:
-            return None, f"⚠ El campo '{nombre}' no puede estar vacío."
-        try:
-            valor = float(texto)
-        except ValueError:
-            return None, (
-                f"⚠ '{nombre}' debe ser un número "
-                f"(se recibió: '{texto}')."
-            )
-        if valor < 0:
-            return None, f"⚠ '{nombre}' no puede ser negativo."
-        if estrictamente_positivo and valor == 0:
-            return None, f"⚠ '{nombre}' debe ser mayor a 0."
-        return valor, None

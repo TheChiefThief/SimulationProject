@@ -14,9 +14,10 @@ Validaciones de entrada:
 """
 
 import customtkinter as ctk
-
+from tkinter import messagebox
 from core.parametros import ParametrosSistema
 from core.simulacion_service import SimulacionService
+from core.validador import Validador
 from gui.ventana_resultados import VentanaResultados
 
 
@@ -149,26 +150,24 @@ class VistaUsuario(ctk.CTkFrame):
             )
             return
 
-        # Validar campo cámaras
-        n_camaras, error = self._validar_entero_positivo(
-            self.in_camaras.get(), "Cantidad de Cámaras"
-        )
-        if error:
-            self.lbl_error.configure(text=error)
-            return
-
-        # Validar campo DVRs
-        n_dvrs, error = self._validar_entero_positivo(
-            self.in_dvrs.get(), "Cantidad de DVRs"
-        )
-        if error:
-            self.lbl_error.configure(text=error)
-            return
-
-        if n_camaras + n_dvrs == 0:
-            self.lbl_error.configure(
-                text="⚠ Ingrese al menos 1 cámara o 1 DVR."
+        try:
+            # Validar campo cámaras
+            n_camaras = Validador.validar_entero(
+                self.in_camaras.get(), "Cantidad de Cámaras", min_valor=0, max_valor=1000000
             )
+
+            # Validar campo DVRs
+            n_dvrs = Validador.validar_entero(
+                self.in_dvrs.get(), "Cantidad de DVRs", min_valor=0, max_valor=1000000
+            )
+
+            if n_camaras + n_dvrs == 0:
+                raise ValueError("Ingrese al menos 1 cámara o 1 DVR.")
+
+        except ValueError as e:
+            mensaje_error = str(e)
+            self.lbl_error.configure(text=f"⚠ {mensaje_error}")
+            messagebox.showerror("Error de Simulación", mensaje_error)
             return
 
         # Ejecutar simulación
@@ -195,29 +194,6 @@ class VistaUsuario(ctk.CTkFrame):
             except Exception:
                 pass
         self._ventana_resultado_activa = VentanaResultados(self, resultado)
-
-    @staticmethod
-    def _validar_entero_positivo(texto: str, nombre_campo: str):
-        """
-        Valida que un texto sea un entero no negativo.
-
-        Returns:
-            Tupla (valor_int, None) si es válido.
-            Tupla (None, mensaje_error) si no lo es.
-        """
-        texto = texto.strip()
-        if not texto:
-            return None, f"⚠ El campo '{nombre_campo}' no puede estar vacío."
-        try:
-            valor = int(texto)
-        except ValueError:
-            return None, (
-                f"⚠ '{nombre_campo}' debe ser un número entero "
-                f"(se recibió: '{texto}')."
-            )
-        if valor < 0:
-            return None, f"⚠ '{nombre_campo}' no puede ser negativo."
-        return valor, None
 
     @staticmethod
     def _actualizar_entry(entry_widget, valor_str: str):

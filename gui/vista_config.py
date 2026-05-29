@@ -17,7 +17,9 @@ compartido. Todos los campos tienen validación:
 """
 
 import customtkinter as ctk
+from tkinter import messagebox
 from core.parametros import ParametrosSistema
+from core.validador import Validador
 
 
 class VistaConfig(ctk.CTkFrame):
@@ -171,59 +173,83 @@ class VistaConfig(ctk.CTkFrame):
         self.lbl_estado.configure(text="")
         valores = {}
 
-        for key, entry in self._campos.items():
-            texto = entry.get().strip()
+        nombres_amigables = {
+            "precio_oro": "Precio Oro ($/kg)",
+            "precio_vidrio": "Precio Vidrio ($/kg)",
+            "precio_lentes": "Precio Lentes ($/unidad)",
+            "precio_cobre": "Precio Cobre ($/kg)",
+            "precio_aluminio": "Precio Aluminio ($/kg)",
+            "precio_plastico": "Precio Plástico ($/kg)",
+            "precio_almacenamiento_min": "Precio Almacenamiento Mínimo ($/GB)",
+            "precio_almacenamiento_max": "Precio Almacenamiento Máximo ($/GB)",
+            "tasa_placas_sanas": "Tasa Placas Sanas",
+            "tasa_opticas_sanas": "Tasa Ópticas Sanas",
+            "tasa_discos_sanos": "Tasa Discos Sanos",
+            "rendimiento_plastico": "Rendimiento Plástico",
+            "rendimiento_metal": "Rendimiento Metal",
+            "camara_fraccion_plastico": "Fracción Plástico (Cámara)",
+            "camara_fraccion_placas": "Fracción Placas (Cámara)",
+            "camara_fraccion_metal": "Fracción Metal (Cámara)",
+            "camara_fraccion_opticos": "Fracción Ópticos (Cámara)",
+            "dvr_fraccion_hdd": "Fracción HDD (DVR)",
+            "dvr_fraccion_metal": "Fracción Metal (DVR)",
+            "dvr_fraccion_placas": "Fracción Placas (DVR)",
+        }
 
-            # No vacío
-            if not texto:
-                self.lbl_estado.configure(
-                    text=f"⚠ El campo '{key}' no puede estar vacío.",
-                    text_color="#EF5350"
-                )
-                return
+        try:
+            for key, entry in self._campos.items():
+                texto = entry.get()
+                nombre_amigable = nombres_amigables.get(key, key)
 
-            # Tipo numérico
-            try:
-                valor = float(texto)
-            except ValueError:
-                self.lbl_estado.configure(
-                    text=f"⚠ '{key}' debe ser un número (recibido: '{texto}').",
-                    text_color="#EF5350"
-                )
-                return
+                if key in self._PRECIOS_KEYS:
+                    valores[key] = Validador.validar_precio(texto, nombre_amigable)
+                elif key in self._FRACCIONES_KEYS:
+                    valores[key] = Validador.validar_fraccion(texto, nombre_amigable)
+                else:
+                    valores[key] = Validador.validar_float(texto, nombre_amigable)
 
-            # No negativo
-            if valor < 0:
-                self.lbl_estado.configure(
-                    text=f"⚠ '{key}' no puede ser negativo.",
-                    text_color="#EF5350"
-                )
-                return
+            # Validar precio min <= precio max de almacenamiento
+            if valores["precio_almacenamiento_min"] > valores["precio_almacenamiento_max"]:
+                raise ValueError("El precio mínimo de almacenamiento no puede superar al máximo.")
 
-            # Rango [0, 1] para fracciones
-            if key in self._FRACCIONES_KEYS and not (0.0 <= valor <= 1.0):
-                self.lbl_estado.configure(
-                    text=f"⚠ '{key}' debe estar entre 0.0 y 1.0.",
-                    text_color="#EF5350"
-                )
-                return
+            # Validar sumas de fracciones de composición
+            Validador.validar_suma_cercana_uno(
+                [
+                    valores["camara_fraccion_plastico"],
+                    valores["camara_fraccion_placas"],
+                    valores["camara_fraccion_metal"],
+                    valores["camara_fraccion_opticos"],
+                ],
+                [
+                    nombres_amigables["camara_fraccion_plastico"],
+                    nombres_amigables["camara_fraccion_placas"],
+                    nombres_amigables["camara_fraccion_metal"],
+                    nombres_amigables["camara_fraccion_opticos"],
+                ],
+                "Cámara"
+            )
 
-            # Precios > 0
-            if key in self._PRECIOS_KEYS and valor == 0:
-                self.lbl_estado.configure(
-                    text=f"⚠ El precio '{key}' debe ser mayor a 0.",
-                    text_color="#EF5350"
-                )
-                return
+            Validador.validar_suma_cercana_uno(
+                [
+                    valores["dvr_fraccion_hdd"],
+                    valores["dvr_fraccion_metal"],
+                    valores["dvr_fraccion_placas"],
+                ],
+                [
+                    nombres_amigables["dvr_fraccion_hdd"],
+                    nombres_amigables["dvr_fraccion_metal"],
+                    nombres_amigables["dvr_fraccion_placas"],
+                ],
+                "DVR"
+            )
 
-            valores[key] = valor
-
-        # Validar precio min ≤ precio max de almacenamiento
-        if valores.get("precio_almacenamiento_min", 0) > valores.get("precio_almacenamiento_max", 0):
+        except ValueError as e:
+            mensaje_error = str(e)
             self.lbl_estado.configure(
-                text="⚠ El precio mínimo de almacenamiento no puede superar al máximo.",
+                text=f"⚠ {mensaje_error}",
                 text_color="#EF5350"
             )
+            messagebox.showerror("Error de Configuración", mensaje_error)
             return
 
         # Aplicar todos los valores al objeto params

@@ -249,6 +249,15 @@
         "documentation": {}
     },
     {
+        "label": "math",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "math",
+        "description": "math",
+        "detail": "math",
+        "documentation": {}
+    },
+    {
         "label": "customtkinter",
         "kind": 6,
         "isExtraImport": true,
@@ -323,6 +332,30 @@
         "documentation": {}
     },
     {
+        "label": "messagebox",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "messagebox",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "messagebox",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
         "label": "matplotlib",
         "kind": 6,
         "isExtraImport": true,
@@ -367,6 +400,38 @@
         "documentation": {}
     },
     {
+        "label": "Validador",
+        "importPath": "core.validador",
+        "description": "core.validador",
+        "isExtraImport": true,
+        "detail": "core.validador",
+        "documentation": {}
+    },
+    {
+        "label": "Validador",
+        "importPath": "core.validador",
+        "description": "core.validador",
+        "isExtraImport": true,
+        "detail": "core.validador",
+        "documentation": {}
+    },
+    {
+        "label": "Validador",
+        "importPath": "core.validador",
+        "description": "core.validador",
+        "isExtraImport": true,
+        "detail": "core.validador",
+        "documentation": {}
+    },
+    {
+        "label": "Validador",
+        "importPath": "core.validador",
+        "description": "core.validador",
+        "isExtraImport": true,
+        "detail": "core.validador",
+        "documentation": {}
+    },
+    {
         "label": "VentanaResultados",
         "importPath": "gui.ventana_resultados",
         "description": "gui.ventana_resultados",
@@ -381,14 +446,6 @@
         "importPath": "pytest",
         "description": "pytest",
         "detail": "pytest",
-        "documentation": {}
-    },
-    {
-        "label": "AppSimulador",
-        "importPath": "gui.app",
-        "description": "gui.app",
-        "isExtraImport": true,
-        "detail": "gui.app",
         "documentation": {}
     },
     {
@@ -514,6 +571,15 @@
         "description": "core.simulacion_service",
         "peekOfCode": "class SimulacionService:\n    \"\"\"\n    Servicio de simulación que orquesta todos los componentes.\n    Actúa como facade hacia la GUI, permitiendo:\n    - Inyección de dependencias (especialmente GCL)\n    - Separación clara de responsabilidades\n    - Testabilidad mediante mocks\n    - Punto único de entrada para simulación\n    Patrón: Service Locator + Facade\n    \"\"\"",
         "detail": "core.simulacion_service",
+        "documentation": {}
+    },
+    {
+        "label": "Validador",
+        "kind": 6,
+        "importPath": "core.validador",
+        "description": "core.validador",
+        "peekOfCode": "class Validador:\n    \"\"\"\n    Clase estática para validar y parsear datos de entrada.\n    Lanza ValueError con mensajes claros en español ante cualquier inconsistencia.\n    \"\"\"\n    @staticmethod\n    def validar_entero(texto: str, nombre_campo: str, min_valor: int = None, max_valor: int = None) -> int:\n        \"\"\"\n        Valida que un texto sea un número entero válido y esté dentro de un rango opcional.\n        Args:",
+        "detail": "core.validador",
         "documentation": {}
     },
     {
@@ -667,6 +733,15 @@
         "description": "tests.conftest",
         "peekOfCode": "def gcl_factory():\n    \"\"\"Factory para crear GCLs con semilla fija.\"\"\"\n    def _factory(semilla=12345):\n        return GeneradorCongruencialLineal(semilla=semilla)\n    return _factory",
         "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "TestValidador",
+        "kind": 6,
+        "importPath": "tests.test_validador",
+        "description": "tests.test_validador",
+        "peekOfCode": "class TestValidador:\n    \"\"\"Suite de pruebas para el validador estricto.\"\"\"\n    # ── Pruebas de validar_entero ───────────────────────────────────────────\n    def test_validar_entero_correcto(self):\n        assert Validador.validar_entero(\"10\", \"campo_test\") == 10\n        assert Validador.validar_entero(\" 0 \", \"campo_test\") == 0\n        assert Validador.validar_entero(\"-5\", \"campo_test\") == -5\n    def test_validar_entero_vacio(self):\n        with pytest.raises(ValueError) as exc:\n            Validador.validar_entero(\"  \", \"campo_test\")",
+        "detail": "tests.test_validador",
         "documentation": {}
     }
 ]
