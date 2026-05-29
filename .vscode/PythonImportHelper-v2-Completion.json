@@ -1,0 +1,338 @@
+[
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "GeneradorCongruencialLineal",
+        "importPath": "core.gcl",
+        "description": "core.gcl",
+        "isExtraImport": true,
+        "detail": "core.gcl",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "isExtraImport": true,
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "customtkinter",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "customtkinter",
+        "description": "customtkinter",
+        "detail": "customtkinter",
+        "documentation": {}
+    },
+    {
+        "label": "VistaUsuario",
+        "importPath": "gui.vista_usuario",
+        "description": "gui.vista_usuario",
+        "isExtraImport": true,
+        "detail": "gui.vista_usuario",
+        "documentation": {}
+    },
+    {
+        "label": "VistaGerente",
+        "importPath": "gui.vista_gerente",
+        "description": "gui.vista_gerente",
+        "isExtraImport": true,
+        "detail": "gui.vista_gerente",
+        "documentation": {}
+    },
+    {
+        "label": "VistaConfig",
+        "importPath": "gui.vista_config",
+        "description": "gui.vista_config",
+        "isExtraImport": true,
+        "detail": "gui.vista_config",
+        "documentation": {}
+    },
+    {
+        "label": "tkinter",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib",
+        "description": "matplotlib",
+        "detail": "matplotlib",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.pyplot",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.pyplot",
+        "description": "matplotlib.pyplot",
+        "detail": "matplotlib.pyplot",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.ticker",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.ticker",
+        "description": "matplotlib.ticker",
+        "detail": "matplotlib.ticker",
+        "documentation": {}
+    },
+    {
+        "label": "FigureCanvasTkAgg",
+        "importPath": "matplotlib.backends.backend_tkagg",
+        "description": "matplotlib.backends.backend_tkagg",
+        "isExtraImport": true,
+        "detail": "matplotlib.backends.backend_tkagg",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoLote",
+        "importPath": "core.simulacion",
+        "description": "core.simulacion",
+        "isExtraImport": true,
+        "detail": "core.simulacion",
+        "documentation": {}
+    },
+    {
+        "label": "simular_lote",
+        "importPath": "core.simulacion",
+        "description": "core.simulacion",
+        "isExtraImport": true,
+        "detail": "core.simulacion",
+        "documentation": {}
+    },
+    {
+        "label": "VentanaResultados",
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "isExtraImport": true,
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "AppSimulador",
+        "importPath": "gui.app",
+        "description": "gui.app",
+        "isExtraImport": true,
+        "detail": "gui.app",
+        "documentation": {}
+    },
+    {
+        "label": "AppSimulador",
+        "importPath": "gui.app",
+        "description": "gui.app",
+        "isExtraImport": true,
+        "detail": "gui.app",
+        "documentation": {}
+    },
+    {
+        "label": "GeneradorCongruencialLineal",
+        "kind": 6,
+        "importPath": "core.gcl",
+        "description": "core.gcl",
+        "peekOfCode": "class GeneradorCongruencialLineal:\n    \"\"\"\n    Generador Congruencial Lineal (GCL) puro.\n    Genera números pseudoaleatorios sin usar ninguna librería de aleatorización.\n    Parámetros del método:\n        a = 1664525      (multiplicador)\n        c = 1013904223   (incremento)\n        m = 2^32         (módulo)\n    \"\"\"\n    # Constantes con período completo (Numerical Recipes)",
+        "detail": "core.gcl",
+        "documentation": {}
+    },
+    {
+        "label": "ParametrosSistema",
+        "kind": 6,
+        "importPath": "core.parametros",
+        "description": "core.parametros",
+        "peekOfCode": "class ParametrosSistema:\n    \"\"\"\n    Contenedor de todos los parámetros configurables del simulador.\n    Atributos de precios (ARS):\n        precio_oro          : ARS por kg de oro\n        precio_vidrio       : ARS por kg de vidrio\n        precio_lentes       : ARS por unidad de lente funcional\n        precio_cobre        : ARS por kg de cobre\n        precio_aluminio     : ARS por kg de aluminio\n        precio_plastico     : ARS por kg de plástico",
+        "detail": "core.parametros",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoCamara",
+        "kind": 6,
+        "importPath": "core.simulacion",
+        "description": "core.simulacion",
+        "peekOfCode": "class ResultadoCamara:\n    \"\"\"Resultado del procesamiento de una cámara individual.\"\"\"\n    def __init__(self):\n        self.recuperable: bool = False\n        self.optica_sana: bool = False\n        self.placa_sana: bool = False\n        # Valores recuperados (ARS)\n        self.valor_lentes: float = 0.0\n        self.valor_placas: float = 0.0\n        self.valor_plastico: float = 0.0",
+        "detail": "core.simulacion",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoDVR",
+        "kind": 6,
+        "importPath": "core.simulacion",
+        "description": "core.simulacion",
+        "peekOfCode": "class ResultadoDVR:\n    \"\"\"Resultado del procesamiento de un DVR individual.\"\"\"\n    def __init__(self):\n        self.recuperable: bool = False\n        self.hdd_operativo: bool = False\n        self.placa_sana: bool = False\n        # Valores recuperados (ARS)\n        self.valor_hdd: float = 0.0\n        self.valor_placas: float = 0.0\n        self.valor_metal: float = 0.0",
+        "detail": "core.simulacion",
+        "documentation": {}
+    },
+    {
+        "label": "ResultadoLote",
+        "kind": 6,
+        "importPath": "core.simulacion",
+        "description": "core.simulacion",
+        "peekOfCode": "class ResultadoLote:\n    \"\"\"Resultado agregado de un lote completo de dispositivos.\"\"\"\n    def __init__(self):\n        # Cantidades procesadas\n        self.n_camaras: int = 0\n        self.n_dvrs: int = 0\n        # Conteos de estados\n        self.camaras_recuperables: int = 0\n        self.camaras_desguazadas: int = 0\n        self.dvrs_recuperables: int = 0",
+        "detail": "core.simulacion",
+        "documentation": {}
+    },
+    {
+        "label": "simular_camara",
+        "kind": 2,
+        "importPath": "core.simulacion",
+        "description": "core.simulacion",
+        "peekOfCode": "def simular_camara(params: ParametrosSistema, gcl: GeneradorCongruencialLineal) -> ResultadoCamara:\n    \"\"\"\n    Simula el procesamiento de una cámara de seguridad.\n    Árbol de decisiones:\n      - Estado general (Bernoulli con p=tasa_opticas_sanas aprox.):\n          * Recuperable → se procesan componentes individualmente\n          * No recuperable → desguace completo, solo se recupera plástico base\n      - Componentes ópticos (Bernoulli):\n          * Sanos → valor unitario de lente\n          * Dañados → recuperación parcial de vidrio",
+        "detail": "core.simulacion",
+        "documentation": {}
+    },
+    {
+        "label": "simular_dvr",
+        "kind": 2,
+        "importPath": "core.simulacion",
+        "description": "core.simulacion",
+        "peekOfCode": "def simular_dvr(params: ParametrosSistema, gcl: GeneradorCongruencialLineal) -> ResultadoDVR:\n    \"\"\"\n    Simula el procesamiento de un DVR.\n    Árbol de decisiones:\n      - Estado general (Bernoulli):\n          * Recuperable → se procesan componentes individualmente\n          * No recuperable → desguace completo\n      - HDD (Bernoulli):\n          * Operativo → se recupera capacidad de almacenamiento (GB)\n          * Inoperativo → recuperación de materiales estructurales (aluminio/imanes)",
+        "detail": "core.simulacion",
+        "documentation": {}
+    },
+    {
+        "label": "simular_lote",
+        "kind": 2,
+        "importPath": "core.simulacion",
+        "description": "core.simulacion",
+        "peekOfCode": "def simular_lote(\n    params: ParametrosSistema,\n    n_camaras: int,\n    n_dvrs: int\n) -> ResultadoLote:\n    \"\"\"\n    Ejecuta la simulación completa de un lote de dispositivos.\n    Instancia un GCL con semilla aleatoria (basada en tiempo de sistema)\n    y procesa cada dispositivo individualmente aplicando el árbol de\n    decisiones definido en simular_camara y simular_dvr.",
+        "detail": "core.simulacion",
+        "documentation": {}
+    },
+    {
+        "label": "AppSimulador",
+        "kind": 6,
+        "importPath": "gui.app",
+        "description": "gui.app",
+        "peekOfCode": "class AppSimulador(ctk.CTk):\n    \"\"\"\n    Ventana raíz de la aplicación de simulación de reciclaje RAEE.\n    Gestiona el ciclo de vida de la GUI y coordina la comunicación\n    entre las vistas mediante el objeto ParametrosSistema compartido.\n    \"\"\"\n    T_USUARIO = \"Vista de Usuario\"\n    T_GERENTE = \"Vista del Gerente\"\n    T_CONFIG = \"Configuración\"\n    def __init__(self):",
+        "detail": "gui.app",
+        "documentation": {}
+    },
+    {
+        "label": "VentanaResultados",
+        "kind": 6,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "class VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):\n        super().__init__(parent)\n        self.resultado = resultado\n        self.title(\"Informe de Simulación — Resultados\")\n        self.geometry(\"1200x680\")",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLORES_TORTA",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLORES_TORTA = [\"#4FC3F7\", \"#81C784\", \"#FFB74D\", \"#F06292\", \"#CE93D8\", \"#80CBC4\"]\nCOLOR_BARRAS = \"#4FC3F7\"\nCOLOR_FONDO = \"#1a2530\"\nCOLOR_TEXTO = \"#E0E0E0\"\nCOLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_BARRAS",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLOR_BARRAS = \"#4FC3F7\"\nCOLOR_FONDO = \"#1a2530\"\nCOLOR_TEXTO = \"#E0E0E0\"\nCOLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_FONDO",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLOR_FONDO = \"#1a2530\"\nCOLOR_TEXTO = \"#E0E0E0\"\nCOLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):\n        super().__init__(parent)",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_TEXTO",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLOR_TEXTO = \"#E0E0E0\"\nCOLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):\n        super().__init__(parent)\n        self.resultado = resultado",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_GRID",
+        "kind": 5,
+        "importPath": "gui.ventana_resultados",
+        "description": "gui.ventana_resultados",
+        "peekOfCode": "COLOR_GRID = \"#2c3e50\"\nclass VentanaResultados(ctk.CTkToplevel):\n    \"\"\"\n    Ventana emergente con informe completo de resultados y gráficos.\n    Se abre tras ejecutar una simulación exitosa.\n    \"\"\"\n    def __init__(self, parent, resultado: ResultadoLote):\n        super().__init__(parent)\n        self.resultado = resultado\n        self.title(\"Informe de Simulación — Resultados\")",
+        "detail": "gui.ventana_resultados",
+        "documentation": {}
+    },
+    {
+        "label": "VistaConfig",
+        "kind": 6,
+        "importPath": "gui.vista_config",
+        "description": "gui.vista_config",
+        "peekOfCode": "class VistaConfig(ctk.CTkFrame):\n    \"\"\"\n    Frame que encapsula la Vista de Configuración del sistema.\n    Se monta dentro del CTkTabview de la ventana principal.\n    \"\"\"\n    def __init__(self, parent, params: ParametrosSistema,\n                 callback_config_guardada=None):\n        \"\"\"\n        Args:\n            parent:                  Widget padre.",
+        "detail": "gui.vista_config",
+        "documentation": {}
+    },
+    {
+        "label": "VistaGerente",
+        "kind": 6,
+        "importPath": "gui.vista_gerente",
+        "description": "gui.vista_gerente",
+        "peekOfCode": "class VistaGerente(ctk.CTkFrame):\n    \"\"\"\n    Frame que encapsula la Vista del Gerente/Administrador.\n    Se monta dentro del CTkTabview de la ventana principal.\n    \"\"\"\n    def __init__(self, parent, params: ParametrosSistema,\n                 callback_parametros_cargados=None):\n        \"\"\"\n        Args:\n            parent:                       Widget padre (el tab del tabview).",
+        "detail": "gui.vista_gerente",
+        "documentation": {}
+    },
+    {
+        "label": "VistaUsuario",
+        "kind": 6,
+        "importPath": "gui.vista_usuario",
+        "description": "gui.vista_usuario",
+        "peekOfCode": "class VistaUsuario(ctk.CTkFrame):\n    \"\"\"\n    Frame que encapsula toda la Vista de Usuario.\n    Se monta dentro del CTkTabview de la ventana principal.\n    \"\"\"\n    def __init__(self, parent, params: ParametrosSistema):\n        super().__init__(parent, fg_color=\"transparent\")\n        self.params = params\n        self._ventana_resultado_activa = None\n        self.grid_columnconfigure(0, weight=1)",
+        "detail": "gui.vista_usuario",
+        "documentation": {}
+    }
+]
