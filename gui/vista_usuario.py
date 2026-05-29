@@ -54,19 +54,12 @@ class VistaUsuario(ctk.CTkFrame):
             anchor="w", pady=(0, 20)
         )
 
-        # Campo: Cantidad de cámaras
-        ctk.CTkLabel(frame, text="Cantidad de Cámaras", font=("Arial", 14)).pack(anchor="w")
-        self.in_camaras = ctk.CTkEntry(frame, width=250,
-                                       placeholder_text="Ej: 50")
-        self.in_camaras.pack(anchor="w", pady=(0, 20))
-        self.in_camaras.insert(0, "50")
-
-        # Campo: Cantidad de DVRs
-        ctk.CTkLabel(frame, text="Cantidad de DVRs", font=("Arial", 14)).pack(anchor="w")
-        self.in_dvrs = ctk.CTkEntry(frame, width=250,
-                                    placeholder_text="Ej: 20")
-        self.in_dvrs.pack(anchor="w", pady=(0, 40))
-        self.in_dvrs.insert(0, "20")
+        # Campo: Total de Dispositivos
+        ctk.CTkLabel(frame, text="Total de Dispositivos (Lote N)", font=("Arial", 14)).pack(anchor="w")
+        self.in_total = ctk.CTkEntry(frame, width=250,
+                                       placeholder_text="Ej: 100")
+        self.in_total.pack(anchor="w", pady=(0, 40))
+        self.in_total.insert(0, "100")
 
         # Indicador de estado de parámetros
         self.lbl_estado = ctk.CTkLabel(
@@ -112,10 +105,10 @@ class VistaUsuario(ctk.CTkFrame):
             entry.pack(side="left")
             return entry
 
-        self.out_lentes = _crear_fila(frame, "Lentes recuperados")
-        self.out_placas = _crear_fila(frame, "Placas recuperadas (total)")
-        self.out_hdd = _crear_fila(frame, "Discos HDD recuperados")
-        self.out_total = _crear_fila(frame, "Valor total recuperado")
+        self.out_reventa = _crear_fila(frame, "Equipos para reventa")
+        self.out_cuellos = _crear_fila(frame, "Cuellos de botella")
+        self.out_horas = _crear_fila(frame, "Horas simuladas (Poisson)")
+        self.out_total = _crear_fila(frame, "Valor total recuperado (PMT + PT)")
 
         ctk.CTkLabel(frame, text="Ver informe completo →",
                      font=("Arial", 12), text_color="#4FC3F7",
@@ -151,18 +144,10 @@ class VistaUsuario(ctk.CTkFrame):
             return
 
         try:
-            # Validar campo cámaras
-            n_camaras = Validador.validar_entero(
-                self.in_camaras.get(), "Cantidad de Cámaras", min_valor=0, max_valor=1000000
+            # Validar campo total
+            n_total = Validador.validar_entero(
+                self.in_total.get(), "Total de Dispositivos", min_valor=1, max_valor=1000000
             )
-
-            # Validar campo DVRs
-            n_dvrs = Validador.validar_entero(
-                self.in_dvrs.get(), "Cantidad de DVRs", min_valor=0, max_valor=1000000
-            )
-
-            if n_camaras + n_dvrs == 0:
-                raise ValueError("Ingrese al menos 1 cámara o 1 DVR.")
 
         except ValueError as e:
             mensaje_error = str(e)
@@ -172,18 +157,18 @@ class VistaUsuario(ctk.CTkFrame):
 
         # Ejecutar simulación
         try:
-            resultado = self.simulacion_service.simular_lote(n_camaras, n_dvrs)
+            resultado = self.simulacion_service.simular_lote(n_total)
         except RuntimeError as e:
             self.lbl_error.configure(text=f"⛔ {e}")
             return
 
         # Actualizar resumen rápido
-        self._actualizar_entry(self.out_lentes,
-                               f"{resultado.valor_lentes:,.2f}")
-        self._actualizar_entry(self.out_placas,
-                               f"{resultado.valor_total_placas:,.2f}")
-        self._actualizar_entry(self.out_hdd,
-                               f"{resultado.valor_hdd:,.2f}")
+        self._actualizar_entry(self.out_reventa,
+                               f"{resultado.equipos_reventa}")
+        cuellos_str = ", ".join(resultado.cuellos_botella) if resultado.cuellos_botella else "Ninguno"
+        self._actualizar_entry(self.out_cuellos, cuellos_str)
+        self._actualizar_entry(self.out_horas,
+                               f"{resultado.horas_demanda}")
         self._actualizar_entry(self.out_total,
                                f"{resultado.valor_total:,.2f}")
 

@@ -171,6 +171,47 @@ class GeneradorCongruencialLineal:
         else:
             return maximo - ((1 - u) * rango * (maximo - moda)) ** 0.5
 
+    def siguiente_exponencial(self, media: float) -> float:
+        """
+        Genera un número con distribución exponencial.
+
+        Args:
+            media: Valor medio (E[x] = 1/lambda).
+                   Ojo: la fórmula es X = -media * ln(1 - U).
+
+        Returns:
+            Float con distribución exponencial.
+        """
+        if media <= 0:
+            raise ValueError("La media debe ser mayor a cero.")
+        import math
+        # Usamos 1 - u para evitar ln(0) en caso extremo, aunque u pertenece a [0, 1)
+        u = self.siguiente_u()
+        return -media * math.log(1.0 - u)
+
+    def siguiente_poisson(self, lam: float) -> int:
+        """
+        Genera un número con distribución de Poisson (algoritmo de Knuth).
+
+        Args:
+            lam: Valor de lambda (tasa media de ocurrencia).
+
+        Returns:
+            Entero con distribución de Poisson.
+        """
+        if lam <= 0:
+            raise ValueError("Lambda debe ser mayor a cero.")
+        import math
+        L = math.exp(-lam)
+        k = 0
+        p = 1.0
+        while True:
+            k += 1
+            p *= self.siguiente_u()
+            if p <= L:
+                break
+        return k - 1
+
     def __repr__(self) -> str:
         return (
             f"GeneradorCongruencialLineal("

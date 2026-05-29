@@ -39,8 +39,19 @@ class AppSimulador(ctk.CTk):
         ctk.set_default_color_theme("blue")
 
         self.title("Simulador de Reciclaje RAEE — Cámaras y DVRs")
-        self.geometry("1100x640")
-        self.minsize(900, 560)
+        
+        # Definir dimensiones y centrar en la pantalla
+        ancho = 1200
+        alto = 750
+        self.minsize(950, 650)
+        
+        pantalla_ancho = self.winfo_screenwidth()
+        pantalla_alto = self.winfo_screenheight()
+        
+        x = (pantalla_ancho // 2) - (ancho // 2)
+        y = (pantalla_alto // 2) - (alto // 2)
+        
+        self.geometry(f"{ancho}x{alto}+{x}+{y}")
 
         # Estado compartido entre todas las vistas
         self.params = ParametrosSistema()

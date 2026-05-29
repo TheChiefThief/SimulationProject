@@ -2,13 +2,7 @@
 gui/ventana_resultados.py
 --------------------------
 Ventana Toplevel que muestra el informe de resultados de la simulación.
-
-Contiene:
-  - Panel izquierdo: informe textual (tabla de valores por componente,
-    indicadores de eficiencia, semilla GCL usada)
-  - Panel derecho: gráficos estáticos (matplotlib) embebidos en tkinter:
-      * Gráfico de torta: distribución del valor por tipo de componente
-      * Gráfico de barras: masa recuperada por material (kg)
+Alineado al nuevo flujo general de diagrama.
 """
 
 import tkinter as tk
@@ -24,8 +18,7 @@ from core.resultados import ResultadoLote
 
 matplotlib.use("TkAgg")
 
-# Paleta de colores para los gráficos (consistente con el tema oscuro)
-COLORES_TORTA = ["#4FC3F7", "#81C784", "#FFB74D", "#F06292", "#CE93D8", "#80CBC4"]
+COLORES_TORTA = ["#FFB74D", "#90A4AE", "#FDD835", "#81C784"]
 COLOR_BARRAS = "#4FC3F7"
 COLOR_FONDO = "#1a2530"
 COLOR_TEXTO = "#E0E0E0"
@@ -33,28 +26,18 @@ COLOR_GRID = "#2c3e50"
 
 
 class VentanaResultados(ctk.CTkToplevel):
-    """
-    Ventana emergente con informe completo de resultados y gráficos.
-    Se abre tras ejecutar una simulación exitosa.
-    """
-
     def __init__(self, parent, resultado: ResultadoLote):
         super().__init__(parent)
         self.resultado = resultado
 
-        self.title("Informe de Simulación — Resultados")
-        self.geometry("1200x680")
+        self.title("Informe de Simulación — Resultados Generales")
+        self.geometry("1200x720")
         self.resizable(True, True)
-        self.grab_set()  # Modal: bloquea la ventana principal mientras está abierta
+        self.grab_set()
 
         self._construir_layout()
 
-    # ------------------------------------------------------------------
-    # Construcción del layout principal
-    # ------------------------------------------------------------------
-
     def _construir_layout(self):
-        """Divide la ventana en panel de informe (izq) y gráficos (der)."""
         self.grid_columnconfigure(0, weight=2)
         self.grid_columnconfigure(1, weight=3)
         self.grid_rowconfigure(0, weight=1)
@@ -68,12 +51,7 @@ class VentanaResultados(ctk.CTkToplevel):
         self._construir_informe(panel_informe)
         self._construir_graficos(panel_graficos)
 
-    # ------------------------------------------------------------------
-    # Panel de informe textual
-    # ------------------------------------------------------------------
-
     def _construir_informe(self, parent):
-        """Construye el panel izquierdo con el informe textual de resultados."""
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
@@ -82,39 +60,37 @@ class VentanaResultados(ctk.CTkToplevel):
 
         r = self.resultado
 
-        # Título
         ctk.CTkLabel(
             scroll, text="📋 Informe de Resultados",
             font=("Arial", 20, "bold"), text_color="#4FC3F7"
-        ).pack(anchor="w", pady=(0, 5))
+        ).pack(anchor="w", pady=(0, 5), padx=(5, 20))
 
         ctk.CTkLabel(
             scroll, text=f"Semilla GCL: {r.semilla_gcl}",
             font=("Arial", 11), text_color="#888888"
-        ).pack(anchor="w", pady=(0, 20))
+        ).pack(anchor="w", pady=(0, 20), padx=(5, 20))
 
-        # ── Sección: Lote procesado ──────────────────────────────────
+        # ── Sección: Lote procesado ──
         self._seccion(scroll, "Lote Procesado")
         datos_lote = [
-            ("Cámaras ingresadas",  f"{r.n_camaras}"),
-            ("DVRs ingresados",     f"{r.n_dvrs}"),
-            ("Cámaras recuperables", f"{r.camaras_recuperables}"),
-            ("Cámaras desguazadas", f"{r.camaras_desguazadas}"),
-            ("DVRs recuperables",   f"{r.dvrs_recuperables}"),
-            ("DVRs desguazados",    f"{r.dvrs_desguazados}"),
+            ("Total Ingresados (N)",  f"{r.n_total}"),
+            ("Equipos para Reventa", f"{r.equipos_reventa}"),
+            ("  - Cámaras Reventa", f"{r.camaras_reventa}"),
+            ("  - DVRs Reventa", f"{r.dvrs_reventa}"),
+            ("Cámaras Desguazadas", f"{r.camaras_desguazadas}"),
+            ("DVRs Desguazados",    f"{r.dvrs_desguazados}"),
         ]
         for etiqueta, valor in datos_lote:
             self._fila(scroll, etiqueta, valor)
 
-        # ── Sección: Valor por componente ────────────────────────────
-        self._seccion(scroll, "Monetización por Componente")
+        # ── Sección: Valor por componente ──
+        self._seccion(scroll, "Monetización de Materiales")
         datos_valor = [
-            ("Lentes recuperados",      f"$ {r.valor_lentes:>15,.2f}"),
-            ("Placas (cámaras)",        f"$ {r.valor_placas_camara:>15,.2f}"),
-            ("Placas (DVRs)",           f"$ {r.valor_placas_dvr:>15,.2f}"),
-            ("Discos HDD",              f"$ {r.valor_hdd:>15,.2f}"),
-            ("Plástico",                f"$ {r.valor_plastico:>15,.2f}"),
-            ("Metal",                   f"$ {r.valor_metal:>15,.2f}"),
+            ("Cobre",      f"$ {r.valor_cobre:>15,.2f}"),
+            ("Aluminio",   f"$ {r.valor_aluminio:>15,.2f}"),
+            ("Oro",        f"$ {r.valor_oro:>15,.2f}"),
+            ("Plástico",   f"$ {r.valor_plastico:>15,.2f}"),
+            ("Subtotal Materiales (PMT)", f"$ {r.pmt:>15,.2f}"),
         ]
         for etiqueta, valor in datos_valor:
             self._fila(scroll, etiqueta, valor)
@@ -122,9 +98,9 @@ class VentanaResultados(ctk.CTkToplevel):
         # Total destacado
         self._separador(scroll)
         total_frame = ctk.CTkFrame(scroll, fg_color="#1e3a5f", corner_radius=8)
-        total_frame.pack(fill="x", pady=(5, 15), padx=5)
+        total_frame.pack(fill="x", pady=(5, 15), padx=(5, 20))
         ctk.CTkLabel(
-            total_frame, text="VALOR TOTAL RECUPERADO",
+            total_frame, text="VALOR TOTAL (PMT + PT)",
             font=("Arial", 13, "bold"), text_color="#4FC3F7"
         ).pack(side="left", padx=15, pady=10)
         ctk.CTkLabel(
@@ -132,25 +108,51 @@ class VentanaResultados(ctk.CTkToplevel):
             font=("Arial", 14, "bold"), text_color="#81C784"
         ).pack(side="right", padx=15, pady=10)
 
-        # ── Sección: Masa recuperada ─────────────────────────────────
+        # ── Sección: Masa recuperada ──
         self._seccion(scroll, "Masa Recuperada")
         datos_masa = [
-            ("Plástico recuperado", f"{r.kg_plastico:.3f} kg"),
-            ("Metal recuperado",    f"{r.kg_metal:.3f} kg"),
+            ("Masa Total Procesada", f"{r.mt:.3f} kg"),
+            ("Cobre",      f"{r.peso_cobre:.3f} kg"),
+            ("Aluminio",   f"{r.peso_aluminio:.3f} kg"),
+            ("Oro",        f"{r.peso_oro:.3f} kg"),
+            ("Plástico",   f"{r.peso_plastico:.3f} kg"),
+            ("Total Metal",f"{r.peso_metal:.3f} kg"),
+            ("Vidrio (Óptica)", f"{r.peso_vidrio:.3f} kg"),
         ]
         for etiqueta, valor in datos_masa:
             self._fila(scroll, etiqueta, valor)
 
-        # ── Sección: Indicadores operativos ─────────────────────────
-        self._seccion(scroll, "Indicadores de Eficiencia Operativa")
+        # ── Sección: Coeficientes de Recuperación ──
+        self._seccion(scroll, "Coeficientes de Recuperación")
+        datos_coef = [
+            ("CrPlástico", f"{r.cr_plastico:.2f} %"),
+            ("CrMetales",  f"{r.cr_metales:.2f} %"),
+            ("CrPlacas",   f"{r.cr_placas:.2f} %"),
+            ("CrHDD",      f"{r.cr_hdd:.2f} %"),
+            ("CrÓptica",   f"{r.cr_opt:.2f} %"),
+        ]
+        for etiqueta, valor in datos_coef:
+            self._fila(scroll, etiqueta, valor)
+
+        # ── Sección: Indicadores operativos ──
+        self._seccion(scroll, "Indicadores de Ocupación y Tiempos")
         datos_ind = [
-            ("Coef. de Productividad",  f"{r.coef_productividad:.4f} u/h/emp"),
-            ("Eficacia",               f"{r.eficacia:.2f} %"),
-            ("Eficiencia",             f"{r.eficiencia:.2f} %"),
-            ("Rango de Mejora",        f"{r.rango_mejora:.2f} %"),
+            ("Est. 1 Revisión (PE1)", f"{r.pe1*100:.1f} % (T: {r.tdr:.1f} m)"),
+            ("Est. 2 Óptica (PE2)", f"{r.pe2*100:.1f} % (T: {r.tdo:.1f} m)"),
+            ("Est. 3 Ópt. Mat. (PE3)", f"{r.pe3*100:.1f} % (T: {r.tco:.1f} m)"),
+            ("Est. 4 Placas (PE4)", f"{r.pe4*100:.1f} % (T: {r.tp:.1f} m)"),
+            ("Est. 5 DVR (PE5)", f"{r.pe5*100:.1f} % (T: {r.tdd:.1f} m)"),
+            ("Est. 6 HDD (PE6)", f"{r.pe6*100:.1f} % (T: {r.thd:.1f} m)"),
         ]
         for etiqueta, valor in datos_ind:
-            self._fila(scroll, etiqueta, valor, destacar=(etiqueta == "Rango de Mejora"))
+            self._fila(scroll, etiqueta, valor)
+            
+        cuellos_str = ", ".join(r.cuellos_botella) if r.cuellos_botella else "Ninguno"
+        self._fila(scroll, "Cuellos de Botella", cuellos_str, destacar=bool(r.cuellos_botella))
+        
+        self._seccion(scroll, "Demanda Simulada (Poisson)")
+        self._fila(scroll, "Horas Simuladas (h)", f"{r.horas_demanda}")
+        self._fila(scroll, "Total Clientes", f"{r.clientes_totales}")
 
         # Botón Exportar
         self._separador(scroll)
@@ -162,7 +164,6 @@ class VentanaResultados(ctk.CTkToplevel):
         btn_exportar.pack(pady=(15, 10))
 
     def _exportar_excel(self):
-        """Exporta los resultados a un archivo Excel en una única hoja consolidada."""
         try:
             filepath = filedialog.asksaveasfilename(
                 defaultextension=".xlsx",
@@ -173,99 +174,64 @@ class VentanaResultados(ctk.CTkToplevel):
                 return
             
             r = self.resultado
-            
-            # Construir un único DataFrame con todos los datos y secciones separadas
             datos_completos = [
-                {"Categoría": "LOTE PROCESADO", "Métrica": "Semilla GCL", "Valor": r.semilla_gcl},
-                {"Categoría": "LOTE PROCESADO", "Métrica": "Cámaras Ingresadas", "Valor": r.n_camaras},
-                {"Categoría": "LOTE PROCESADO", "Métrica": "DVRs Ingresados", "Valor": r.n_dvrs},
-                {"Categoría": "LOTE PROCESADO", "Métrica": "Cámaras Recuperables", "Valor": r.camaras_recuperables},
-                {"Categoría": "LOTE PROCESADO", "Métrica": "Cámaras Desguazadas", "Valor": r.camaras_desguazadas},
-                {"Categoría": "LOTE PROCESADO", "Métrica": "DVRs Recuperables", "Valor": r.dvrs_recuperables},
-                {"Categoría": "LOTE PROCESADO", "Métrica": "DVRs Desguazados", "Valor": r.dvrs_desguazados},
-                {"Categoría": "", "Métrica": "", "Valor": ""},  # Fila en blanco
-                
-                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Lentes recuperados (ARS)", "Valor": r.valor_lentes},
-                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Placas cámaras (ARS)", "Valor": r.valor_placas_camara},
-                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Placas DVRs (ARS)", "Valor": r.valor_placas_dvr},
-                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Discos HDD (ARS)", "Valor": r.valor_hdd},
-                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Plástico (ARS)", "Valor": r.valor_plastico},
-                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "Metal (ARS)", "Valor": r.valor_metal},
-                {"Categoría": "MONETIZACIÓN POR COMPONENTE", "Métrica": "VALOR TOTAL RECUPERADO (ARS)", "Valor": r.valor_total},
-                {"Categoría": "", "Métrica": "", "Valor": ""},  # Fila en blanco
-                
-                {"Categoría": "MASA RECUPERADA", "Métrica": "Plástico recuperado (kg)", "Valor": r.kg_plastico},
-                {"Categoría": "MASA RECUPERADA", "Métrica": "Metal recuperado (kg)", "Valor": r.kg_metal},
-                {"Categoría": "", "Métrica": "", "Valor": ""},  # Fila en blanco
-                
-                {"Categoría": "INDICADORES DE EFICIENCIA OPERATIVA", "Métrica": "Coef. de Productividad (u/h/emp)", "Valor": r.coef_productividad},
-                {"Categoría": "INDICADORES DE EFICIENCIA OPERATIVA", "Métrica": "Eficacia (%)", "Valor": r.eficacia},
-                {"Categoría": "INDICADORES DE EFICIENCIA OPERATIVA", "Métrica": "Eficiencia (%)", "Valor": r.eficiencia},
-                {"Categoría": "INDICADORES DE EFICIENCIA OPERATIVA", "Métrica": "Rango de Mejora (%)", "Valor": r.rango_mejora},
+                {"Categoría": "LOTE", "Métrica": "Total Ingresados", "Valor": r.n_total},
+                {"Categoría": "LOTE", "Métrica": "Cámaras Desguazadas", "Valor": r.camaras_desguazadas},
+                {"Categoría": "LOTE", "Métrica": "DVRs Desguazados", "Valor": r.dvrs_desguazados},
+                {"Categoría": "LOTE", "Métrica": "Total Reventa", "Valor": r.equipos_reventa},
+                {"Categoría": "", "Métrica": "", "Valor": ""},
+                {"Categoría": "VALORES (ARS)", "Métrica": "Cobre", "Valor": r.valor_cobre},
+                {"Categoría": "VALORES (ARS)", "Métrica": "Aluminio", "Valor": r.valor_aluminio},
+                {"Categoría": "VALORES (ARS)", "Métrica": "Oro", "Valor": r.valor_oro},
+                {"Categoría": "VALORES (ARS)", "Métrica": "Plástico", "Valor": r.valor_plastico},
+                {"Categoría": "VALORES (ARS)", "Métrica": "Total", "Valor": r.valor_total},
+                {"Categoría": "", "Métrica": "", "Valor": ""},
+                {"Categoría": "COEFICIENTES", "Métrica": "CrPlástico (%)", "Valor": r.cr_plastico},
+                {"Categoría": "COEFICIENTES", "Métrica": "CrMetales (%)", "Valor": r.cr_metales},
+                {"Categoría": "COEFICIENTES", "Métrica": "CrPlacas (%)", "Valor": r.cr_placas},
+                {"Categoría": "COEFICIENTES", "Métrica": "CrHDD (%)", "Valor": r.cr_hdd},
+                {"Categoría": "COEFICIENTES", "Métrica": "CrÓptica (%)", "Valor": r.cr_opt},
             ]
-            
             df = pd.DataFrame(datos_completos)
-            
             with pd.ExcelWriter(filepath, engine='openpyxl') as writer:
-                df.to_excel(writer, sheet_name='Reporte Completo', index=False)
-            
-            messagebox.showinfo("Exportación Exitosa", f"Todos los resultados se exportaron correctamente a:\n{filepath}")
+                df.to_excel(writer, sheet_name='Reporte', index=False)
+            messagebox.showinfo("Exportación Exitosa", f"Exportado a:\n{filepath}")
         except Exception as e:
-            messagebox.showerror("Error de Exportación", f"Ocurrió un error al exportar:\n{e}")
+            messagebox.showerror("Error", f"Ocurrió un error:\n{e}")
 
     def _seccion(self, parent, titulo: str):
-        """Agrega un encabezado de sección al informe."""
         ctk.CTkLabel(
             parent, text=titulo,
             font=("Arial", 14, "bold"), text_color="#FFB74D"
-        ).pack(anchor="w", pady=(15, 4))
+        ).pack(anchor="w", pady=(15, 4), padx=(5, 20))
         self._separador(parent)
 
     def _separador(self, parent):
-        """Línea separadora horizontal."""
         sep = ctk.CTkFrame(parent, height=1, fg_color="#2c3e50")
-        sep.pack(fill="x", pady=(0, 6))
+        sep.pack(fill="x", pady=(0, 6), padx=(5, 20))
 
     def _fila(self, parent, etiqueta: str, valor: str, destacar: bool = False):
-        """Fila de dato: etiqueta a la izquierda, valor a la derecha."""
         fila = ctk.CTkFrame(parent, fg_color="transparent")
-        fila.pack(fill="x", pady=2)
+        fila.pack(fill="x", pady=2, padx=(5, 20))
         color_val = "#F06292" if destacar else "#E0E0E0"
-        ctk.CTkLabel(fila, text=etiqueta, font=("Arial", 12),
-                     text_color="#AAAAAA").pack(side="left")
-        ctk.CTkLabel(fila, text=valor, font=("Arial", 12, "bold"),
-                     text_color=color_val).pack(side="right")
-
-    # ------------------------------------------------------------------
-    # Panel de gráficos
-    # ------------------------------------------------------------------
+        ctk.CTkLabel(fila, text=etiqueta, font=("Arial", 12), text_color="#AAAAAA").pack(side="left")
+        ctk.CTkLabel(fila, text=valor, font=("Arial", 12, "bold"), text_color=color_val).pack(side="right")
 
     def _construir_graficos(self, parent):
-        """Construye el panel derecho con los gráficos matplotlib estáticos."""
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
         r = self.resultado
 
-        # Crear figura con dos subplots
         fig, (ax_torta, ax_barras) = plt.subplots(
-            1, 2, figsize=(8, 5),
-            facecolor=COLOR_FONDO
+            1, 2, figsize=(8, 5), facecolor=COLOR_FONDO
         )
         fig.subplots_adjust(wspace=0.4, left=0.08, right=0.95, top=0.88, bottom=0.18)
 
-        # ── Gráfico 1: Torta — distribución del valor por componente ──
-        etiquetas = ["Lentes", "Placas Cám.", "Placas DVR", "HDD", "Plástico", "Metal"]
-        valores = [
-            r.valor_lentes,
-            r.valor_placas_camara,
-            r.valor_placas_dvr,
-            r.valor_hdd,
-            r.valor_plastico,
-            r.valor_metal,
-        ]
+        # ── Gráfico 1: Torta (Valores) ──
+        etiquetas = ["Cobre", "Aluminio", "Oro", "Plástico"]
+        valores = [r.valor_cobre, r.valor_aluminio, r.valor_oro, r.valor_plastico]
 
-        # Filtrar componentes con valor > 0 para evitar secciones vacías
         pares = [(e, v, c) for e, v, c in zip(etiquetas, valores, COLORES_TORTA) if v > 0]
         if pares:
             etq_f, val_f, col_f = zip(*pares)
@@ -273,13 +239,9 @@ class VentanaResultados(ctk.CTkToplevel):
             etq_f, val_f, col_f = ["Sin datos"], [1], ["#555555"]
 
         wedges, texts, autotexts = ax_torta.pie(
-            val_f,
-            labels=None,
-            autopct="%1.1f%%",
-            colors=col_f,
-            startangle=140,
-            pctdistance=0.75,
-            wedgeprops={"edgecolor": COLOR_FONDO, "linewidth": 1.5},
+            val_f, labels=None, autopct="%1.1f%%", colors=col_f,
+            startangle=140, pctdistance=0.75,
+            wedgeprops={"edgecolor": COLOR_FONDO, "linewidth": 1.5}
         )
         for at in autotexts:
             at.set_color(COLOR_FONDO)
@@ -290,57 +252,47 @@ class VentanaResultados(ctk.CTkToplevel):
         ax_torta.set_title("Distribución del Valor\nRecuperado", color=COLOR_TEXTO,
                             fontsize=11, fontweight="bold", pad=12)
 
-        # Leyenda para la torta
         ax_torta.legend(
-            wedges, etq_f,
-            loc="lower center",
-            bbox_to_anchor=(0.5, -0.28),
-            ncol=2,
-            fontsize=8,
-            frameon=False,
-            labelcolor=COLOR_TEXTO,
+            wedges, etq_f, loc="lower center", bbox_to_anchor=(0.5, -0.28),
+            ncol=2, fontsize=8, frameon=False, labelcolor=COLOR_TEXTO
         )
 
-        # ── Gráfico 2: Barras — masa recuperada por material ──────────
-        materiales = ["Plástico", "Metal"]
-        masas = [r.kg_plastico, r.kg_metal]
-        colores_barras = ["#81C784", "#4FC3F7"]
+        # ── Gráfico 2: Barras (Masa) ──
+        materiales = ["Cobre", "Aluminio", "Oro", "Plástico"]
+        masas = [r.peso_cobre, r.peso_aluminio, r.peso_oro, r.peso_plastico]
+        colores_barras = COLORES_TORTA
         x_pos = range(len(materiales))
 
         bars = ax_barras.bar(x_pos, masas, color=colores_barras,
                              edgecolor=COLOR_FONDO, linewidth=1.2, width=0.5)
 
-        # Etiquetas de valor sobre cada barra
         for bar, masa in zip(bars, masas):
             ax_barras.text(
                 bar.get_x() + bar.get_width() / 2,
-                bar.get_height() + max(masas) * 0.02,
+                bar.get_height() + (max(masas) if max(masas) > 0 else 1) * 0.02,
                 f"{masa:.2f} kg",
                 ha="center", va="bottom",
-                color=COLOR_TEXTO, fontsize=10, fontweight="bold"
+                color=COLOR_TEXTO, fontsize=9, fontweight="bold"
             )
 
         ax_barras.set_facecolor(COLOR_FONDO)
         ax_barras.set_xticks(list(x_pos))
-        ax_barras.set_xticklabels(materiales, color=COLOR_TEXTO, fontsize=11)
+        ax_barras.set_xticklabels(["Cu", "Al", "Au", "Plast."], color=COLOR_TEXTO, fontsize=10)
         ax_barras.set_ylabel("Masa (kg)", color=COLOR_TEXTO, fontsize=10)
         ax_barras.set_title("Masa Recuperada\npor Material", color=COLOR_TEXTO,
                             fontsize=11, fontweight="bold", pad=12)
         ax_barras.tick_params(colors=COLOR_TEXTO)
-        ax_barras.yaxis.set_major_formatter(mticker.FormatStrFormatter("%.2f"))
         ax_barras.spines["top"].set_visible(False)
         ax_barras.spines["right"].set_visible(False)
         for spine in ["left", "bottom"]:
             ax_barras.spines[spine].set_color(COLOR_GRID)
         ax_barras.yaxis.label.set_color(COLOR_TEXTO)
-        ax_barras.tick_params(axis="y", colors=COLOR_TEXTO)
-        ax_barras.set_ylim(0, max(masas) * 1.25 if max(masas) > 0 else 1)
+        ax_barras.set_ylim(0, (max(masas) * 1.25) if max(masas) > 0 else 1)
         ax_barras.yaxis.grid(True, color=COLOR_GRID, linestyle="--", alpha=0.5)
         ax_barras.set_axisbelow(True)
 
-        # Embeber figura en tkinter
         canvas = FigureCanvasTkAgg(fig, master=parent)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
-        plt.close(fig)  # Liberar memoria de la figura de matplotlib
+        plt.close(fig)
