@@ -1,0 +1,33 @@
+# Archivos compilados y caches de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Directorios de pruebas y cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Entornos virtuales (opcional, por si creas uno local)
+venv/
+.venv/
+env/
+ENV/
+
+# Configuraciones de editores (VS Code, etc.)
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+db.lock
+desktop.ini
