@@ -29,3 +29,18 @@ Traceback (most recent call last):
     )
 ValueError: El campo 'Peso total del lote (B)' debe ser un número decimal válido. No se aceptan letras ni caracteres especiales.
 
+2026-06-01 16:13:45,563 - ERROR - [logger.py:38] - Error al exportar los resultados a PDF en VentanaResultados | Excepción: UnicodeEncodeError: 'latin-1' codec can't encode character '\u2014' in position 635: ordinal not in range(256)
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\ventana_resultados.py", line 476, in _exportar_pdf
+    pdf.output(filepath)
+  File "C:\Users\lucia\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\fpdf\fpdf.py", line 1065, in output
+    self.close()
+  File "C:\Users\lucia\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\fpdf\fpdf.py", line 246, in close
+    self._enddoc()
+  File "C:\Users\lucia\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\fpdf\fpdf.py", line 1636, in _enddoc
+    self._putpages()
+  File "C:\Users\lucia\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\fpdf\fpdf.py", line 1170, in _putpages
+    p = self.pages[n].encode("latin1") if PY3K else self.pages[n]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'latin-1' codec can't encode character '\u2014' in position 635: ordinal not in range(256)
+

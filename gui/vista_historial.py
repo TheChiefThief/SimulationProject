@@ -192,7 +192,15 @@ class VistaHistorial(ctk.CTkFrame):
         )
         btn_detalles.pack(side="left", padx=5)
 
-        # Botón Exportar
+        # Botón Exportar PDF
+        btn_exportar_pdf = ctk.CTkButton(
+            col2, text="📄 PDF",
+            font=("Azeri Sans", 11, "bold"), fg_color="#E53935", hover_color="#C62828",
+            width=60, command=lambda r_obj=r: self._exportar_pdf_individual(r_obj)
+        )
+        btn_exportar_pdf.pack(side="left", padx=5)
+
+        # Botón Exportar Excel
         btn_exportar = ctk.CTkButton(
             col2, text="📥 Excel",
             font=("Azeri Sans", 11, "bold"), fg_color="#1E88E5", hover_color="#1565C0",
@@ -234,6 +242,18 @@ class VistaHistorial(ctk.CTkFrame):
         except Exception as e:
             # registros de errores
             registrar_error("Error al exportar individualmente a Excel desde VistaHistorial", e)
+
+    def _exportar_pdf_individual(self, resultado_obj):
+        """Invoca la exportación a PDF directamente para este objeto de resultados."""
+        from gui.ventana_resultados import VentanaResultados
+        try:
+            v_temp = VentanaResultados(self, resultado_obj)
+            v_temp.withdraw()  # Ocultar ventana
+            v_temp._exportar_pdf()
+            v_temp.destroy()
+        except Exception as e:
+            # registros de errores
+            registrar_error("Error al exportar individualmente a PDF desde VistaHistorial", e)
 
     def _eliminar_registro(self, registro_id: str):
         """Elimina un único registro del historial."""

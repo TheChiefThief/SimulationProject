@@ -165,9 +165,11 @@ class VistaUsuario(ctk.CTkFrame):
         self.out_cuellos = _fila_resultado(frame, "Cuellos de botella (Ocupación > 85%)", icono="cuello")
         self.out_total = _fila_resultado(frame, "Valor total recuperado (ARS)", icono="money")
 
-        ctk.CTkLabel(frame, text="Ver informe completo →",
+        self.lbl_ver_informe = ctk.CTkLabel(frame, text="Ver informe completo →",
                      font=("Arial", 12), text_color="#4FC3F7",
-                     cursor="hand2").pack(anchor="w", pady=(10, 0))
+                     cursor="hand2")
+        self.lbl_ver_informe.pack(anchor="w", pady=(10, 0))
+        self.lbl_ver_informe.bind("<Button-1>", self._abrir_informe_completo)
 
     # ------------------------------------------------------------------
     # Lógica de ejecución
@@ -244,6 +246,8 @@ class VistaUsuario(ctk.CTkFrame):
         self._set_entry(self.out_cuellos, cuellos_str)
         self._set_entry(self.out_total, f"{resultado.valor_total:,.2f}")
 
+        self.ultimo_resultado = resultado
+
         # Abrir ventana de resultados completa
         if self._ventana_resultado_activa is not None:
             try:
@@ -253,6 +257,18 @@ class VistaUsuario(ctk.CTkFrame):
                 registrar_error("Error al intentar destruir la ventana de resultados activa en VistaUsuario", e)
                 pass
         self._ventana_resultado_activa = VentanaResultados(self, resultado)
+
+    def _abrir_informe_completo(self, event=None):
+        if not hasattr(self, "ultimo_resultado") or self.ultimo_resultado is None:
+            messagebox.showinfo("Info", "Debe ejecutar la simulación primero.")
+            return
+
+        if self._ventana_resultado_activa is not None:
+            try:
+                self._ventana_resultado_activa.destroy()
+            except Exception:
+                pass
+        self._ventana_resultado_activa = VentanaResultados(self, self.ultimo_resultado)
 
     @staticmethod
     def _set_entry(entry_widget, valor_str: str):
