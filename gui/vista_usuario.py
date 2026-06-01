@@ -38,7 +38,8 @@ class VistaUsuario(ctk.CTkFrame):
         self.iconos = {
             "dispros": self._cargar_icono("dispros.png"),
             "resell": self._cargar_icono("resell.png"),
-            "cuello": self._cargar_icono("cuello.png")
+            "cuello": self._cargar_icono("cuello.png"),
+            "money": self._cargar_icono("money.png")
         }
 
         self.grid_columnconfigure(0, weight=1)
@@ -162,7 +163,7 @@ class VistaUsuario(ctk.CTkFrame):
         self.out_dispositivos = _fila_resultado(frame, "Dispositivos procesados", icono="dispros")
         self.out_reventa = _fila_resultado(frame, "Equipos a reventa (CamRec + DvrRec)", icono="resell")
         self.out_cuellos = _fila_resultado(frame, "Cuellos de botella (Ocupación > 85%)", icono="cuello")
-        self.out_total = _fila_resultado(frame, "Valor total recuperado (ARS)", "$")
+        self.out_total = _fila_resultado(frame, "Valor total recuperado (ARS)", icono="money")
 
         ctk.CTkLabel(frame, text="Ver informe completo →",
                      font=("Arial", 12), text_color="#4FC3F7",

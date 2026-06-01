@@ -89,23 +89,23 @@ class AppSimulador(ctk.CTk):
         logo_path = os.path.join(os.path.dirname(__file__), "logo.png")
         try:
             logo_image = Image.open(logo_path).convert("RGBA")
-            logo_image = logo_image.resize((110, 40), Image.LANCZOS)
-            self.logo = ctk.CTkImage(light_image=logo_image, dark_image=logo_image, size=(110, 40))
+            logo_image = logo_image.resize((150, 70), Image.LANCZOS)
+            self.logo = ctk.CTkImage(light_image=logo_image, dark_image=logo_image, size=(150, 70))
             logo_label = ctk.CTkLabel(header_frame, image=self.logo, text="")
-            logo_label.grid(row=0, column=0, padx=(0, 20), pady=20)
+            logo_label.grid(row=0, column=0, padx=(0, 50), pady=0)
         except Exception:
             pass
         
         # Botones de navegación
         buttons_frame = ctk.CTkFrame(header_frame, fg_color="transparent")
-        buttons_frame.grid(row=0, column=1, sticky="w", padx=0, pady=20)
+        buttons_frame.grid(row=0, column=1, sticky="w", padx=40, pady=20)
         
         self.nav_buttons = {}
         for idx, tab_name in enumerate([self.T_USUARIO, self.T_GERENTE, self.T_CONFIG, self.T_HISTORIAL]):
             btn = ctk.CTkButton(
                 buttons_frame,
                 text=tab_name,
-                font=("Azeri Sans", 16),
+                font=("Azeri Sans", 20),
                 fg_color="#0E3848" if idx != 0 else "#327fc3",
                 hover_color="#60808F",
                 command=lambda tn=tab_name: self._cambiar_vista(tn)
