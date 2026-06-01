@@ -33,6 +33,7 @@ Composición de materiales al desguazar (por peso del dispositivo):
 from typing import Callable
 
 from core.gcl import GeneradorCongruencialLineal
+from core.distribuciones import Distribuciones
 from core.parametros import ParametrosSistema
 from core.resultados import ResultadoLote
 
@@ -110,15 +111,15 @@ class SimulacionService:
         resultado.pmt += (vc + va + vo)
         resultado.pt += vp
 
-    def _muestrear_peso_camara(self, gcl: GeneradorCongruencialLineal) -> float:
+    def _muestrear_peso_camara(self, dist: Distribuciones) -> float:
         """P ~ Uniforme(peso_camara_min, peso_camara_max)."""
         c = self.parametros.composicion
-        return gcl.siguiente_rango(c.peso_camara_min, c.peso_camara_max)
+        return dist.siguiente_rango(c.peso_camara_min, c.peso_camara_max)
 
-    def _muestrear_peso_dvr(self, gcl: GeneradorCongruencialLineal) -> float:
+    def _muestrear_peso_dvr(self, dist: Distribuciones) -> float:
         """P ~ Uniforme(peso_dvr_min, peso_dvr_max)."""
         c = self.parametros.composicion
-        return gcl.siguiente_rango(c.peso_dvr_min, c.peso_dvr_max)
+        return dist.siguiente_rango(c.peso_dvr_min, c.peso_dvr_max)
 
     # ------------------------------------------------------------------
     # Simulación principal
@@ -152,6 +153,7 @@ class SimulacionService:
             )
 
         gcl = self.gcl_factory()
+        dist = Distribuciones(gcl)
         resultado = ResultadoLote()
         resultado.semilla_gcl = gcl.semilla
         resultado.b_kg_input = b_kg
@@ -162,7 +164,7 @@ class SimulacionService:
         while peso_acumulado < b_kg:
 
             # ── Estación 1: Revisión General (D1 ~ Exp(3 min)) ─────────
-            d1 = gcl.siguiente_exponencial(_D1_REVISION)
+            d1 = dist.siguiente_exponencial(_D1_REVISION)
             resultado.c1 += 1
             resultado.tdr += d1
 
@@ -173,11 +175,11 @@ class SimulacionService:
                 if gcl.siguiente_u() < _P_ES_DVR:
                     resultado.dvr_rec += 1
                     resultado.dvrs_reventa += 1
-                    p = self._muestrear_peso_dvr(gcl)
+                    p = self._muestrear_peso_dvr(dist)
                 else:
                     resultado.cam_rec += 1
                     resultado.camaras_reventa += 1
-                    p = self._muestrear_peso_camara(gcl)
+                    p = self._muestrear_peso_camara(dist)
 
                 peso_acumulado += p
                 continue
@@ -185,7 +187,7 @@ class SimulacionService:
             # ── Decisión: ¿Es DVR? (P=0.113) ───────────────────────────
             if gcl.siguiente_u() < _P_ES_DVR:
                 # ── Procesamiento DVR ───────────────────────────────────
-                p = self._muestrear_peso_dvr(gcl)
+                p = self._muestrear_peso_dvr(dist)
                 peso_acumulado += p
                 resultado.cant_dvr += 1
                 resultado.camaras_desguazadas += 0  # alias no aplica
@@ -193,7 +195,7 @@ class SimulacionService:
                 resultado.mt += p
 
                 # D5: Desarme DVR General (Exp(10 min))
-                d5 = gcl.siguiente_exponencial(_D5_DVR)
+                d5 = dist.siguiente_exponencial(_D5_DVR)
                 resultado.c5 += 1
                 resultado.tdd += d5
 
@@ -202,10 +204,10 @@ class SimulacionService:
                 if gcl.siguiente_u() < _P_HDD_SANO:
                     resultado.hdd_f += 1
                     # Capacidad C ~ Uniforme(250, 2000) GB
-                    _capacidad_gb = gcl.siguiente_entero(250, 2000)
+                    _capacidad_gb = dist.siguiente_entero(250, 2000)
                 else:
                     # D6: Recuperación material HDD (Exp(3 min))
-                    d6 = gcl.siguiente_exponencial(_D6_HDD)
+                    d6 = dist.siguiente_exponencial(_D6_HDD)
                     resultado.c6 += 1
                     resultado.thd += d6
 
@@ -215,7 +217,7 @@ class SimulacionService:
                     resultado.placas_f += 1
                 else:
                     # D4: Recuperación placas (Exp(90 min))
-                    d4 = gcl.siguiente_exponencial(_D4_PLACAS)
+                    d4 = dist.siguiente_exponencial(_D4_PLACAS)
                     resultado.c4 += 1
                     resultado.tp += d4
 
@@ -223,14 +225,14 @@ class SimulacionService:
 
             else:
                 # ── Procesamiento Cámara ────────────────────────────────
-                p = self._muestrear_peso_camara(gcl)
+                p = self._muestrear_peso_camara(dist)
                 peso_acumulado += p
                 resultado.cant_cam += 1
                 resultado.camaras_desguazadas += 1
                 resultado.mt += p
 
                 # D2: Desarme Cámara / Óptica (Exp(2 min))
-                d2 = gcl.siguiente_exponencial(_D2_OPTICA)
+                d2 = dist.siguiente_exponencial(_D2_OPTICA)
                 resultado.c2 += 1
                 resultado.tdo += d2
 
@@ -239,7 +241,7 @@ class SimulacionService:
                     resultado.peso_vidrio += (p * 0.30)
                 else:
                     # D3: Recuperación componente óptico (Exp(27 min))
-                    d3 = gcl.siguiente_exponencial(_D3_OPT_MATERIAL)
+                    d3 = dist.siguiente_exponencial(_D3_OPT_MATERIAL)
                     resultado.c3 += 1
                     resultado.tco += d3
 
@@ -249,7 +251,7 @@ class SimulacionService:
                     resultado.placas_f += 1
                 else:
                     # D4: Recuperación placas (Exp(90 min))
-                    d4 = gcl.siguiente_exponencial(_D4_PLACAS)
+                    d4 = dist.siguiente_exponencial(_D4_PLACAS)
                     resultado.c4 += 1
                     resultado.tp += d4
 
@@ -297,7 +299,7 @@ class SimulacionService:
         cp = 0
         limite_seg = resultado.n_total * 100 + 1000
         while cp < resultado.n_total and h < limite_seg:
-            cp += gcl.siguiente_poisson(0.3)
+            cp += dist.siguiente_poisson(0.3)
             h += 1
         resultado.horas_demanda = h
         resultado.clientes_totales = cp

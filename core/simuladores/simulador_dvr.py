@@ -3,6 +3,7 @@
 from core.gcl import GeneradorCongruencialLineal
 from core.parametros import ParametrosSistema
 from core.resultados import ResultadoDVR
+from core.distribuciones import Distribuciones
 
 
 class SimuladorDVR:
@@ -45,6 +46,7 @@ class SimuladorDVR:
         r = ResultadoDVR()
         params = self.parametros
         coef = 1.0 - params.operativo.coeficiente_perdida
+        dist = Distribuciones(gcl)
 
         kg_total = params.composicion.peso_dvr
         kg_hdd = kg_total * params.composicion.dvr_fraccion_hdd
@@ -52,7 +54,7 @@ class SimuladorDVR:
         kg_placas_peso = kg_total * params.composicion.dvr_fraccion_placas
 
         # Decisión 1: Estado general
-        r.recuperable = gcl.siguiente_bernoulli(0.68)
+        r.recuperable = dist.siguiente_bernoulli(0.68)
 
         if not r.recuperable:
             kg_metal_real = kg_metal * params.composicion.rendimiento_metal * coef
@@ -61,31 +63,31 @@ class SimuladorDVR:
             return r
 
         # Decisión 2: HDD
-        r.hdd_operativo = gcl.siguiente_bernoulli(params.tasas.tasa_discos_sanos)
+        r.hdd_operativo = dist.siguiente_bernoulli(params.tasas.tasa_discos_sanos)
 
         if r.hdd_operativo:
-            capacidad_gb = gcl.siguiente_entero(250, 2000)
-            precio_gb = gcl.siguiente_rango(
+            capacidad_gb = dist.siguiente_entero(250, 2000)
+            precio_gb = dist.siguiente_rango(
                 params.precios.precio_almacenamiento_min,
                 params.precios.precio_almacenamiento_max,
             )
             r.valor_hdd = capacidad_gb * precio_gb * coef
         else:
-            fraccion_mat = gcl.siguiente_triangular(0.3, 0.5, 0.8)
+            fraccion_mat = dist.siguiente_normal(0.53, 0.08)
             kg_mat_hdd = kg_hdd * fraccion_mat * coef
             r.valor_hdd = kg_mat_hdd * params.precios.precio_aluminio
 
         # Decisión 3: Placas del DVR
-        r.placa_sana = gcl.siguiente_bernoulli(params.tasas.tasa_placas_sanas)
+        r.placa_sana = dist.siguiente_bernoulli(params.tasas.tasa_placas_sanas)
 
         if r.placa_sana:
-            precio_placa = gcl.siguiente_rango(
+            precio_placa = dist.siguiente_rango(
                 kg_placas_peso * params.precios.precio_cobre * 0.8,
                 kg_placas_peso * params.precios.precio_cobre * 1.5,
             )
             r.valor_placas = precio_placa * coef
         else:
-            fraccion_cobre = gcl.siguiente_triangular(0.1, 0.35, 0.6)
+            fraccion_cobre = dist.siguiente_normal(0.35, 0.08)
             kg_cobre = kg_placas_peso * fraccion_cobre * coef
             r.valor_placas = kg_cobre * params.precios.precio_cobre
 

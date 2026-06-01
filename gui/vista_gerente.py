@@ -55,6 +55,10 @@ class VistaGerente(ctk.CTkFrame):
         self._construir_panel_izquierdo()
         self._construir_panel_derecho()
 
+        # Precargar los parámetros automáticamente al inicio
+        # usando los valores por defecto de params.operativo
+        self._cargar_parametros()
+
     # ------------------------------------------------------------------
     # Construcción de UI
     # ------------------------------------------------------------------
@@ -326,7 +330,7 @@ class VistaGerente(ctk.CTkFrame):
         self.in_empleados.insert(0, "5")
         
         self.in_energia.delete(0, "end")
-        self.in_energia.insert(0, "150.0")
+        self.in_energia.insert(0, "100.0")
         
         self.in_coef_perdida.delete(0, "end")
         self.in_coef_perdida.insert(0, "0.05")
