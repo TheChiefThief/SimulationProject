@@ -43,7 +43,7 @@ class AppSimulador(ctk.CTk):
         
         # Definir dimensiones y centrar en la pantalla
         ancho = 1200
-        alto = 750
+        alto = 810
         self.minsize(950, 650)
         
         pantalla_ancho = self.winfo_screenwidth()
@@ -69,7 +69,7 @@ class AppSimulador(ctk.CTk):
     def _construir_tabs(self):
         """Crea el CTkTabview y monta cada vista en su tab correspondiente."""
         self.tabview = ctk.CTkTabview(self)
-        self.tabview.pack(padx=15, pady=15, fill="both", expand=True)
+        self.tabview.pack(padx=0, pady=0, fill="both", expand=True)
 
         self.tabview.add(self.T_USUARIO)
         self.tabview.add(self.T_GERENTE)

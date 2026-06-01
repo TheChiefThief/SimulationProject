@@ -1,0 +1,31 @@
+2026-06-01 12:57:18,195 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
+Traceback (most recent call last):
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\gui\vista_usuario.py", line 177, in _ejecutar
+    b_kg = Validador.validar_float(
+        self.in_b_kg.get(), "Peso total del lote (B)",
+        min_valor=0.1
+    )
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\core\validador.py", line 67, in validar_float
+    raise ValueError(f"El campo '{nombre_campo}' no puede estar vacío.")
+ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
+
+2026-06-01 12:57:22,511 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El campo 'Peso total del lote (B)' debe ser un número decimal válido. No se aceptan letras ni caracteres especiales.
+Traceback (most recent call last):
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\core\validador.py", line 76, in validar_float
+    valor = float(texto_limpio)
+ValueError: could not convert string to float: 'sex'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\gui\vista_usuario.py", line 177, in _ejecutar
+    b_kg = Validador.validar_float(
+        self.in_b_kg.get(), "Peso total del lote (B)",
+        min_valor=0.1
+    )
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\core\validador.py", line 78, in validar_float
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: El campo 'Peso total del lote (B)' debe ser un número decimal válido. No se aceptan letras ni caracteres especiales.
+

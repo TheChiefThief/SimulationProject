@@ -69,16 +69,16 @@ class VistaGerente(ctk.CTkFrame):
         frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
         ctk.CTkLabel(frame, text="Parámetros Operativos",
-                     font=("Arial", 22, "bold")).pack(anchor="w", pady=(0, 5))
+                     font=("Azeri Sans", 26, "bold")).pack(anchor="w", pady=(0, 5))
         ctk.CTkLabel(
             frame,
             text="Debe cargar estos parámetros antes de ejecutar la simulación.",
-            font=("Arial", 12), text_color="#AAAAAA", wraplength=320
+            font=("Azeri Sans", 12), text_color="#AAAAAA", wraplength=320
         ).pack(anchor="w", pady=(0, 20))
 
         # ── Campo: Horas de trabajo ────────────────────────────────────
         ctk.CTkLabel(frame, text="Horas de trabajo por jornada *",
-                     font=("Arial", 13)).pack(anchor="w")
+                     font=("Azeri Sans", 13)).pack(anchor="w")
         self.in_horas = ctk.CTkEntry(frame, width=280,
                                      placeholder_text="Ej: 8  (número > 0)")
         self.in_horas.pack(anchor="w", pady=(2, 14))
@@ -86,7 +86,7 @@ class VistaGerente(ctk.CTkFrame):
 
         # ── Campo: Cantidad de empleados ───────────────────────────────
         ctk.CTkLabel(frame, text="Cantidad de empleados *",
-                     font=("Arial", 13)).pack(anchor="w")
+                     font=("Azeri Sans", 13)).pack(anchor="w")
         self.in_empleados = ctk.CTkEntry(frame, width=280,
                                          placeholder_text="Ej: 5  (entero > 0)")
         self.in_empleados.pack(anchor="w", pady=(2, 14))
@@ -94,7 +94,7 @@ class VistaGerente(ctk.CTkFrame):
 
         # ── Campo: Energía consumida ───────────────────────────────────
         ctk.CTkLabel(frame, text="Energía consumida (kWh) *",
-                     font=("Arial", 13)).pack(anchor="w")
+                     font=("Azeri Sans", 13)).pack(anchor="w")
         self.in_energia = ctk.CTkEntry(frame, width=280,
                                        placeholder_text="Ej: 100  (número ≥ 0)")
         self.in_energia.pack(anchor="w", pady=(2, 14))
@@ -102,9 +102,9 @@ class VistaGerente(ctk.CTkFrame):
 
         # ── Campo: Coeficiente de pérdida ──────────────────────────────
         ctk.CTkLabel(frame, text="Coeficiente de pérdida del proceso *",
-                     font=("Arial", 13)).pack(anchor="w")
+                     font=("Azeri Sans", 13)).pack(anchor="w")
         ctk.CTkLabel(frame, text="Fracción entre 0.0 (sin pérdida) y 1.0 (pérdida total)",
-                     font=("Arial", 11), text_color="#888888").pack(anchor="w")
+                     font=("Azeri Sans", 11), text_color="#888888").pack(anchor="w")
         self.in_coef_perdida = ctk.CTkEntry(frame, width=280,
                                             placeholder_text="Ej: 0.05")
         self.in_coef_perdida.pack(anchor="w", pady=(2, 14))
@@ -112,19 +112,19 @@ class VistaGerente(ctk.CTkFrame):
 
         # ── Campo: Tipo de maquinaria ──────────────────────────────────
         ctk.CTkLabel(frame, text="Tipo de maquinaria *",
-                     font=("Arial", 13)).pack(anchor="w")
+                     font=("Azeri Sans", 13)).pack(anchor="w")
         self.opt_maquinaria = ctk.CTkOptionMenu(
             frame,
             values=["Proceso Manual", "Línea Automatizada", "Híbrido"],
             width=280,
-            font=("Arial", 13)
+            font=("Azeri Sans", 13)
         )
         self.opt_maquinaria.pack(anchor="w", pady=(2, 25))
         self.opt_maquinaria.set(self.params.operativo.tipo_maquinaria)
 
         # Nota de campos obligatorios
         ctk.CTkLabel(frame, text="* Campos obligatorios",
-                     font=("Arial", 11), text_color="#888888").pack(anchor="w", pady=(0, 10))
+                     font=("Azeri Sans", 11), text_color="#888888").pack(anchor="w", pady=(0, 10))
 
         # ── Acciones (Guardar, Defaults) ───────────────────────────────
         acciones_frame = ctk.CTkFrame(frame, fg_color="transparent")
@@ -132,14 +132,14 @@ class VistaGerente(ctk.CTkFrame):
 
         self.btn_guardar = ctk.CTkButton(
             acciones_frame, text="💾  Cargar Parámetros",
-            width=150, font=("Arial", 13, "bold"),
+            width=150, font=("Azeri Sans", 13, "bold"),
             command=self._cargar_parametros
         )
         self.btn_guardar.pack(side="left", padx=(0, 10))
 
         self.btn_defaults = ctk.CTkButton(
             acciones_frame, text="🔄  Valores Base",
-            width=130, font=("Arial", 13), fg_color="#F57C00", hover_color="#EF6C00",
+            width=130, font=("Azeri Sans", 13), fg_color="#F57C00", hover_color="#EF6C00",
             command=self._cargar_valores_por_defecto
         )
         self.btn_defaults.pack(side="left")
@@ -150,19 +150,19 @@ class VistaGerente(ctk.CTkFrame):
 
         self.combo_presets = ctk.CTkOptionMenu(
             presets_frame, values=["Preset 1", "Preset 2", "Preset 3"], width=110,
-            font=("Arial", 12)
+            font=("Azeri Sans", 12)
         )
         self.combo_presets.pack(side="left", padx=(0, 10))
 
         self.btn_guardar_preset = ctk.CTkButton(
-            presets_frame, text="Guardar Preset", width=100, font=("Arial", 12),
+            presets_frame, text="Guardar Preset", width=100, font=("Azeri Sans", 12),
             fg_color="#4DB6AC", hover_color="#009688", text_color="#111111",
             command=self._guardar_preset
         )
         self.btn_guardar_preset.pack(side="left", padx=(0, 10))
 
         self.btn_cargar_preset = ctk.CTkButton(
-            presets_frame, text="Cargar Preset", width=100, font=("Arial", 12),
+            presets_frame, text="Cargar Preset", width=100, font=("Azeri Sans", 12),
             fg_color="#29B6F6", hover_color="#0288D1", text_color="#111111",
             command=self._cargar_preset
         )
@@ -170,7 +170,7 @@ class VistaGerente(ctk.CTkFrame):
 
         # Etiqueta de error
         self.lbl_error = ctk.CTkLabel(
-            frame, text="", font=("Arial", 12),
+            frame, text="", font=("Azeri Sans", 12),
             text_color="#EF5350", wraplength=300
         )
         self.lbl_error.pack(anchor="w", pady=(10, 0))
@@ -184,13 +184,13 @@ class VistaGerente(ctk.CTkFrame):
         frame.pack(padx=30, pady=30, fill="both", expand=True)
 
         ctk.CTkLabel(frame, text="Estado del Sistema",
-                     font=("Arial", 22, "bold")).pack(anchor="w", pady=(0, 20))
+                     font=("Azeri Sans", 22, "bold")).pack(anchor="w", pady=(0, 20))
 
         # Indicador de estado principal
         self.lbl_indicador = ctk.CTkLabel(
             frame,
             text="✔  Usando valores por defecto",
-            font=("Arial", 16, "bold"),
+            font=("Azeri Sans", 16, "bold"),
             text_color="#66BB6A"
         )
         self.lbl_indicador.pack(anchor="w", pady=(0, 15))
@@ -200,13 +200,13 @@ class VistaGerente(ctk.CTkFrame):
 
         # Resumen de parámetros cargados
         ctk.CTkLabel(frame, text="Parámetros Cargados:",
-                     font=("Arial", 14, "bold"),
+                     font=("Azeri Sans", 14, "bold"),
                      text_color="#AAAAAA").pack(anchor="w", pady=(0, 10))
 
         self.lbl_resumen = ctk.CTkLabel(
             frame,
             text="—",
-            font=("Arial", 13),
+            font=("Azeri Sans", 13),
             text_color="#888888",
             justify="left",
             wraplength=280
@@ -218,7 +218,7 @@ class VistaGerente(ctk.CTkFrame):
 
         # Resultados de indicadores (se llenan tras ejecutar)
         ctk.CTkLabel(frame, text="Indicadores de Productividad:",
-                     font=("Arial", 14, "bold"),
+                     font=("Azeri Sans", 14, "bold"),
                      text_color="#AAAAAA").pack(anchor="w", pady=(0, 10))
 
         indicadores = [
@@ -229,10 +229,10 @@ class VistaGerente(ctk.CTkFrame):
         ]
         self._entries_indicadores = {}
         for etiqueta, key in indicadores:
-            ctk.CTkLabel(frame, text=etiqueta, font=("Arial", 13),
+            ctk.CTkLabel(frame, text=etiqueta, font=("Azeri Sans", 13),
                          text_color="#AAAAAA").pack(anchor="w")
             entry = ctk.CTkEntry(frame, width=240, state="readonly",
-                                 font=("Arial", 13))
+                                 font=("Azeri Sans", 13))
             entry.pack(anchor="w", pady=(2, 10))
             self._entries_indicadores[key] = entry
 

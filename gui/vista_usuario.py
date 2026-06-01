@@ -48,8 +48,9 @@ class VistaUsuario(ctk.CTkFrame):
         """Panel de input: peso total del lote B (kg)."""
         frame = ctk.CTkFrame(self, fg_color="transparent")
         frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        frame.grid_columnconfigure(0, weight=1)
 
-        ctk.CTkLabel(frame, text="Ingresar", font=("Arial", 24, "bold")).pack(
+        ctk.CTkLabel(frame, text="Ingresar", font=("Azeri Sans", 38, "bold")).pack(
             anchor="w", pady=(0, 20)
         )
 
@@ -57,49 +58,61 @@ class VistaUsuario(ctk.CTkFrame):
         ctk.CTkLabel(
             frame,
             text="Peso total del lote — B (kg)",
-            font=("Arial", 14)
-        ).pack(anchor="w")
+            font=("Azeri Sans", 22)
+        ).pack(anchor="w", fill="x")
         ctk.CTkLabel(
             frame,
             text="El programa procesará dispositivos hasta alcanzar este peso.",
-            font=("Arial", 11), text_color="#888888", wraplength=280
-        ).pack(anchor="w", pady=(2, 0))
-        self.in_b_kg = ctk.CTkEntry(frame, width=250,
-                                     placeholder_text="Ej: 100  (kg, número > 0)")
-        self.in_b_kg.pack(anchor="w", pady=(4, 40))
+            font=("Azeri Sans", 14), text_color="#888888", wraplength=280
+        ).pack(anchor="w", fill="x", pady=(2, 0))
+        self.in_b_kg = ctk.CTkEntry(
+            frame,
+            placeholder_text="Ej: 100  (kg, número > 0)",
+            corner_radius=12,
+            height=50
+        )
+        self.in_b_kg.pack(anchor="w", fill="x", pady=(5, 20))
         self.in_b_kg.insert(0, "100")
 
         # Indicador de estado de parámetros
         self.lbl_estado = ctk.CTkLabel(
             frame,
             text="✔ Parámetros por defecto activos",
-            font=("Arial", 12), text_color="#66BB6A"
+            font=("Azeri Sans", 12), text_color="#66BB6A"
         )
-        self.lbl_estado.pack(anchor="w", pady=(0, 10))
+        self.lbl_estado.pack(anchor="w", fill="x", pady=(0, 10))
 
-        # Botón ejecutar
-        self.btn_ejecutar = ctk.CTkButton(
-            frame, text="▶  Ejecutar Simulación",
-            width=200, font=("Arial", 14, "bold"),
-            command=self._ejecutar
-        )
-        self.btn_ejecutar.pack(anchor="w")
+        # Espaciador flexible para que la columna izquierda ocupe todo el alto
+        spacer = ctk.CTkFrame(frame, fg_color="transparent")
+        spacer.pack(expand=True, fill="both")
 
-        # Etiqueta de error
+        # Etiqueta de error (aparece justo encima de los botones en la parte inferior)
         self.lbl_error = ctk.CTkLabel(
-            frame, text="", font=("Arial", 12),
+            frame, text="", font=("Azeri Sans", 14),
             text_color="#EF5350", wraplength=280
         )
-        self.lbl_error.pack(anchor="w", pady=(10, 0))
+        self.lbl_error.pack(anchor="w", fill="x", pady=(10, 6))
 
-        # Botón ver historial
+        # Botones en la parte inferior
         self.btn_ver_historial = ctk.CTkButton(
             frame, text="📋 Ver Historial",
-            width=200, font=("Arial", 14, "bold"),
+            font=("Azeri Sans", 24, "bold"),
             fg_color="#37474F", hover_color="#455A64",
+            corner_radius=15,
+            height=52,
             command=self._ir_a_historial
         )
-        self.btn_ver_historial.pack(anchor="w", pady=(5, 0))
+        self.btn_ver_historial.pack(side="bottom", fill="x", pady=(6, 0))
+
+        self.btn_ejecutar = ctk.CTkButton(
+            frame, text="▶  Ejecutar Simulación",
+            font=("Azeri Sans", 24, "bold"),
+            fg_color="#327fc3", hover_color="#2865a3",
+            corner_radius=15,
+            height=52,
+            command=self._ejecutar
+        )
+        self.btn_ejecutar.pack(side="bottom", fill="x")
 
     def _construir_panel_derecho(self):
         """Panel de resumen rápido de resultados."""
@@ -109,21 +122,21 @@ class VistaUsuario(ctk.CTkFrame):
         frame = ctk.CTkFrame(frame_outer, fg_color="transparent")
         frame.pack(padx=30, pady=30, fill="both", expand=True)
 
-        ctk.CTkLabel(frame, text="Resumen", font=("Arial", 24, "bold")).pack(
+        ctk.CTkLabel(frame, text="Resumen", font=("Azeri Sans", 24, "bold")).pack(
             anchor="w", pady=(0, 20)
         )
 
         def _fila_resultado(parent, etiqueta, prefijo=""):
             # Truncar etiquetas largas o usar wraplength
-            ctk.CTkLabel(parent, text=etiqueta, font=("Arial", 13),
+            ctk.CTkLabel(parent, text=etiqueta, font=("Azeri Sans", 13),
                          text_color="#AAAAAA", wraplength=280).pack(anchor="w")
             row = ctk.CTkFrame(parent, fg_color="transparent")
             row.pack(anchor="w", fill="x", pady=(0, 14), expand=True)
             if prefijo:
-                ctk.CTkLabel(row, text=prefijo, font=("Arial", 15, "bold"),
+                ctk.CTkLabel(row, text=prefijo, font=("Azeri Sans", 15, "bold"),
                              text_color="#4FC3F7").pack(side="left", padx=(0, 8))
             # width=0 y fill="x" expand=True para que se adapte al contenedor
-            entry = ctk.CTkEntry(row, state="readonly", font=("Arial", 13))
+            entry = ctk.CTkEntry(row, state="readonly", font=("Azeri Sans", 13))
             entry.pack(side="left", fill="x", expand=True)
             return entry
 

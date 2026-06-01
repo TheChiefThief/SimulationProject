@@ -79,10 +79,10 @@ class VentanaResultados(ctk.CTkToplevel):
         r = self.resultado
 
         ctk.CTkLabel(scroll, text="📋 Informe de Resultados",
-                     font=("Arial", 20, "bold"), text_color="#4FC3F7"
+                     font=("Azeri Sans", 20, "bold"), text_color="#4FC3F7"
                      ).pack(anchor="w", pady=(0, 3), padx=(5, 20))
         ctk.CTkLabel(scroll, text=f"Semilla GCL: {r.semilla_gcl}",
-                     font=("Arial", 11), text_color="#888888"
+                     font=("Azeri Sans", 11), text_color="#888888"
                      ).pack(anchor="w", pady=(0, 16), padx=(5, 20))
 
         # ── Lote Procesado ─────────────────────────────────────────────
@@ -108,10 +108,10 @@ class VentanaResultados(ctk.CTkToplevel):
         total_frame = ctk.CTkFrame(scroll, fg_color="#1e3a5f", corner_radius=8)
         total_frame.pack(fill="x", pady=(5, 15), padx=(5, 20))
         ctk.CTkLabel(total_frame, text="VALOR TOTAL (PMT + PT)",
-                     font=("Arial", 13, "bold"), text_color="#4FC3F7"
+                     font=("Azeri Sans", 13, "bold"), text_color="#4FC3F7"
                      ).pack(side="left", padx=15, pady=10)
         ctk.CTkLabel(total_frame, text=f"$ {r.valor_total:,.2f} ARS",
-                     font=("Arial", 14, "bold"), text_color="#81C784"
+                     font=("Azeri Sans", 14, "bold"), text_color="#81C784"
                      ).pack(side="right", padx=15, pady=10)
 
         # ── Masa Recuperada ────────────────────────────────────────────
@@ -157,7 +157,7 @@ class VentanaResultados(ctk.CTkToplevel):
 
         ctk.CTkButton(
             btn_frame, text="📥  Exportar a Excel",
-            font=("Arial", 14, "bold"), fg_color="#1E88E5", hover_color="#1565C0",
+            font=("Azeri Sans", 14, "bold"), fg_color="#1E88E5", hover_color="#1565C0",
             width=200, command=self._exportar_excel
         ).pack(side="left", padx=(0, 10), fill="x", expand=True)
 
@@ -168,7 +168,7 @@ class VentanaResultados(ctk.CTkToplevel):
     # ------------------------------------------------------------------
 
     def _seccion(self, parent, titulo: str):
-        ctk.CTkLabel(parent, text=titulo, font=("Arial", 14, "bold"),
+        ctk.CTkLabel(parent, text=titulo, font=("Azeri Sans", 14, "bold"),
                      text_color="#FFB74D"
                      ).pack(anchor="w", pady=(15, 4), padx=(5, 20))
         self._separador(parent)
@@ -181,9 +181,9 @@ class VentanaResultados(ctk.CTkToplevel):
         fila = ctk.CTkFrame(parent, fg_color="transparent")
         fila.pack(fill="x", pady=2, padx=(5, 20))
         color_val = "#F06292" if destacar else "#E0E0E0"
-        ctk.CTkLabel(fila, text=etiqueta, font=("Arial", 12),
+        ctk.CTkLabel(fila, text=etiqueta, font=("Azeri Sans", 12),
                      text_color="#AAAAAA").pack(side="left")
-        ctk.CTkLabel(fila, text=valor, font=("Arial", 12, "bold"),
+        ctk.CTkLabel(fila, text=valor, font=("Azeri Sans", 12, "bold"),
                      text_color=color_val).pack(side="right")
 
     # ------------------------------------------------------------------

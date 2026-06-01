@@ -43,20 +43,20 @@ class VistaHistorial(ctk.CTkFrame):
         info_frame.grid(row=0, column=0, sticky="w")
 
         self.lbl_titulo = ctk.CTkLabel(
-            info_frame, text="📋 Historial de Simulaciones", font=("Arial", 22, "bold")
+            info_frame, text="📋 Historial de Simulaciones", font=("Azeri Sans", 22, "bold")
         )
         self.lbl_titulo.pack(anchor="w")
 
         self.lbl_info = ctk.CTkLabel(
             info_frame, text="Listado de corridas guardadas localmente.",
-            font=("Arial", 12), text_color="#888888"
+            font=("Azeri Sans", 12), text_color="#888888"
         )
         self.lbl_info.pack(anchor="w", pady=(2, 0))
 
         # Botón para borrar todo
         self.btn_borrar_todo = ctk.CTkButton(
             self.cabecera, text="🗑 Borrar Historial",
-            font=("Arial", 12, "bold"), fg_color="#D32F2F", hover_color="#C62828",
+            font=("Azeri Sans", 12, "bold"), fg_color="#D32F2F", hover_color="#C62828",
             width=160, command=self._borrar_todo
         )
         self.btn_borrar_todo.grid(row=0, column=1, sticky="e")
@@ -105,19 +105,19 @@ class VistaHistorial(ctk.CTkFrame):
         frame_vacio.pack(expand=True, pady=150)
 
         lbl_icono = ctk.CTkLabel(
-            frame_vacio, text="📂", font=("Arial", 64)
+            frame_vacio, text="📂", font=("Azeri Sans", 64)
         )
         lbl_icono.pack()
 
         lbl_texto = ctk.CTkLabel(
             frame_vacio, text="No hay simulaciones registradas en el historial.",
-            font=("Arial", 16, "bold"), text_color="#AAAAAA"
+            font=("Azeri Sans", 16, "bold"), text_color="#AAAAAA"
         )
         lbl_texto.pack(pady=10)
 
         lbl_subtexto = ctk.CTkLabel(
             frame_vacio, text="Las simulaciones que realices en el panel de usuario se guardarán de forma automática aquí.",
-            font=("Arial", 12), text_color="#777777", wraplength=450
+            font=("Azeri Sans", 12), text_color="#777777", wraplength=450
         )
         lbl_subtexto.pack()
 
@@ -143,12 +143,12 @@ class VistaHistorial(ctk.CTkFrame):
         col0.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
         
         lbl_fecha = ctk.CTkLabel(
-            col0, text=f"📅 {fecha}", font=("Arial", 13, "bold"), text_color="#4FC3F7"
+            col0, text=f"📅 {fecha}", font=("Azeri Sans", 13, "bold"), text_color="#4FC3F7"
         )
         lbl_fecha.pack(anchor="w")
         
         lbl_id = ctk.CTkLabel(
-            col0, text=f"ID: {reg_id[:8]}... (Semilla: {r.semilla_gcl})", font=("Courier", 10), text_color="#666666"
+            col0, text=f"ID: {reg_id[:8]}... (Semilla: {r.semilla_gcl})", font=("Azeri Sans", 10), text_color="#666666"
         )
         lbl_id.pack(anchor="w", pady=(3, 0))
 
@@ -163,20 +163,20 @@ class VistaHistorial(ctk.CTkFrame):
         # Fila 1: Peso lote y cantidad dispositivos
         lbl_lote = ctk.CTkLabel(
             col1, text=f"Lote: {r.b_kg_input:.2f} kg ({r.n_total} disp.)",
-            font=("Arial", 12, "bold"), text_color="#E0E0E0"
+            font=("Azeri Sans", 12, "bold"), text_color="#E0E0E0"
         )
         lbl_lote.grid(row=0, column=0, sticky="w", pady=2)
         
         lbl_reventa = ctk.CTkLabel(
             col1, text=f"Reventa: {r.equipos_reventa} equipos",
-            font=("Arial", 12), text_color="#AAAAAA"
+            font=("Azeri Sans", 12), text_color="#AAAAAA"
         )
         lbl_reventa.grid(row=0, column=1, sticky="w", pady=2)
         
         # Fila 2: Valor recuperado
         lbl_valor = ctk.CTkLabel(
             col1, text=f"Valor Total: $ {r.valor_total:,.2f} ARS",
-            font=("Arial", 12, "bold"), text_color="#81C784"
+            font=("Azeri Sans", 12, "bold"), text_color="#81C784"
         )
         lbl_valor.grid(row=1, column=0, columnspan=2, sticky="w", pady=2)
 
@@ -187,7 +187,7 @@ class VistaHistorial(ctk.CTkFrame):
         # Botón Detalles
         btn_detalles = ctk.CTkButton(
             col2, text="🔍 Ver Informe",
-            font=("Arial", 11, "bold"), width=110,
+            font=("Azeri Sans", 11, "bold"), width=110,
             command=lambda r_obj=r: self._ver_detalles(r_obj)
         )
         btn_detalles.pack(side="left", padx=5)
@@ -195,7 +195,7 @@ class VistaHistorial(ctk.CTkFrame):
         # Botón Exportar
         btn_exportar = ctk.CTkButton(
             col2, text="📥 Excel",
-            font=("Arial", 11, "bold"), fg_color="#1E88E5", hover_color="#1565C0",
+            font=("Azeri Sans", 11, "bold"), fg_color="#1E88E5", hover_color="#1565C0",
             width=80, command=lambda r_obj=r: self._exportar_individual(r_obj)
         )
         btn_exportar.pack(side="left", padx=5)
@@ -203,7 +203,7 @@ class VistaHistorial(ctk.CTkFrame):
         # Botón Eliminar
         btn_eliminar = ctk.CTkButton(
             col2, text="❌",
-            font=("Arial", 11, "bold"), fg_color="#D32F2F", hover_color="#C62828",
+            font=("Azeri Sans", 11, "bold"), fg_color="#D32F2F", hover_color="#C62828",
             width=30, command=lambda r_id=reg_id: self._eliminar_registro(r_id)
         )
         btn_eliminar.pack(side="left", padx=5)

@@ -62,9 +62,9 @@ class VistaConfig(ctk.CTkFrame):
         col1.grid(row=0, column=0, padx=20, pady=20, sticky="n")
 
         ctk.CTkLabel(col1, text="Precios de Referencia",
-                     font=("Arial", 16, "bold")).pack(pady=(0, 5))
+                     font=("Azeri Sans", 20, "bold")).pack(pady=(0, 5))
         ctk.CTkLabel(col1, text="(ARS por kg o unidad)",
-                     font=("Arial", 11), text_color="#888888").pack(pady=(0, 15))
+                     font=("Azeri Sans", 11), text_color="#888888").pack(pady=(0, 15))
 
         precios = [
             ("Oro ($/kg)",              "precio_oro",              self.params.precios.precio_oro),
@@ -84,9 +84,9 @@ class VistaConfig(ctk.CTkFrame):
         col2.grid(row=0, column=1, padx=20, pady=20, sticky="n")
 
         ctk.CTkLabel(col2, text="Tasas de Recuperación",
-                     font=("Arial", 16, "bold")).pack(pady=(0, 5))
+                     font=("Azeri Sans", 20, "bold")).pack(pady=(0, 5))
         ctk.CTkLabel(col2, text="(Fracción entre 0.0 y 1.0)",
-                     font=("Arial", 11), text_color="#888888").pack(pady=(0, 15))
+                     font=("Azeri Sans", 11), text_color="#888888").pack(pady=(0, 15))
 
         tasas = [
             ("Placas sanas",   "tasa_placas_sanas",  self.params.tasas.tasa_placas_sanas),
@@ -97,9 +97,9 @@ class VistaConfig(ctk.CTkFrame):
             self._campo(col2, etiqueta, key, valor)
 
         ctk.CTkLabel(col2, text="Rendimientos de Materiales",
-                     font=("Arial", 16, "bold")).pack(pady=(20, 5))
+                     font=("Azeri Sans", 20, "bold")).pack(pady=(20, 5))
         ctk.CTkLabel(col2, text="(Fracción entre 0.0 y 1.0)",
-                     font=("Arial", 11), text_color="#888888").pack(pady=(0, 15))
+                     font=("Azeri Sans", 11), text_color="#888888").pack(pady=(0, 15))
 
         rendimientos = [
             ("Rendimiento Plástico", "rendimiento_plastico", self.params.composicion.rendimiento_plastico),
@@ -113,9 +113,9 @@ class VistaConfig(ctk.CTkFrame):
         col3.grid(row=0, column=2, padx=20, pady=20, sticky="n")
 
         ctk.CTkLabel(col3, text="Composición de Dispositivos",
-                     font=("Arial", 16, "bold")).pack(pady=(0, 5))
+                     font=("Azeri Sans", 20, "bold")).pack(pady=(0, 5))
         ctk.CTkLabel(col3, text="(Fracción del peso total, suma ≈ 1)",
-                     font=("Arial", 11), text_color="#888888").pack(pady=(0, 15))
+                     font=("Azeri Sans", 11), text_color="#888888").pack(pady=(0, 15))
 
         composicion = [
             ("Cámara — Plástico",  "camara_fraccion_plastico", self.params.composicion.camara_fraccion_plastico),
@@ -131,8 +131,8 @@ class VistaConfig(ctk.CTkFrame):
 
     def _campo(self, parent, etiqueta: str, key: str, valor_inicial: float):
         """Crea un label + entry y lo registra en self._campos."""
-        ctk.CTkLabel(parent, text=etiqueta, font=("Arial", 13)).pack(anchor="w")
-        entry = ctk.CTkEntry(parent, width=200, font=("Arial", 13))
+        ctk.CTkLabel(parent, text=etiqueta, font=("Azeri Sans", 13)).pack(anchor="w")
+        entry = ctk.CTkEntry(parent, width=200, font=("Azeri Sans", 13))
         entry.pack(anchor="w", pady=(2, 12))
         entry.insert(0, str(valor_inicial))
         self._campos[key] = entry
@@ -144,12 +144,12 @@ class VistaConfig(ctk.CTkFrame):
 
         self.btn_guardar = ctk.CTkButton(
             pie, text="💾  Guardar Configuración",
-            width=220, font=("Arial", 14, "bold"),
+            width=220, font=("Azeri Sans", 14, "bold"),
             command=self._guardar
         )
         self.btn_guardar.pack(side="left", padx=20)
 
-        self.lbl_estado = ctk.CTkLabel(pie, text="", font=("Arial", 13))
+        self.lbl_estado = ctk.CTkLabel(pie, text="", font=("Azeri Sans", 13))
         self.lbl_estado.pack(side="left", padx=10)
 
     # ------------------------------------------------------------------
