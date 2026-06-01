@@ -19,12 +19,23 @@ He finalizado exitosamente el proceso de modularización del motor de simulació
         - `core/simulacion_service.py`
         - `core/indicadores/calculador.py`
         - `gui/ventana_resultados.py`
+4. **Limpieza en `gui/vista_usuario.py`**:
+   - Eliminamos la función interna repetitiva `_fila_resultado` y el método `_set_entry`.
+   - Ahora utilizamos el objeto `CTKResultRow` que permite actualizar los valores calculados de forma orientada a objetos (usando `self.out_peso.set(...)`).
 
-## Validación Exitosa
+5. **Scrollable en `gui/vista_config.py`**:
+   - Envolvimos las tres columnas de campos de configuración en un `ctk.CTkScrollableFrame` (`self.scroll_contenedor`) dentro de `VistaConfig`.
+   - Esto evita que los campos inferiores (como "Almacenamiento máx $/GB") se deformen o queden ocultos en pantallas de menor resolución, manteniendo el botón "Guardar Configuración" fijado estáticamente en la parte inferior para una mejor experiencia de usuario.
 
-Para garantizar que los cambios arquitectónicos no rompieran ningún cálculo, ejecuté la suite completa de tests de la aplicación.
+6. **Remoción de pruebas obsoletas**:
+   - Eliminamos `tests/test_prueba_estadistica.py` dado que hacía referencia a la clase `PruebaKolmogorovSmirnov` que fue previamente eliminada por estar sin uso ("al pedo").
+
+## Verificación
+
+- Ejecutamos la suite de pruebas mediante `python -m pytest` y los 49 tests existentes pasaron correctamente.
+- Si vuelves a iniciar el programa, la pestaña **Configuración** ahora permitirá scroll si la ventana es pequeña y todos los inputs se verán legibles y con su tamaño correcto.
 
 > [!TIP]
-> Los **28 tests unitarios** pasaron sin errores. El GCL y la carga de parámetros operativos continúan funcionando de forma idéntica a antes.
+> Al estar separados, si en un futuro decides cambiar el estilo gráfico de los *inputs* (por ejemplo, hacerlos más redondeados, o cambiarles la fuente globalmente), ¡solo tendrás que modificar `componentes.py` una vez!
 
 El proyecto está listo para continuar su desarrollo. ¡La base de código ahora es mucho más limpia y profesional!

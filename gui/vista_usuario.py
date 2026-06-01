@@ -20,6 +20,7 @@ from core.parametros import ParametrosSistema
 from core.simulacion_service import SimulacionService
 from core.validador import Validador
 from gui.ventana_resultados import VentanaResultados
+from gui.componentes import CTKResultRow
 
 
 class VistaUsuario(ctk.CTkFrame):
@@ -144,26 +145,20 @@ class VistaUsuario(ctk.CTkFrame):
             anchor="w", pady=(0, 20)
         )
 
-        def _fila_resultado(parent, etiqueta, prefijo="", icono=None):
-            # Truncar etiquetas largas o usar wraplength
-            ctk.CTkLabel(parent, text=etiqueta, font=("Azeri Sans", 13),
-                         text_color="#AAAAAA", wraplength=280).pack(anchor="w")
-            row = ctk.CTkFrame(parent, fg_color="transparent")
-            row.pack(anchor="w", fill="x", pady=(0, 14), expand=True)
-            if icono and self.iconos.get(icono):
-                ctk.CTkLabel(row, image=self.iconos[icono], text="").pack(side="left", padx=(0, 10), pady=4)
-            if prefijo:
-                ctk.CTkLabel(row, text=prefijo, font=("Azeri Sans", 15, "bold"),
-                             text_color="#4FC3F7").pack(side="left", padx=(0, 8))
-            entry = ctk.CTkEntry(row, state="readonly", font=("Azeri Sans", 13))
-            entry.pack(side="left", fill="x", expand=True)
-            return entry
+        self.out_peso = CTKResultRow(frame, "Peso procesado real (kg)", prefijo="⚖")
+        self.out_peso.pack(fill="x", pady=(0, 5))
 
-        self.out_peso = _fila_resultado(frame, "Peso procesado real (kg)", "⚖")
-        self.out_dispositivos = _fila_resultado(frame, "Dispositivos procesados", icono="dispros")
-        self.out_reventa = _fila_resultado(frame, "Equipos a reventa (CamRec + DvrRec)", icono="resell")
-        self.out_cuellos = _fila_resultado(frame, "Cuellos de botella (Ocupación > 85%)", icono="cuello")
-        self.out_total = _fila_resultado(frame, "Valor total recuperado (ARS)", icono="money")
+        self.out_dispositivos = CTKResultRow(frame, "Dispositivos procesados", icono_img=self.iconos.get("dispros"))
+        self.out_dispositivos.pack(fill="x", pady=(0, 5))
+
+        self.out_reventa = CTKResultRow(frame, "Equipos a reventa (CamRec + DvrRec)", icono_img=self.iconos.get("resell"))
+        self.out_reventa.pack(fill="x", pady=(0, 5))
+
+        self.out_cuellos = CTKResultRow(frame, "Cuellos de botella (Ocupación > 85%)", icono_img=self.iconos.get("cuello"))
+        self.out_cuellos.pack(fill="x", pady=(0, 5))
+
+        self.out_total = CTKResultRow(frame, "Valor total recuperado (ARS)", icono_img=self.iconos.get("money"))
+        self.out_total.pack(fill="x", pady=(0, 5))
 
         self.lbl_ver_informe = ctk.CTkLabel(frame, text="Ver informe completo →",
                      font=("Arial", 12), text_color="#4FC3F7",
@@ -236,15 +231,12 @@ class VistaUsuario(ctk.CTkFrame):
             print(f"Error al guardar en el historial: {e}")
 
         # Actualizar resumen
-        self._set_entry(self.out_peso,
-                        f"{resultado.peso_acumulado:.3f} kg")
-        self._set_entry(self.out_dispositivos,
-                        f"{resultado.n_total}  (Cám: {resultado.cant_cam} | DVR: {resultado.cant_dvr})")
-        self._set_entry(self.out_reventa,
-                        f"{resultado.equipos_reventa}  (Cám: {resultado.cam_rec} | DVR: {resultado.dvr_rec})")
+        self.out_peso.set(f"{resultado.peso_acumulado:.3f} kg")
+        self.out_dispositivos.set(f"{resultado.n_total}  (Cám: {resultado.cant_cam} | DVR: {resultado.cant_dvr})")
+        self.out_reventa.set(f"{resultado.equipos_reventa}  (Cám: {resultado.cam_rec} | DVR: {resultado.dvr_rec})")
         cuellos_str = ", ".join(resultado.cuellos_botella) if resultado.cuellos_botella else "Ninguno"
-        self._set_entry(self.out_cuellos, cuellos_str)
-        self._set_entry(self.out_total, f"{resultado.valor_total:,.2f}")
+        self.out_cuellos.set(cuellos_str)
+        self.out_total.set(f"{resultado.valor_total:,.2f}")
 
         self.ultimo_resultado = resultado
 
@@ -270,10 +262,4 @@ class VistaUsuario(ctk.CTkFrame):
                 pass
         self._ventana_resultado_activa = VentanaResultados(self, self.ultimo_resultado)
 
-    @staticmethod
-    def _set_entry(entry_widget, valor_str: str):
-        """Actualiza un CTkEntry en modo readonly."""
-        entry_widget.configure(state="normal")
-        entry_widget.delete(0, "end")
-        entry_widget.insert(0, valor_str)
-        entry_widget.configure(state="readonly")
+    # (Fin de clase)

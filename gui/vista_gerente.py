@@ -25,6 +25,7 @@ from tkinter import messagebox
 from core.logger import registrar_error
 from core.parametros import ParametrosSistema
 from core.validador import Validador
+from gui.componentes import CTKLabeledEntry
 
 
 class VistaGerente(ctk.CTkFrame):
@@ -77,38 +78,37 @@ class VistaGerente(ctk.CTkFrame):
         ).pack(anchor="w", pady=(0, 20))
 
         # ── Campo: Horas de trabajo ────────────────────────────────────
-        ctk.CTkLabel(frame, text="Horas de trabajo por jornada *",
-                     font=("Azeri Sans", 13)).pack(anchor="w")
-        self.in_horas = ctk.CTkEntry(frame, width=280,
-                                     placeholder_text="Ej: 8  (número > 0)")
-        self.in_horas.pack(anchor="w", pady=(2, 14))
-        self.in_horas.insert(0, str(self.params.operativo.horas_trabajo))
+        self.in_horas = CTKLabeledEntry(
+            frame, label_text="Horas de trabajo por jornada *",
+            placeholder_text="Ej: 8  (número > 0)",
+            default_value=self.params.operativo.horas_trabajo
+        )
+        self.in_horas.pack(anchor="w", pady=(2, 5))
 
         # ── Campo: Cantidad de empleados ───────────────────────────────
-        ctk.CTkLabel(frame, text="Cantidad de empleados *",
-                     font=("Azeri Sans", 13)).pack(anchor="w")
-        self.in_empleados = ctk.CTkEntry(frame, width=280,
-                                         placeholder_text="Ej: 5  (entero > 0)")
-        self.in_empleados.pack(anchor="w", pady=(2, 14))
-        self.in_empleados.insert(0, str(self.params.operativo.cantidad_empleados))
+        self.in_empleados = CTKLabeledEntry(
+            frame, label_text="Cantidad de empleados *",
+            placeholder_text="Ej: 5  (entero > 0)",
+            default_value=self.params.operativo.cantidad_empleados
+        )
+        self.in_empleados.pack(anchor="w", pady=(2, 5))
 
         # ── Campo: Energía consumida ───────────────────────────────────
-        ctk.CTkLabel(frame, text="Energía consumida (kWh) *",
-                     font=("Azeri Sans", 13)).pack(anchor="w")
-        self.in_energia = ctk.CTkEntry(frame, width=280,
-                                       placeholder_text="Ej: 100  (número ≥ 0)")
-        self.in_energia.pack(anchor="w", pady=(2, 14))
-        self.in_energia.insert(0, str(self.params.operativo.energia_consumida))
+        self.in_energia = CTKLabeledEntry(
+            frame, label_text="Energía consumida (kWh) *",
+            placeholder_text="Ej: 100  (número ≥ 0)",
+            default_value=self.params.operativo.energia_consumida
+        )
+        self.in_energia.pack(anchor="w", pady=(2, 5))
 
         # ── Campo: Coeficiente de pérdida ──────────────────────────────
-        ctk.CTkLabel(frame, text="Coeficiente de pérdida del proceso *",
-                     font=("Azeri Sans", 13)).pack(anchor="w")
-        ctk.CTkLabel(frame, text="Fracción entre 0.0 (sin pérdida) y 1.0 (pérdida total)",
-                     font=("Azeri Sans", 11), text_color="#888888").pack(anchor="w")
-        self.in_coef_perdida = ctk.CTkEntry(frame, width=280,
-                                            placeholder_text="Ej: 0.05")
-        self.in_coef_perdida.pack(anchor="w", pady=(2, 14))
-        self.in_coef_perdida.insert(0, str(self.params.operativo.coeficiente_perdida))
+        self.in_coef_perdida = CTKLabeledEntry(
+            frame, label_text="Coeficiente de pérdida del proceso *",
+            hint_text="Fracción entre 0.0 (sin pérdida) y 1.0 (pérdida total)",
+            placeholder_text="Ej: 0.05",
+            default_value=self.params.operativo.coeficiente_perdida
+        )
+        self.in_coef_perdida.pack(anchor="w", pady=(2, 5))
 
         # ── Campo: Tipo de maquinaria ──────────────────────────────────
         ctk.CTkLabel(frame, text="Tipo de maquinaria *",
@@ -229,12 +229,12 @@ class VistaGerente(ctk.CTkFrame):
         ]
         self._entries_indicadores = {}
         for etiqueta, key in indicadores:
-            ctk.CTkLabel(frame, text=etiqueta, font=("Azeri Sans", 13),
-                         text_color="#AAAAAA").pack(anchor="w")
-            entry = ctk.CTkEntry(frame, width=240, state="readonly",
-                                 font=("Azeri Sans", 13))
-            entry.pack(anchor="w", pady=(2, 10))
-            self._entries_indicadores[key] = entry
+            labeled_entry = CTKLabeledEntry(
+                frame, label_text=etiqueta, width=240
+            )
+            labeled_entry.configure_entry(state="readonly")
+            labeled_entry.pack(anchor="w", pady=(2, 5))
+            self._entries_indicadores[key] = labeled_entry
 
     def _cargar_parametros(self):
         """Valida todos los campos y carga los parámetros en el sistema."""
@@ -297,25 +297,6 @@ class VistaGerente(ctk.CTkFrame):
         # Notificar a otras vistas (ej: VistaUsuario actualiza su indicador)
         if self.callback:
             self.callback()
-
-    def actualizar_indicadores(self, coef_prod: float, eficacia: float,
-                               eficiencia: float, rango_mejora: float):
-        """
-        Actualiza los entries de indicadores tras ejecutar una simulación.
-        Puede ser llamado externamente por la vista de usuario.
-        """
-        datos = {
-            "coef_prod":   f"{coef_prod:.4f} u/h/emp",
-            "eficacia":    f"{eficacia:.2f} %",
-            "eficiencia":  f"{eficiencia:.2f} %",
-            "rango_mejora": f"{rango_mejora:.2f} %",
-        }
-        for key, valor in datos.items():
-            entry = self._entries_indicadores[key]
-            entry.configure(state="normal")
-            entry.delete(0, "end")
-            entry.insert(0, valor)
-            entry.configure(state="readonly")
 
     # ------------------------------------------------------------------
     # Presets y Valores por Defecto

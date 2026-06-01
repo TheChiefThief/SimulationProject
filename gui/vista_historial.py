@@ -12,6 +12,7 @@ import customtkinter as ctk
 from core.logger import registrar_error
 from core.historial_simulador import HistorialSimulador
 from gui.ventana_resultados import VentanaResultados
+from core.exportadores import exportar_a_excel, exportar_a_pdf
 
 
 class VistaHistorial(ctk.CTkFrame):
@@ -230,30 +231,11 @@ class VistaHistorial(ctk.CTkFrame):
 
     def _exportar_individual(self, resultado_obj):
         """Invoca la exportación a Excel directamente para este objeto de resultados."""
-        # Podemos instanciar la VentanaResultados temporalmente o simular la exportación
-        # Para evitar abrir la ventana, implementamos una llamada directa reutilizando la lógica
-        # de VentanaResultados._exportar_excel
-        from gui.ventana_resultados import VentanaResultados
-        try:
-            v_temp = VentanaResultados(self, resultado_obj)
-            v_temp.withdraw()  # Ocultar ventana para que no se note
-            v_temp._exportar_excel()
-            v_temp.destroy()
-        except Exception as e:
-            # registros de errores
-            registrar_error("Error al exportar individualmente a Excel desde VistaHistorial", e)
+        exportar_a_excel(resultado_obj, parent=self)
 
     def _exportar_pdf_individual(self, resultado_obj):
         """Invoca la exportación a PDF directamente para este objeto de resultados."""
-        from gui.ventana_resultados import VentanaResultados
-        try:
-            v_temp = VentanaResultados(self, resultado_obj)
-            v_temp.withdraw()  # Ocultar ventana
-            v_temp._exportar_pdf()
-            v_temp.destroy()
-        except Exception as e:
-            # registros de errores
-            registrar_error("Error al exportar individualmente a PDF desde VistaHistorial", e)
+        exportar_a_pdf(resultado_obj, parent=self)
 
     def _eliminar_registro(self, registro_id: str):
         """Elimina un único registro del historial."""

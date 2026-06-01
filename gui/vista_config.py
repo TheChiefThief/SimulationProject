@@ -21,6 +21,7 @@ from tkinter import messagebox
 from core.logger import registrar_error
 from core.parametros import ParametrosSistema
 from core.validador import Validador
+from gui.componentes import CTKLabeledEntry
 
 
 class VistaConfig(ctk.CTkFrame):
@@ -47,6 +48,13 @@ class VistaConfig(ctk.CTkFrame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=0)
 
+        # Contenedor scrollable para las columnas de configuración
+        self.scroll_contenedor = ctk.CTkScrollableFrame(self, fg_color="transparent")
+        self.scroll_contenedor.grid(row=0, column=0, columnspan=3, sticky="nsew", padx=10, pady=10)
+        self.scroll_contenedor.grid_columnconfigure(0, weight=1)
+        self.scroll_contenedor.grid_columnconfigure(1, weight=1)
+        self.scroll_contenedor.grid_columnconfigure(2, weight=1)
+
         self._campos = {}  # dict[nombre_param] -> CTkEntry
         self._construir_columnas()
         self._construir_pie()
@@ -58,7 +66,7 @@ class VistaConfig(ctk.CTkFrame):
     def _construir_columnas(self):
         """Construye las tres columnas de parámetros configurables."""
         # ── Columna 1: Precios ─────────────────────────────────────────
-        col1 = ctk.CTkFrame(self, fg_color="transparent")
+        col1 = ctk.CTkFrame(self.scroll_contenedor, fg_color="transparent")
         col1.grid(row=0, column=0, padx=20, pady=20, sticky="n")
 
         ctk.CTkLabel(col1, text="Precios de Referencia",
@@ -80,7 +88,7 @@ class VistaConfig(ctk.CTkFrame):
             self._campo(col1, etiqueta, key, valor)
 
         # ── Columna 2: Tasas y rendimientos ───────────────────────────
-        col2 = ctk.CTkFrame(self, fg_color="transparent")
+        col2 = ctk.CTkFrame(self.scroll_contenedor, fg_color="transparent")
         col2.grid(row=0, column=1, padx=20, pady=20, sticky="n")
 
         ctk.CTkLabel(col2, text="Tasas de Recuperación",
@@ -109,7 +117,7 @@ class VistaConfig(ctk.CTkFrame):
             self._campo(col2, etiqueta, key, valor)
 
         # ── Columna 3: Composición de materiales ──────────────────────
-        col3 = ctk.CTkFrame(self, fg_color="transparent")
+        col3 = ctk.CTkFrame(self.scroll_contenedor, fg_color="transparent")
         col3.grid(row=0, column=2, padx=20, pady=20, sticky="n")
 
         ctk.CTkLabel(col3, text="Composición de Dispositivos",
@@ -131,11 +139,11 @@ class VistaConfig(ctk.CTkFrame):
 
     def _campo(self, parent, etiqueta: str, key: str, valor_inicial: float):
         """Crea un label + entry y lo registra en self._campos."""
-        ctk.CTkLabel(parent, text=etiqueta, font=("Azeri Sans", 13)).pack(anchor="w")
-        entry = ctk.CTkEntry(parent, width=200, font=("Azeri Sans", 13))
-        entry.pack(anchor="w", pady=(2, 12))
-        entry.insert(0, str(valor_inicial))
-        self._campos[key] = entry
+        labeled_entry = CTKLabeledEntry(
+            parent, label_text=etiqueta, width=200, default_value=valor_inicial
+        )
+        labeled_entry.pack(anchor="w", pady=(2, 5))
+        self._campos[key] = labeled_entry
 
     def _construir_pie(self):
         """Fila inferior con botón guardar y mensaje de estado."""
