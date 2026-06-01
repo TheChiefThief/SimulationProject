@@ -98,11 +98,29 @@ class CTKKeyValueRow(ctk.CTkFrame):
         self.pack(fill="x", pady=2, padx=(5, 20))
         
         color_val = "#F06292" if destacar else "#E0E0E0"
-        ctk.CTkLabel(self, text=etiqueta, font=(font_family, 12),
-                     text_color="#AAAAAA").pack(side="left")
+        
+        # Usamos grid para evitar superposición bajo cualquier circunstancia
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(1, weight=1)
+        
+        # Etiqueta clave a la izquierda
+        self.lbl_key = ctk.CTkLabel(self, text=etiqueta, font=(font_family, 12),
+                                     text_color="#AAAAAA", justify="left")
+        self.lbl_key.grid(row=0, column=0, sticky="nw", padx=(0, 10))
+        
+        # Etiqueta valor a la derecha (con wraplength dinámico o justificado)
         self.lbl_valor = ctk.CTkLabel(self, text=valor, font=(font_family, 12, "bold"),
-                                      text_color=color_val)
-        self.lbl_valor.pack(side="right")
+                                       text_color=color_val, justify="right")
+        self.lbl_valor.grid(row=0, column=1, sticky="ne")
+        
+        # Enlace dinámico para wraplength responsive del valor
+        self.bind("<Configure>", self._on_configure)
+        
+    def _on_configure(self, event):
+        key_w = self.lbl_key.winfo_reqwidth()
+        ancho_valor = max(100, event.width - key_w - 25)
+        if self.lbl_valor.cget("wraplength") != ancho_valor:
+            self.lbl_valor.configure(wraplength=ancho_valor)
         
     def set(self, valor_str: str):
         self.lbl_valor.configure(text=valor_str)

@@ -31,11 +31,34 @@ class ParametrosSistema:
     """
 
     def __init__(self):
+        self._observadores = {"parametros_cargados": []}
         self.precios = PreciosParametros()
         self.composicion = ComposicionParametros()
         self.tasas = TasasRecuperacionParametros()
         self.operativo = ParametrosOperativo()
-        self.parametros_cargados: bool = True  # Por defecto habilitado con valores base
+        self._parametros_cargados: bool = True  # Por defecto habilitado con valores base
+
+    def suscribir(self, evento: str, callback):
+        """Suscribe un callback a un evento específico."""
+        if evento not in self._observadores:
+            self._observadores[evento] = []
+        self._observadores[evento].append(callback)
+
+    def notificar(self, evento: str):
+        """Notifica a todos los observadores de un evento específico."""
+        if evento in self._observadores:
+            for callback in self._observadores[evento]:
+                callback()
+
+    @property
+    def parametros_cargados(self) -> bool:
+        return self._parametros_cargados
+
+    @parametros_cargados.setter
+    def parametros_cargados(self, valor: bool):
+        self._parametros_cargados = valor
+        if valor:
+            self.notificar("parametros_cargados")
 
     def validar(self) -> list[str]:
         """

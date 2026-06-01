@@ -18,9 +18,7 @@ from PIL import Image
 
 from core.parametros import ParametrosSistema
 from core.simulacion_service import SimulacionService
-from gui.vista_usuario import VistaUsuario
-from gui.vista_gerente import VistaGerente
-from gui.vista_config import VistaConfig
+
 
 
 class AppSimulador(ctk.CTk):
@@ -116,54 +114,14 @@ class AppSimulador(ctk.CTk):
         self.vista_actual = self.T_USUARIO
 
     def _construir_vistas(self):
-        """Crea el contenedor principal y monta las vistas."""
+        """Crea el contenedor principal y prepara la estructura de lazy loading."""
         # Contenedor para las vistas
         self.contenedor_vistas = ctk.CTkFrame(self, fg_color="transparent")
         self.contenedor_vistas.grid(row=1, column=0, sticky="nsew", padx=15, pady=(0, 15))
 
-        # ── Vista de Usuario ───────────────────────────────────────────
-        self.frame_usuario = ctk.CTkFrame(self.contenedor_vistas, fg_color="transparent")
-        self.frame_usuario.pack(fill="both", expand=True)
+        self.vistas_cacheadas = {}
         
-        self.vista_usuario = VistaUsuario(
-            self.frame_usuario,
-            params=self.params,
-            simulacion_service=self.simulacion_service,
-            callback_simulacion_ejecutada=self._on_simulacion_ejecutada,
-            callback_ver_historial=lambda: self._cambiar_vista(self.T_HISTORIAL)
-        )
-        self.vista_usuario.pack(fill="both", expand=True)
-
-        # ── Vista del Gerente ──────────────────────────────────────────
-        self.frame_gerente = ctk.CTkFrame(self.contenedor_vistas, fg_color="transparent")
-        
-        self.vista_gerente = VistaGerente(
-            self.frame_gerente,
-            params=self.params,
-            callback_parametros_cargados=self._on_parametros_cargados
-        )
-        self.vista_gerente.pack(fill="both", expand=True)
-
-        # ── Vista de Configuración ─────────────────────────────────────
-        self.frame_config = ctk.CTkFrame(self.contenedor_vistas, fg_color="transparent")
-        
-        self.vista_config = VistaConfig(
-            self.frame_config,
-            params=self.params,
-            callback_config_guardada=self._on_config_guardada
-        )
-        self.vista_config.pack(fill="both", expand=True)
-
-        # ── Vista de Historial ─────────────────────────────────────────
-        from gui.vista_historial import VistaHistorial
-        self.frame_historial = ctk.CTkFrame(self.contenedor_vistas, fg_color="transparent")
-        
-        self.vista_historial = VistaHistorial(
-            self.frame_historial
-        )
-        self.vista_historial.pack(fill="both", expand=True)
-        
-        # Mostrar solo la vista actual
+        # Cargar por defecto la primera vista
         self._mostrar_vista(self.T_USUARIO)
 
     def _cambiar_vista(self, nombre_vista):
@@ -179,19 +137,58 @@ class AppSimulador(ctk.CTk):
                 btn.configure(fg_color="#0E3848")
 
     def _mostrar_vista(self, nombre_vista):
-        """Muestra la vista especificada y oculta las demás."""
-        frames = {
-            self.T_USUARIO: self.frame_usuario,
-            self.T_GERENTE: self.frame_gerente,
-            self.T_CONFIG: self.frame_config,
-            self.T_HISTORIAL: self.frame_historial
-        }
-        
-        for vista_name, frame in frames.items():
-            if vista_name == nombre_vista:
-                frame.pack(fill="both", expand=True)
-            else:
+        """Muestra la vista especificada (usando lazy loading) y oculta las demás."""
+        if nombre_vista not in self.vistas_cacheadas:
+            frame = ctk.CTkFrame(self.contenedor_vistas, fg_color="transparent")
+            
+            if nombre_vista == self.T_USUARIO:
+                from gui.vista_usuario import VistaUsuario
+                vista = VistaUsuario(
+                    frame,
+                    params=self.params,
+                    simulacion_service=self.simulacion_service,
+                    callback_simulacion_ejecutada=self._on_simulacion_ejecutada,
+                    callback_ver_historial=lambda: self._cambiar_vista(self.T_HISTORIAL)
+                )
+                vista.pack(fill="both", expand=True)
+                self.vista_usuario = vista
+                
+            elif nombre_vista == self.T_GERENTE:
+                from gui.vista_gerente import VistaGerente
+                vista = VistaGerente(
+                    frame,
+                    params=self.params
+                )
+                vista.pack(fill="both", expand=True)
+                self.vista_gerente = vista
+                
+            elif nombre_vista == self.T_CONFIG:
+                from gui.vista_config import VistaConfig
+                vista = VistaConfig(
+                    frame,
+                    params=self.params
+                )
+                vista.pack(fill="both", expand=True)
+                self.vista_config = vista
+                
+            elif nombre_vista == self.T_HISTORIAL:
+                from gui.vista_historial import VistaHistorial
+                vista = VistaHistorial(
+                    frame
+                )
+                vista.pack(fill="both", expand=True)
+                self.vista_historial = vista
+                
+            self.vistas_cacheadas[nombre_vista] = frame
+
+        # Ocultar todas las demás vistas que ya estén cargadas en la UI
+        for vista_name, frame in self.vistas_cacheadas.items():
+            if vista_name != nombre_vista:
                 frame.pack_forget()
+
+        # Mostrar la nueva vista
+        self.vistas_cacheadas[nombre_vista].pack(fill="both", expand=True)
+        self.vista_actual = nombre_vista
 
     def _construir_tabs(self):
         """Método deprecado, reemplazado por _construir_vistas()."""
@@ -201,19 +198,7 @@ class AppSimulador(ctk.CTk):
     # Callbacks de comunicación entre vistas
     # ------------------------------------------------------------------
 
-    def _on_parametros_cargados(self):
-        """
-        Llamado por VistaGerente cuando los parámetros operativos
-        son cargados exitosamente. Notifica a VistaUsuario.
-        """
-        self.vista_usuario.actualizar_estado_parametros()
 
-    def _on_config_guardada(self):
-        """
-        Llamado por VistaConfig cuando la configuración es guardada.
-        Puede usarse para propagar cambios si fuera necesario.
-        """
-        pass  # Extensible para futuras necesidades
 
     def _on_simulacion_ejecutada(self):
         """Llamado cuando se ejecuta una simulación para recargar el historial."""

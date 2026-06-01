@@ -129,6 +129,7 @@ class VistaHistorial(ctk.CTkFrame):
         
         # Deserializar resultados para acceder a sus properties
         r = HistorialSimulador.deserializar_resultados(registro.get("resultados", {}))
+        r.fecha = fecha
 
         # Tarjeta contenedor
         card = ctk.CTkFrame(self.scroll_historial, fg_color="#182232", border_width=1, border_color="#233248")

@@ -50,6 +50,9 @@ class VistaUsuario(ctk.CTkFrame):
         self._construir_panel_izquierdo()
         self._construir_panel_derecho()
 
+        # Suscribirse al evento de parámetros cargados
+        self.params.suscribir("parametros_cargados", self.actualizar_estado_parametros)
+
     # ------------------------------------------------------------------
     # UI Construction
     # ------------------------------------------------------------------
@@ -72,12 +75,12 @@ class VistaUsuario(ctk.CTkFrame):
         ).pack(anchor="w", fill="x")
         ctk.CTkLabel(
             frame,
-            text="El programa procesará dispositivos hasta alcanzar este peso.",
+            text="El programa procesará dispositivos hasta alcanzar este peso (Máx 10000 kg).",
             font=("Azeri Sans", 14), text_color="#888888", wraplength=280
         ).pack(anchor="w", fill="x", pady=(2, 0))
         self.in_b_kg = ctk.CTkEntry(
             frame,
-            placeholder_text="Ej: 100  (kg, número > 0)",
+            placeholder_text="Ej: 100  (kg, de 0.1 a 10000)",
             corner_radius=12,
             height=50
         )
@@ -196,18 +199,21 @@ class VistaUsuario(ctk.CTkFrame):
             self.lbl_error.configure(
                 text="⛔ Debe cargar los parámetros en la Vista del Gerente."
             )
+            self.after(3000, lambda: self.lbl_error.configure(text=""))
             return
 
         try:
             b_kg = Validador.validar_float(
                 self.in_b_kg.get(), "Peso total del lote (B)",
-                min_valor=0.1
+                min_valor=0.1,
+                max_valor=10000.0
             )
         except ValueError as e:
             # registros de errores
             registrar_error("Error de validación del lote B (kg) en VistaUsuario", e)
             msg = str(e)
             self.lbl_error.configure(text=f"⚠ {msg}")
+            self.after(3000, lambda: self.lbl_error.configure(text=""))
             messagebox.showwarning("Aviso de entrada", msg)
             return
 
@@ -217,6 +223,7 @@ class VistaUsuario(ctk.CTkFrame):
             # registros de errores
             registrar_error("Error en la ejecución de la simulación en VistaUsuario", e)
             self.lbl_error.configure(text=f"⛔ {e}")
+            self.after(3000, lambda: self.lbl_error.configure(text=""))
             return
 
         # Guardar en el historial

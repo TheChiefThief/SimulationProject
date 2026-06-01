@@ -22,10 +22,9 @@ y se notifica a todas las vistas dependientes.
 
 import customtkinter as ctk
 from tkinter import messagebox
-from core.logger import registrar_error
 from core.parametros import ParametrosSistema
-from core.validador import Validador
 from gui.componentes import CTKLabeledEntry
+from gui.controllers.gerente_controller import GerenteController
 
 
 class VistaGerente(ctk.CTkFrame):
@@ -34,20 +33,15 @@ class VistaGerente(ctk.CTkFrame):
     Se monta dentro del CTkTabview de la ventana principal.
     """
 
-    def __init__(self, parent, params: ParametrosSistema,
-                 callback_parametros_cargados=None):
+    def __init__(self, parent, params: ParametrosSistema):
         """
         Args:
             parent:                       Widget padre (el tab del tabview).
             params:                       Objeto de parámetros compartido.
-            callback_parametros_cargados: Función a llamar cuando los
-                                          parámetros se cargan exitosamente,
-                                          para notificar a otras vistas.
         """
         super().__init__(parent, fg_color="transparent")
         self.params = params
-        self.callback = callback_parametros_cargados
-        self.presets = {}  # Almacena los presets de la sesión actual
+        self.controlador = GerenteController(self.params, self)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -58,7 +52,7 @@ class VistaGerente(ctk.CTkFrame):
 
         # Precargar los parámetros automáticamente al inicio
         # usando los valores por defecto de params.operativo
-        self._cargar_parametros()
+        self.controlador.cargar_parametros()
 
     # ------------------------------------------------------------------
     # Construcción de UI
@@ -126,54 +120,7 @@ class VistaGerente(ctk.CTkFrame):
         ctk.CTkLabel(frame, text="* Campos obligatorios",
                      font=("Azeri Sans", 11), text_color="#888888").pack(anchor="w", pady=(0, 10))
 
-        # ── Acciones (Guardar, Defaults) ───────────────────────────────
-        acciones_frame = ctk.CTkFrame(frame, fg_color="transparent")
-        acciones_frame.pack(anchor="w", pady=(15, 5))
 
-        self.btn_guardar = ctk.CTkButton(
-            acciones_frame, text="💾  Cargar Parámetros",
-            width=150, font=("Azeri Sans", 13, "bold"),
-            command=self._cargar_parametros
-        )
-        self.btn_guardar.pack(side="left", padx=(0, 10))
-
-        self.btn_defaults = ctk.CTkButton(
-            acciones_frame, text="🔄  Valores Base",
-            width=130, font=("Azeri Sans", 13), fg_color="#F57C00", hover_color="#EF6C00",
-            command=self._cargar_valores_por_defecto
-        )
-        self.btn_defaults.pack(side="left")
-
-        # ── Presets ───────────────────────────────────────────────────
-        presets_frame = ctk.CTkFrame(frame, fg_color="transparent")
-        presets_frame.pack(anchor="w", pady=(5, 10))
-
-        self.combo_presets = ctk.CTkOptionMenu(
-            presets_frame, values=["Preset 1", "Preset 2", "Preset 3"], width=110,
-            font=("Azeri Sans", 12)
-        )
-        self.combo_presets.pack(side="left", padx=(0, 10))
-
-        self.btn_guardar_preset = ctk.CTkButton(
-            presets_frame, text="Guardar Preset", width=100, font=("Azeri Sans", 12),
-            fg_color="#4DB6AC", hover_color="#009688", text_color="#111111",
-            command=self._guardar_preset
-        )
-        self.btn_guardar_preset.pack(side="left", padx=(0, 10))
-
-        self.btn_cargar_preset = ctk.CTkButton(
-            presets_frame, text="Cargar Preset", width=100, font=("Azeri Sans", 12),
-            fg_color="#29B6F6", hover_color="#0288D1", text_color="#111111",
-            command=self._cargar_preset
-        )
-        self.btn_cargar_preset.pack(side="left")
-
-        # Etiqueta de error
-        self.lbl_error = ctk.CTkLabel(
-            frame, text="", font=("Azeri Sans", 12),
-            text_color="#EF5350", wraplength=300
-        )
-        self.lbl_error.pack(anchor="w", pady=(10, 0))
 
     def _construir_panel_derecho(self):
         """Panel de estado y resultados de eficiencia operativa."""
@@ -216,143 +163,134 @@ class VistaGerente(ctk.CTkFrame):
         sep2 = ctk.CTkFrame(frame, height=1, fg_color="#2c3e50")
         sep2.pack(fill="x", pady=(20, 15))
 
-        # Resultados de indicadores (se llenan tras ejecutar)
-        ctk.CTkLabel(frame, text="Indicadores de Productividad:",
+        # Acciones de Carga de Parámetros
+        ctk.CTkLabel(frame, text="Acciones:",
                      font=("Azeri Sans", 14, "bold"),
                      text_color="#AAAAAA").pack(anchor="w", pady=(0, 10))
 
-        indicadores = [
-            ("Coef. Productividad", "coef_prod"),
-            ("Eficacia",            "eficacia"),
-            ("Eficiencia",          "eficiencia"),
-            ("Rango de Mejora",     "rango_mejora"),
-        ]
-        self._entries_indicadores = {}
-        for etiqueta, key in indicadores:
-            labeled_entry = CTKLabeledEntry(
-                frame, label_text=etiqueta, width=240
-            )
-            labeled_entry.configure_entry(state="readonly")
-            labeled_entry.pack(anchor="w", pady=(2, 5))
-            self._entries_indicadores[key] = labeled_entry
+        acciones_frame = ctk.CTkFrame(frame, fg_color="transparent")
+        acciones_frame.pack(anchor="w", pady=(5, 5))
 
-    def _cargar_parametros(self):
-        """Valida todos los campos y carga los parámetros en el sistema."""
+        self.btn_guardar = ctk.CTkButton(
+            acciones_frame, text="💾  Cargar Parámetros",
+            width=150, font=("Azeri Sans", 13, "bold"),
+            command=self.controlador.cargar_parametros
+        )
+        self.btn_guardar.pack(side="left", padx=(0, 10))
+
+        self.btn_defaults = ctk.CTkButton(
+            acciones_frame, text="🔄  Valores Base",
+            width=130, font=("Azeri Sans", 13), fg_color="#F57C00", hover_color="#EF6C00",
+            command=self.controlador.cargar_valores_base
+        )
+        self.btn_defaults.pack(side="left")
+
+        # Configuración de Presets
+        ctk.CTkLabel(frame, text="Presets del Sistema:",
+                     font=("Azeri Sans", 14, "bold"),
+                     text_color="#AAAAAA").pack(anchor="w", pady=(15, 10))
+
+        presets_frame = ctk.CTkFrame(frame, fg_color="transparent")
+        presets_frame.pack(anchor="w", pady=(5, 10))
+
+        self.combo_presets = ctk.CTkOptionMenu(
+            presets_frame, values=["Preset 1", "Preset 2", "Preset 3"], width=110,
+            font=("Azeri Sans", 12)
+        )
+        self.combo_presets.pack(side="left", padx=(0, 10))
+
+        self.btn_guardar_preset = ctk.CTkButton(
+            presets_frame, text="Guardar Preset", width=100, font=("Azeri Sans", 12),
+            fg_color="#4DB6AC", hover_color="#009688", text_color="#111111",
+            command=self.controlador.guardar_preset
+        )
+        self.btn_guardar_preset.pack(side="left", padx=(0, 10))
+
+        self.btn_cargar_preset = ctk.CTkButton(
+            presets_frame, text="Cargar Preset", width=100, font=("Azeri Sans", 12),
+            fg_color="#29B6F6", hover_color="#0288D1", text_color="#111111",
+            command=self.controlador.cargar_preset
+        )
+        self.btn_cargar_preset.pack(side="left")
+
+        # Etiqueta de error
+        self.lbl_error = ctk.CTkLabel(
+            frame, text="", font=("Azeri Sans", 12),
+            text_color="#EF5350", wraplength=280
+        )
+        self.lbl_error.pack(anchor="w", pady=(10, 0))
+
+    # ------------------------------------------------------------------
+    # Métodos expuestos para el controlador (MVC)
+    # ------------------------------------------------------------------
+
+    def obtener_datos(self) -> dict:
+        """Retorna un diccionario con los valores de texto de cada campo."""
+        return {
+            "horas": self.in_horas.get(),
+            "empleados": self.in_empleados.get(),
+            "energia": self.in_energia.get(),
+            "coef_perdida": self.in_coef_perdida.get(),
+            "tipo_maquinaria": self.opt_maquinaria.get()
+        }
+
+    def limpiar_error(self):
+        """Limpia el mensaje de error."""
         self.lbl_error.configure(text="")
 
-        try:
-            # ── Validar: Horas de trabajo ──────────────────────────────────
-            # Se limita de 0.1 a 8.0 según requerimiento del profesor ("como maximo 8 horas")
-            horas = Validador.validar_float(
-                self.in_horas.get(), "Horas de trabajo por jornada", min_valor=0.1, max_valor=8.0
-            )
+    def mostrar_error(self, mensaje: str):
+        """Muestra un mensaje de error y un popup."""
+        self.lbl_error.configure(text=f"⚠ {mensaje}")
+        self.after(3000, self.limpiar_error)
+        messagebox.showerror("Error de Operación", mensaje)
 
-            # ── Validar: Cantidad de empleados ─────────────────────────────
-            empleados = Validador.validar_entero(
-                self.in_empleados.get(), "Cantidad de empleados", min_valor=1, max_valor=1000
-            )
-
-            # ── Validar: Energía consumida ─────────────────────────────────
-            energia = Validador.validar_float(
-                self.in_energia.get(), "Energía consumida (kWh)", min_valor=0.0, max_valor=100000.0
-            )
-
-            # ── Validar: Coeficiente de pérdida ───────────────────────────
-            coef = Validador.validar_fraccion(
-                self.in_coef_perdida.get(), "Coeficiente de pérdida"
-            )
-
-        except ValueError as e:
-            # registros de errores
-            registrar_error("Error de validación de parámetros operativos en VistaGerente", e)
-            mensaje_error = str(e)
-            self.lbl_error.configure(text=f"⚠ {mensaje_error}")
-            messagebox.showerror("Error de Operación", mensaje_error)
-            return
-
-        # ── Aplicar parámetros al objeto compartido ────────────────────
-        self.params.operativo.horas_trabajo = horas
-        self.params.operativo.cantidad_empleados = empleados
-        self.params.operativo.energia_consumida = energia
-        self.params.operativo.coeficiente_perdida = coef
-        self.params.operativo.tipo_maquinaria = self.opt_maquinaria.get()
-        self.params.parametros_cargados = True
-
-        # ── Actualizar indicador visual ────────────────────────────────
+    def mostrar_exito(self, mensaje: str, horas, empleados, energia, tipo_maquinaria, coef):
+        """Actualiza el indicador visual y muestra el resumen de carga exitosa."""
         self.lbl_indicador.configure(
-            text="✔  Parámetros cargados correctamente",
+            text=f"✔  {mensaje}",
             text_color="#66BB6A"
         )
-
-        # Resumen textual de lo cargado
         resumen = (
             f"• Horas de trabajo: {horas:.1f} h\n"
             f"• Empleados: {empleados}\n"
             f"• Energía: {energia:.1f} kWh\n"
             f"• Coef. pérdida: {coef:.3f}\n"
-            f"• Maquinaria: {self.params.operativo.tipo_maquinaria}"
+            f"• Maquinaria: {tipo_maquinaria}"
         )
         self.lbl_resumen.configure(text=resumen, text_color="#E0E0E0")
 
-        # Notificar a otras vistas (ej: VistaUsuario actualiza su indicador)
-        if self.callback:
-            self.callback()
-
-    # ------------------------------------------------------------------
-    # Presets y Valores por Defecto
-    # ------------------------------------------------------------------
-
-    def _cargar_valores_por_defecto(self):
-        """Restaura los valores iniciales predeterminados (hardcodeados o desde params defaults)."""
-        self.in_horas.delete(0, "end")
-        self.in_horas.insert(0, "8.0")
-        
-        self.in_empleados.delete(0, "end")
-        self.in_empleados.insert(0, "5")
-        
-        self.in_energia.delete(0, "end")
-        self.in_energia.insert(0, "100.0")
-        
-        self.in_coef_perdida.delete(0, "end")
-        self.in_coef_perdida.insert(0, "0.05")
-        
-        self.opt_maquinaria.set("Proceso Manual")
-        self._cargar_parametros()
-        messagebox.showinfo("Valores Base", "Se han restaurado los valores por defecto del sistema.")
-
-    def _guardar_preset(self):
-        """Guarda la configuración actual de entradas en el slot seleccionado."""
-        nombre = self.combo_presets.get()
-        self.presets[nombre] = (
-            self.in_horas.get(),
-            self.in_empleados.get(),
-            self.in_energia.get(),
-            self.in_coef_perdida.get(),
-            self.opt_maquinaria.get()
-        )
-        messagebox.showinfo("Preset Guardado", f"Se guardaron los valores actuales en '{nombre}'.")
-
-    def _cargar_preset(self):
-        """Carga en los campos la configuración guardada en el slot seleccionado."""
-        nombre = self.combo_presets.get()
-        if nombre not in self.presets:
-            messagebox.showwarning("Preset Vacío", f"El '{nombre}' no tiene valores guardados.\nGuarde uno primero.")
-            return
-            
-        horas, emp, energia, coef, maq = self.presets[nombre]
-        
+    def cargar_datos(self, horas, empleados, energia, coef_perdida, tipo_maquinaria):
+        """Carga valores en los campos de entrada de la UI."""
         self.in_horas.delete(0, "end")
         self.in_horas.insert(0, horas)
         
         self.in_empleados.delete(0, "end")
-        self.in_empleados.insert(0, emp)
+        self.in_empleados.insert(0, empleados)
         
         self.in_energia.delete(0, "end")
         self.in_energia.insert(0, energia)
         
         self.in_coef_perdida.delete(0, "end")
-        self.in_coef_perdida.insert(0, coef)
+        self.in_coef_perdida.insert(0, coef_perdida)
         
-        self.opt_maquinaria.set(maq)
-        self._cargar_parametros()
+        self.opt_maquinaria.set(tipo_maquinaria)
+
+    def obtener_preset_seleccionado(self) -> str:
+        """Devuelve el nombre del preset actualmente seleccionado."""
+        return self.combo_presets.get()
+
+    def mostrar_mensaje_valores_base(self):
+        """Muestra popup de restauración de valores base."""
+        messagebox.showinfo("Valores Base", "Se han restaurado los valores por defecto del sistema.")
+
+    def mostrar_mensaje_preset_guardado(self, nombre: str):
+        """Muestra popup de preset guardado."""
+        messagebox.showinfo("Preset Guardado", f"Se guardaron los valores actuales en '{nombre}'.")
+
+    def mostrar_mensaje_preset_cargado(self, nombre: str):
+        """Muestra popup de preset cargado."""
         messagebox.showinfo("Preset Cargado", f"Se cargaron correctamente los valores de '{nombre}'.")
+
+    def mostrar_error_preset_vacio(self, nombre: str):
+        """Muestra popup indicando que el preset seleccionado está vacío."""
+        messagebox.showwarning("Preset Vacío", f"El '{nombre}' no tiene valores guardados.\nGuarde uno primero.")

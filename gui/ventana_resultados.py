@@ -29,6 +29,8 @@ COLOR_PRIMARIO = "#29B6F6"
 COLOR_SECUNDARIO = "#FFCA28"
 
 
+import tkinter as tk
+
 class VentanaResultados(ctk.CTkToplevel):
     """
     Ventana emergente modal con informe completo, gráficos y exportación.
@@ -51,15 +53,25 @@ class VentanaResultados(ctk.CTkToplevel):
     # ------------------------------------------------------------------
 
     def _construir_layout(self):
-        self.grid_columnconfigure(0, weight=2)
-        self.grid_columnconfigure(1, weight=3)
-        self.grid_rowconfigure(0, weight=1)
+        # Usamos tk.PanedWindow para permitir al usuario cambiar la división a gusto
+        pw = tk.PanedWindow(self, orient=tk.HORIZONTAL, bg="#151b23", bd=0, sashwidth=6, sashrelief=tk.FLAT)
+        pw.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        panel_izq = ctk.CTkFrame(self, fg_color="#12192a", corner_radius=0)
-        panel_izq.grid(row=0, column=0, sticky="nsew", padx=(10, 5), pady=10)
+        # Ajustamos cursores y sash
+        try:
+            pw.configure(sashcursor="sb_h_double_arrow")
+        except Exception:
+            try:
+                pw.configure(sashcursor="size_we")
+            except Exception:
+                pass
 
-        panel_der = ctk.CTkFrame(self, fg_color="#12192a", corner_radius=0)
-        panel_der.grid(row=0, column=1, sticky="nsew", padx=(5, 10), pady=10)
+        panel_izq = ctk.CTkFrame(pw, fg_color="#12192a", corner_radius=8)
+        panel_der = ctk.CTkFrame(pw, fg_color="#12192a", corner_radius=8)
+
+        # Añadimos los paneles con tamaños mínimos razonables
+        pw.add(panel_izq, minsize=450, stretch="always")
+        pw.add(panel_der, minsize=500, stretch="always")
 
         self._construir_informe(panel_izq)
         self._construir_graficos(panel_der)

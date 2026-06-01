@@ -6,6 +6,7 @@ Funciones para exportar los resultados de la simulación a formatos Excel (.xlsx
 
 from tkinter import filedialog, messagebox
 from datetime import datetime
+import os
 import pandas as pd
 from fpdf import FPDF
 from core.logger import registrar_error
@@ -17,16 +18,24 @@ def exportar_a_excel(resultado: ResultadoLote, parent=None):
     Muestra diálogos en pantalla (filedialog, messagebox).
     """
     try:
+        r = resultado
+        fecha_str = getattr(r, "fecha", None)
+        if fecha_str:
+            fecha = fecha_str
+            nombre_sugerido = f"Simulacion_{fecha.replace(':', '-').replace(' ', '_')}"
+        else:
+            fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
+            nombre_sugerido = f"Simulacion_{fecha.replace(':', '-').replace(' ', '_')}"
+
         filepath = filedialog.asksaveasfilename(
             parent=parent,
+            initialfile=nombre_sugerido,
             defaultextension=".xlsx",
             filetypes=[("Excel", "*.xlsx"), ("Todos", "*.*")],
             title="Exportar a Excel"
         )
         if not filepath:
             return
-
-        fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         filas = [
             # Encabezado
@@ -104,8 +113,18 @@ def exportar_a_pdf(resultado: ResultadoLote, parent=None):
     Muestra diálogos en pantalla (filedialog, messagebox).
     """
     try:
+        r = resultado
+        fecha_str = getattr(r, "fecha", None)
+        if fecha_str:
+            fecha = fecha_str
+            nombre_sugerido = f"Simulacion_{fecha.replace(':', '-').replace(' ', '_')}"
+        else:
+            fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
+            nombre_sugerido = f"Simulacion_{fecha.replace(':', '-').replace(' ', '_')}"
+
         filepath = filedialog.asksaveasfilename(
             parent=parent,
+            initialfile=nombre_sugerido,
             defaultextension=".pdf",
             filetypes=[("PDF", "*.pdf"), ("Todos", "*.*")],
             title="Exportar a PDF"
@@ -113,15 +132,18 @@ def exportar_a_pdf(resultado: ResultadoLote, parent=None):
         if not filepath:
             return
 
-        r = resultado
-        fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
-
         def safe_str(text):
             # fpdf uses latin-1 by default. Replaces em-dash and en-dash with standard hyphen.
             return str(text).replace("\u2014", "-").replace("\u2013", "-").encode('latin-1', 'replace').decode('latin-1')
 
         pdf = FPDF()
         pdf.add_page()
+
+        # Logo
+        logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "gui", "logopdf.png")
+        if os.path.exists(logo_path):
+            pdf.image(logo_path, x=85, y=10, w=40)
+            pdf.ln(20)
         
         # Título
         pdf.set_font("Arial", 'B', 16)
