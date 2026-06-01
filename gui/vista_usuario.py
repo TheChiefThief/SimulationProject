@@ -9,7 +9,10 @@ procesa dispositivos individuales acumulando peso hasta alcanzar B.
 El botón Ejecutar funciona desde el inicio con valores por defecto.
 """
 
+import os
+
 import customtkinter as ctk
+from PIL import Image
 from tkinter import messagebox
 
 from core.logger import registrar_error
@@ -32,6 +35,11 @@ class VistaUsuario(ctk.CTkFrame):
         self.callback_simulacion_ejecutada = callback_simulacion_ejecutada
         self.callback_ver_historial = callback_ver_historial
         self._ventana_resultado_activa = None
+        self.iconos = {
+            "dispros": self._cargar_icono("dispros.png"),
+            "resell": self._cargar_icono("resell.png"),
+            "cuello": self._cargar_icono("cuello.png")
+        }
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -114,6 +122,15 @@ class VistaUsuario(ctk.CTkFrame):
         )
         self.btn_ejecutar.pack(side="bottom", fill="x")
 
+    def _cargar_icono(self, nombre_archivo):
+        ruta_icono = os.path.join(os.path.dirname(__file__), "iconos", nombre_archivo)
+        try:
+            imagen = Image.open(ruta_icono).convert("RGBA")
+            imagen = imagen.resize((24, 24), Image.LANCZOS)
+            return ctk.CTkImage(light_image=imagen, dark_image=imagen, size=(24, 24))
+        except Exception:
+            return None
+
     def _construir_panel_derecho(self):
         """Panel de resumen rápido de resultados."""
         frame_outer = ctk.CTkFrame(self, fg_color="#1a2530", corner_radius=10)
@@ -126,24 +143,25 @@ class VistaUsuario(ctk.CTkFrame):
             anchor="w", pady=(0, 20)
         )
 
-        def _fila_resultado(parent, etiqueta, prefijo=""):
+        def _fila_resultado(parent, etiqueta, prefijo="", icono=None):
             # Truncar etiquetas largas o usar wraplength
             ctk.CTkLabel(parent, text=etiqueta, font=("Azeri Sans", 13),
                          text_color="#AAAAAA", wraplength=280).pack(anchor="w")
             row = ctk.CTkFrame(parent, fg_color="transparent")
             row.pack(anchor="w", fill="x", pady=(0, 14), expand=True)
+            if icono and self.iconos.get(icono):
+                ctk.CTkLabel(row, image=self.iconos[icono], text="").pack(side="left", padx=(0, 10), pady=4)
             if prefijo:
                 ctk.CTkLabel(row, text=prefijo, font=("Azeri Sans", 15, "bold"),
                              text_color="#4FC3F7").pack(side="left", padx=(0, 8))
-            # width=0 y fill="x" expand=True para que se adapte al contenedor
             entry = ctk.CTkEntry(row, state="readonly", font=("Azeri Sans", 13))
             entry.pack(side="left", fill="x", expand=True)
             return entry
 
         self.out_peso = _fila_resultado(frame, "Peso procesado real (kg)", "⚖")
-        self.out_dispositivos = _fila_resultado(frame, "Dispositivos procesados", "#")
-        self.out_reventa = _fila_resultado(frame, "Equipos a reventa (CamRec + DvrRec)", "#")
-        self.out_cuellos = _fila_resultado(frame, "Cuellos de botella (Ocupación > 85%)")
+        self.out_dispositivos = _fila_resultado(frame, "Dispositivos procesados", icono="dispros")
+        self.out_reventa = _fila_resultado(frame, "Equipos a reventa (CamRec + DvrRec)", icono="resell")
+        self.out_cuellos = _fila_resultado(frame, "Cuellos de botella (Ocupación > 85%)", icono="cuello")
         self.out_total = _fila_resultado(frame, "Valor total recuperado (ARS)", "$")
 
         ctk.CTkLabel(frame, text="Ver informe completo →",
