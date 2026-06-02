@@ -33,6 +33,7 @@ Composición de materiales al desguazar (por peso del dispositivo):
 from typing import Callable
 
 from core.gcl import GeneradorCongruencialLineal
+from core.distribuciones import Distribuciones
 from core.parametros import ParametrosSistema
 from core.resultados import ResultadoLote
 
@@ -88,7 +89,7 @@ class SimulacionService:
 
         cobre = p * 0.20
         aluminio = p * 0.03
-        oro = p * 0.01
+        oro = p * 0.001
         plastico = p * 0.60
 
         resultado.peso_cobre += cobre
@@ -110,15 +111,15 @@ class SimulacionService:
         resultado.pmt += (vc + va + vo)
         resultado.pt += vp
 
-    def _muestrear_peso_camara(self, gcl: GeneradorCongruencialLineal) -> float:
+    def _muestrear_peso_camara(self, dist: Distribuciones) -> float:
         """P ~ Uniforme(peso_camara_min, peso_camara_max)."""
         c = self.parametros.composicion
-        return gcl.siguiente_rango(c.peso_camara_min, c.peso_camara_max)
+        return dist.siguiente_rango(c.peso_camara_min, c.peso_camara_max)
 
-    def _muestrear_peso_dvr(self, gcl: GeneradorCongruencialLineal) -> float:
+    def _muestrear_peso_dvr(self, dist: Distribuciones) -> float:
         """P ~ Uniforme(peso_dvr_min, peso_dvr_max)."""
         c = self.parametros.composicion
-        return gcl.siguiente_rango(c.peso_dvr_min, c.peso_dvr_max)
+        return dist.siguiente_rango(c.peso_dvr_min, c.peso_dvr_max)
 
     # ------------------------------------------------------------------
     # Simulación principal
@@ -152,6 +153,7 @@ class SimulacionService:
             )
 
         gcl = self.gcl_factory()
+        dist = Distribuciones(gcl)
         resultado = ResultadoLote()
         resultado.semilla_gcl = gcl.semilla
         resultado.b_kg_input = b_kg
@@ -162,7 +164,7 @@ class SimulacionService:
         while peso_acumulado < b_kg:
 
             # ── Estación 1: Revisión General (D1 ~ Exp(3 min)) ─────────
-            d1 = gcl.siguiente_exponencial(_D1_REVISION)
+            d1 = dist.siguiente_exponencial(_D1_REVISION)
             resultado.c1 += 1
             resultado.tdr += d1
 
@@ -173,11 +175,11 @@ class SimulacionService:
                 if gcl.siguiente_u() < _P_ES_DVR:
                     resultado.dvr_rec += 1
                     resultado.dvrs_reventa += 1
-                    p = self._muestrear_peso_dvr(gcl)
+                    p = self._muestrear_peso_dvr(dist)
                 else:
                     resultado.cam_rec += 1
                     resultado.camaras_reventa += 1
-                    p = self._muestrear_peso_camara(gcl)
+                    p = self._muestrear_peso_camara(dist)
 
                 peso_acumulado += p
                 continue
@@ -185,7 +187,7 @@ class SimulacionService:
             # ── Decisión: ¿Es DVR? (P=0.113) ───────────────────────────
             if gcl.siguiente_u() < _P_ES_DVR:
                 # ── Procesamiento DVR ───────────────────────────────────
-                p = self._muestrear_peso_dvr(gcl)
+                p = self._muestrear_peso_dvr(dist)
                 peso_acumulado += p
                 resultado.cant_dvr += 1
                 resultado.camaras_desguazadas += 0  # alias no aplica
@@ -193,7 +195,7 @@ class SimulacionService:
                 resultado.mt += p
 
                 # D5: Desarme DVR General (Exp(10 min))
-                d5 = gcl.siguiente_exponencial(_D5_DVR)
+                d5 = dist.siguiente_exponencial(_D5_DVR)
                 resultado.c5 += 1
                 resultado.tdd += d5
 
@@ -201,11 +203,17 @@ class SimulacionService:
                 resultado.hdd_t += 1
                 if gcl.siguiente_u() < _P_HDD_SANO:
                     resultado.hdd_f += 1
-                    # Capacidad C ~ Uniforme(250, 2000) GB
-                    _capacidad_gb = gcl.siguiente_entero(250, 2000)
+                    # Capacidad C ~ Normal(500, 250) GB
+                    capacidad_gb = dist.siguiente_normal(500, 250)
+                    while capacidad_gb <= 0:
+                        capacidad_gb = dist.siguiente_normal(500, 250)
+                    
+                    # PrecioGigaBit = 50 + 50u
+                    precio_gb = 50 + 50 * gcl.siguiente_u()
+                    resultado.valor_hdd += capacidad_gb * precio_gb
                 else:
                     # D6: Recuperación material HDD (Exp(3 min))
-                    d6 = gcl.siguiente_exponencial(_D6_HDD)
+                    d6 = dist.siguiente_exponencial(_D6_HDD)
                     resultado.c6 += 1
                     resultado.thd += d6
 
@@ -213,9 +221,10 @@ class SimulacionService:
                 resultado.placas_t += 1
                 if gcl.siguiente_u() < _P_PLACA_SANA_DVR:
                     resultado.placas_f += 1
+                    resultado.valor_placas += 70000 + 80000 * gcl.siguiente_u()
                 else:
                     # D4: Recuperación placas (Exp(90 min))
-                    d4 = gcl.siguiente_exponencial(_D4_PLACAS)
+                    d4 = dist.siguiente_exponencial(_D4_PLACAS)
                     resultado.c4 += 1
                     resultado.tp += d4
 
@@ -223,33 +232,36 @@ class SimulacionService:
 
             else:
                 # ── Procesamiento Cámara ────────────────────────────────
-                p = self._muestrear_peso_camara(gcl)
+                p = self._muestrear_peso_camara(dist)
                 peso_acumulado += p
                 resultado.cant_cam += 1
                 resultado.camaras_desguazadas += 1
                 resultado.mt += p
 
                 # D2: Desarme Cámara / Óptica (Exp(2 min))
-                d2 = gcl.siguiente_exponencial(_D2_OPTICA)
+                d2 = dist.siguiente_exponencial(_D2_OPTICA)
                 resultado.c2 += 1
                 resultado.tdo += d2
 
                 # Óptica: ¿Sana? (P=0.70)
                 if gcl.siguiente_u() < _P_OPTICA_SANA:
-                    resultado.peso_vidrio += (p * 0.30)
+                    resultado.peso_vidrio += (p * 0.10)
+                    resultado.valor_optica += self.parametros.precios.precio_lentes
                 else:
                     # D3: Recuperación componente óptico (Exp(27 min))
-                    d3 = gcl.siguiente_exponencial(_D3_OPT_MATERIAL)
+                    d3 = dist.siguiente_exponencial(_D3_OPT_MATERIAL)
                     resultado.c3 += 1
                     resultado.tco += d3
+                    resultado.valor_optica += (p * 0.10) * self.parametros.precios.precio_vidrio
 
                 # Placas Cámara: ¿Sanas? (P=0.22)
                 resultado.placas_t += 1
                 if gcl.siguiente_u() < _P_PLACA_SANA_CAM:
                     resultado.placas_f += 1
+                    resultado.valor_placas += 70000 + 80000 * gcl.siguiente_u()
                 else:
                     # D4: Recuperación placas (Exp(90 min))
-                    d4 = gcl.siguiente_exponencial(_D4_PLACAS)
+                    d4 = dist.siguiente_exponencial(_D4_PLACAS)
                     resultado.c4 += 1
                     resultado.tp += d4
 
@@ -292,14 +304,14 @@ class SimulacionService:
             if ocup > (_UMBRAL_BOTELLA * 100):
                 resultado.cuellos_botella.append(nombre)
 
-        # ── Simulación de Demanda (Poisson λ=0.3 clientes/hora) ───────
+        # ── Simulación de Demanda (Poisson λ=6.849 kg/hora) ───────
         h = 0
-        cp = 0
+        kg_acumulado = 0
         limite_seg = resultado.n_total * 100 + 1000
-        while cp < resultado.n_total and h < limite_seg:
-            cp += gcl.siguiente_poisson(0.3)
+        while kg_acumulado < resultado.peso_acumulado and h < limite_seg:
+            kg_acumulado += dist.siguiente_poisson(6.849)
             h += 1
         resultado.horas_demanda = h
-        resultado.clientes_totales = cp
+        resultado.basura_acumulada_poisson = kg_acumulado
 
         return resultado

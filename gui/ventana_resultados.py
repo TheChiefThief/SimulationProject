@@ -5,18 +5,18 @@ Ventana Toplevel que muestra el informe de resultados de la simulación.
 Incluye gráficos estáticos (matplotlib) y botones de exportación a PDF y Excel.
 """
 
-import tkinter as tk
 from tkinter import filedialog, messagebox
 from datetime import datetime
 
 import customtkinter as ctk
 import matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import pandas as pd
 
+from core.logger import registrar_error
 from core.resultados import ResultadoLote
+from core.exportadores import exportar_a_excel, exportar_a_pdf
+from gui.componentes import CTKKeyValueRow
 
 matplotlib.use("TkAgg")
 
@@ -28,6 +28,8 @@ COLOR_GRID = "#2c3e50"
 COLOR_PRIMARIO = "#29B6F6"
 COLOR_SECUNDARIO = "#FFCA28"
 
+
+import tkinter as tk
 
 class VentanaResultados(ctk.CTkToplevel):
     """
@@ -51,15 +53,25 @@ class VentanaResultados(ctk.CTkToplevel):
     # ------------------------------------------------------------------
 
     def _construir_layout(self):
-        self.grid_columnconfigure(0, weight=2)
-        self.grid_columnconfigure(1, weight=3)
-        self.grid_rowconfigure(0, weight=1)
+        # Usamos tk.PanedWindow para permitir al usuario cambiar la división a gusto
+        pw = tk.PanedWindow(self, orient=tk.HORIZONTAL, bg="#151b23", bd=0, sashwidth=6, sashrelief=tk.FLAT)
+        pw.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        panel_izq = ctk.CTkFrame(self, fg_color="#12192a", corner_radius=0)
-        panel_izq.grid(row=0, column=0, sticky="nsew", padx=(10, 5), pady=10)
+        # Ajustamos cursores y sash
+        try:
+            pw.configure(sashcursor="sb_h_double_arrow")
+        except Exception:
+            try:
+                pw.configure(sashcursor="size_we")
+            except Exception:
+                pass
 
-        panel_der = ctk.CTkFrame(self, fg_color="#12192a", corner_radius=0)
-        panel_der.grid(row=0, column=1, sticky="nsew", padx=(5, 10), pady=10)
+        panel_izq = ctk.CTkFrame(pw, fg_color="#12192a", corner_radius=8)
+        panel_der = ctk.CTkFrame(pw, fg_color="#12192a", corner_radius=8)
+
+        # Añadimos los paneles con tamaños mínimos razonables
+        pw.add(panel_izq, minsize=450, stretch="always")
+        pw.add(panel_der, minsize=500, stretch="always")
 
         self._construir_informe(panel_izq)
         self._construir_graficos(panel_der)
@@ -78,76 +90,79 @@ class VentanaResultados(ctk.CTkToplevel):
         r = self.resultado
 
         ctk.CTkLabel(scroll, text="📋 Informe de Resultados",
-                     font=("Arial", 20, "bold"), text_color="#4FC3F7"
+                     font=("Azeri Sans", 20, "bold"), text_color="#4FC3F7"
                      ).pack(anchor="w", pady=(0, 3), padx=(5, 20))
         ctk.CTkLabel(scroll, text=f"Semilla GCL: {r.semilla_gcl}",
-                     font=("Arial", 11), text_color="#888888"
+                     font=("Azeri Sans", 11), text_color="#888888"
                      ).pack(anchor="w", pady=(0, 16), padx=(5, 20))
 
         # ── Lote Procesado ─────────────────────────────────────────────
         self._seccion(scroll, "Lote Procesado")
-        self._fila(scroll, "Peso ingresado (B)",     f"{r.b_kg_input:.2f} kg")
-        self._fila(scroll, "Peso procesado real",    f"{r.peso_acumulado:.3f} kg")
-        self._fila(scroll, "Total dispositivos (N)", f"{r.n_total}")
-        self._fila(scroll, "Cámaras desguazadas (CantCam)", f"{r.cant_cam}")
-        self._fila(scroll, "DVRs desguazados (CantDvr)",    f"{r.cant_dvr}")
-        self._fila(scroll, "Cámaras reventa (CAMREC)",      f"{r.cam_rec}")
-        self._fila(scroll, "DVRs reventa (DvrREC)",          f"{r.dvr_rec}")
-        self._fila(scroll, "Total reventa",                  f"{r.equipos_reventa}")
+        CTKKeyValueRow(scroll, "Peso ingresado (B)",     f"{r.b_kg_input:.2f} kg")
+        CTKKeyValueRow(scroll, "Peso procesado real",    f"{r.peso_acumulado:.3f} kg")
+        CTKKeyValueRow(scroll, "Total dispositivos (N)", f"{r.n_total}")
+        CTKKeyValueRow(scroll, "Cámaras desguazadas (CantCam)", f"{r.cant_cam}")
+        CTKKeyValueRow(scroll, "DVRs desguazados (CantDvr)",    f"{r.cant_dvr}")
+        CTKKeyValueRow(scroll, "Cámaras reventa (CAMREC)",      f"{r.cam_rec}")
+        CTKKeyValueRow(scroll, "DVRs reventa (DvrREC)",          f"{r.dvr_rec}")
+        CTKKeyValueRow(scroll, "Total reventa",                  f"{r.equipos_reventa}")
 
         # ── Monetización ───────────────────────────────────────────────
         self._seccion(scroll, "Monetización de Materiales (ARS)")
-        self._fila(scroll, "Cobre",    f"$ {r.valor_cobre:>15,.2f}")
-        self._fila(scroll, "Aluminio", f"$ {r.valor_aluminio:>15,.2f}")
-        self._fila(scroll, "Oro",      f"$ {r.valor_oro:>15,.2f}")
-        self._fila(scroll, "Plástico", f"$ {r.valor_plastico:>15,.2f}")
-        self._fila(scroll, "PMT (metales)", f"$ {r.pmt:>15,.2f}")
+        CTKKeyValueRow(scroll, "Cobre",    f"$ {r.valor_cobre:>15,.2f}")
+        CTKKeyValueRow(scroll, "Aluminio", f"$ {r.valor_aluminio:>15,.2f}")
+        CTKKeyValueRow(scroll, "Oro",      f"$ {r.valor_oro:>15,.2f}")
+        CTKKeyValueRow(scroll, "Plástico", f"$ {r.valor_plastico:>15,.2f}")
+        CTKKeyValueRow(scroll, "HDD",      f"$ {r.valor_hdd:>15,.2f}")
+        CTKKeyValueRow(scroll, "Placas",   f"$ {r.valor_placas:>15,.2f}")
+        CTKKeyValueRow(scroll, "Óptica",   f"$ {r.valor_optica:>15,.2f}")
+        CTKKeyValueRow(scroll, "PMT (metales)", f"$ {r.pmt:>15,.2f}")
 
         self._separador(scroll)
         total_frame = ctk.CTkFrame(scroll, fg_color="#1e3a5f", corner_radius=8)
         total_frame.pack(fill="x", pady=(5, 15), padx=(5, 20))
-        ctk.CTkLabel(total_frame, text="VALOR TOTAL (PMT + PT)",
-                     font=("Arial", 13, "bold"), text_color="#4FC3F7"
+        ctk.CTkLabel(total_frame, text="VALOR TOTAL (Metales + Plástico + Componentes)",
+                     font=("Azeri Sans", 13, "bold"), text_color="#4FC3F7"
                      ).pack(side="left", padx=15, pady=10)
         ctk.CTkLabel(total_frame, text=f"$ {r.valor_total:,.2f} ARS",
-                     font=("Arial", 14, "bold"), text_color="#81C784"
+                     font=("Azeri Sans", 14, "bold"), text_color="#81C784"
                      ).pack(side="right", padx=15, pady=10)
 
         # ── Masa Recuperada ────────────────────────────────────────────
         self._seccion(scroll, "Masa Recuperada (kg)")
-        self._fila(scroll, "MT — Material Total",    f"{r.mt:.3f} kg")
-        self._fila(scroll, "PesoPlástico",           f"{r.peso_plastico:.3f} kg")
-        self._fila(scroll, "PesoMetal (total)",      f"{r.peso_metal:.3f} kg")
-        self._fila(scroll, "  Cobre",                f"{r.peso_cobre:.3f} kg")
-        self._fila(scroll, "  Aluminio",             f"{r.peso_aluminio:.3f} kg")
-        self._fila(scroll, "  Oro",                  f"{r.peso_oro:.4f} kg")
-        self._fila(scroll, "PesoVidrio",             f"{r.peso_vidrio:.3f} kg")
+        CTKKeyValueRow(scroll, "MT — Material Total",    f"{r.mt:.3f} kg")
+        CTKKeyValueRow(scroll, "PesoPlástico",           f"{r.peso_plastico:.3f} kg")
+        CTKKeyValueRow(scroll, "PesoMetal (total)",      f"{r.peso_metal:.3f} kg")
+        CTKKeyValueRow(scroll, "  Cobre",                f"{r.peso_cobre:.3f} kg")
+        CTKKeyValueRow(scroll, "  Aluminio",             f"{r.peso_aluminio:.3f} kg")
+        CTKKeyValueRow(scroll, "  Oro",                  f"{r.peso_oro:.4f} kg")
+        CTKKeyValueRow(scroll, "PesoVidrio",             f"{r.peso_vidrio:.3f} kg")
 
         # ── Coeficientes de Recuperación ──────────────────────────────
         self._seccion(scroll, "Coeficientes de Recuperación")
-        self._fila(scroll, "CrPlástico",  f"{r.cr_plastico:.2f} %")
-        self._fila(scroll, "CrMetales",   f"{r.cr_metales:.2f} %")
-        self._fila(scroll, "CrPlacas",    f"{r.cr_placas:.2f} %  (PlacasF={r.placas_f} / PlacasT={r.placas_t})")
-        self._fila(scroll, "CrHDD",       f"{r.cr_hdd:.2f} %  (HDDF={r.hdd_f} / HDDT={r.hdd_t})")
-        self._fila(scroll, "CrÓptica",    f"{r.cr_opt:.2f} %")
+        CTKKeyValueRow(scroll, "CrPlástico",  f"{r.cr_plastico:.2f} %")
+        CTKKeyValueRow(scroll, "CrMetales",   f"{r.cr_metales:.2f} %")
+        CTKKeyValueRow(scroll, "CrPlacas",    f"{r.cr_placas:.2f} %  (PlacasF={r.placas_f} / PlacasT={r.placas_t})")
+        CTKKeyValueRow(scroll, "CrHDD",       f"{r.cr_hdd:.2f} %  (HDDF={r.hdd_f} / HDDT={r.hdd_t})")
+        CTKKeyValueRow(scroll, "CrÓptica",    f"{r.cr_opt:.2f} %")
 
         # ── Indicadores de Ocupación y Productividad ───────────────────
         self._seccion(scroll, "Ocupación y Productividad por Estación")
-        self._fila(scroll, "E1 — Revisión (D1=3m)",  f"Ocup: {r.ocupacion_1:.1f}%  |  Prod: {r.productividad_1:.2f}  |  C1={r.c1}")
-        self._fila(scroll, "E2 — Cámara/Ópt (D2=2m)",f"Ocup: {r.ocupacion_2:.1f}%  |  Prod: {r.productividad_2:.2f}  |  C2={r.c2}")
-        self._fila(scroll, "E3 — Ópt. Mat. (D3=27m)",f"Ocup: {r.ocupacion_3:.1f}%  |  Prod: {r.productividad_3:.2f}  |  C3={r.c3}")
-        self._fila(scroll, "E4 — Placas (D4=90m)",   f"Ocup: {r.ocupacion_4:.1f}%  |  Prod: {r.productividad_4:.2f}  |  C4={r.c4}")
-        self._fila(scroll, "E5 — Desarme DVR(D5=10m)",f"Ocup: {r.ocupacion_5:.1f}%  |  Prod: {r.productividad_5:.2f}  |  C5={r.c5}")
-        self._fila(scroll, "E6 — HDD (D6=3m)",       f"Ocup: {r.ocupacion_6:.1f}%  |  Prod: {r.productividad_6:.2f}  |  C6={r.c6}")
+        CTKKeyValueRow(scroll, "E1 — Revisión (D1=3m)",  f"Ocup: {r.ocupacion_1:.1f}%  |  Prod: {r.productividad_1:.2f}  |  C1={r.c1}")
+        CTKKeyValueRow(scroll, "E2 — Cámara/Ópt (D2=2m)",f"Ocup: {r.ocupacion_2:.1f}%  |  Prod: {r.productividad_2:.2f}  |  C2={r.c2}")
+        CTKKeyValueRow(scroll, "E3 — Ópt. Mat. (D3=27m)",f"Ocup: {r.ocupacion_3:.1f}%  |  Prod: {r.productividad_3:.2f}  |  C3={r.c3}")
+        CTKKeyValueRow(scroll, "E4 — Placas (D4=90m)",   f"Ocup: {r.ocupacion_4:.1f}%  |  Prod: {r.productividad_4:.2f}  |  C4={r.c4}")
+        CTKKeyValueRow(scroll, "E5 — Desarme DVR(D5=10m)",f"Ocup: {r.ocupacion_5:.1f}%  |  Prod: {r.productividad_5:.2f}  |  C5={r.c5}")
+        CTKKeyValueRow(scroll, "E6 — HDD (D6=3m)",       f"Ocup: {r.ocupacion_6:.1f}%  |  Prod: {r.productividad_6:.2f}  |  C6={r.c6}")
 
         cuellos_str = ", ".join(r.cuellos_botella) if r.cuellos_botella else "Ninguno"
-        self._fila(scroll, "Cuellos de Bot. (Oc>85%)", cuellos_str,
+        CTKKeyValueRow(scroll, "Cuellos de Bot. (Oc>85%)", cuellos_str,
                    destacar=bool(r.cuellos_botella))
 
         # ── Demanda Simulada ───────────────────────────────────────────
-        self._seccion(scroll, "Demanda Simulada — Poisson (λ=0.3)")
-        self._fila(scroll, "Horas simuladas (h)", f"{r.horas_demanda}")
-        self._fila(scroll, "Total clientes",       f"{r.clientes_totales}")
+        self._seccion(scroll, "Demanda Simulada — Poisson (λ=6.849 kg/h)")
+        CTKKeyValueRow(scroll, "Horas simuladas (h)", f"{r.horas_demanda}")
+        CTKKeyValueRow(scroll, "Basura acumulada (kg)", f"{r.basura_acumulada_poisson}")
 
         # ── Botones de exportación ─────────────────────────────────────
         self._separador(scroll)
@@ -156,18 +171,21 @@ class VentanaResultados(ctk.CTkToplevel):
 
         ctk.CTkButton(
             btn_frame, text="📥  Exportar a Excel",
-            font=("Arial", 14, "bold"), fg_color="#1E88E5", hover_color="#1565C0",
+            font=("Azeri Sans", 14, "bold"), fg_color="#1E88E5", hover_color="#1565C0",
             width=200, command=self._exportar_excel
         ).pack(side="left", padx=(0, 10), fill="x", expand=True)
 
-
-
+        ctk.CTkButton(
+            btn_frame, text="📄  Exportar a PDF",
+            font=("Azeri Sans", 14, "bold"), fg_color="#E53935", hover_color="#C62828",
+            width=200, command=self._exportar_pdf
+        ).pack(side="left", padx=(10, 0), fill="x", expand=True)
     # ------------------------------------------------------------------
     # Helpers de UI del informe
     # ------------------------------------------------------------------
 
     def _seccion(self, parent, titulo: str):
-        ctk.CTkLabel(parent, text=titulo, font=("Arial", 14, "bold"),
+        ctk.CTkLabel(parent, text=titulo, font=("Azeri Sans", 14, "bold"),
                      text_color="#FFB74D"
                      ).pack(anchor="w", pady=(15, 4), padx=(5, 20))
         self._separador(parent)
@@ -175,15 +193,6 @@ class VentanaResultados(ctk.CTkToplevel):
     def _separador(self, parent):
         sep = ctk.CTkFrame(parent, height=1, fg_color="#2c3e50")
         sep.pack(fill="x", pady=(0, 6), padx=(5, 20))
-
-    def _fila(self, parent, etiqueta: str, valor: str, destacar: bool = False):
-        fila = ctk.CTkFrame(parent, fg_color="transparent")
-        fila.pack(fill="x", pady=2, padx=(5, 20))
-        color_val = "#F06292" if destacar else "#E0E0E0"
-        ctk.CTkLabel(fila, text=etiqueta, font=("Arial", 12),
-                     text_color="#AAAAAA").pack(side="left")
-        ctk.CTkLabel(fila, text=valor, font=("Arial", 12, "bold"),
-                     text_color=color_val).pack(side="right")
 
     # ------------------------------------------------------------------
     # Gráficos estáticos (panel derecho)
@@ -277,82 +286,11 @@ class VentanaResultados(ctk.CTkToplevel):
     # ------------------------------------------------------------------
 
     def _exportar_excel(self):
-        try:
-            filepath = filedialog.asksaveasfilename(
-                defaultextension=".xlsx",
-                filetypes=[("Excel", "*.xlsx"), ("Todos", "*.*")],
-                title="Exportar a Excel"
-            )
-            if not filepath:
-                return
+        exportar_a_excel(self.resultado, parent=self)
 
-            r = self.resultado
-            fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
+    # ------------------------------------------------------------------
+    # Exportación a PDF
+    # ------------------------------------------------------------------
 
-            filas = [
-                # Encabezado
-                {"Categoría": "INFORME", "Métrica": "Fecha",         "Valor": fecha},
-                {"Categoría": "INFORME", "Métrica": "Semilla GCL",   "Valor": r.semilla_gcl},
-                {"Categoría": "", "Métrica": "", "Valor": ""},
-                # Lote
-                {"Categoría": "LOTE", "Métrica": "Peso ingresado B (kg)",  "Valor": r.b_kg_input},
-                {"Categoría": "LOTE", "Métrica": "Peso procesado real (kg)","Valor": round(r.peso_acumulado, 3)},
-                {"Categoría": "LOTE", "Métrica": "Total dispositivos (N)",  "Valor": r.n_total},
-                {"Categoría": "LOTE", "Métrica": "CantCam (desguazadas)",   "Valor": r.cant_cam},
-                {"Categoría": "LOTE", "Métrica": "CantDvr (desguazados)",   "Valor": r.cant_dvr},
-                {"Categoría": "LOTE", "Métrica": "CAMREC (reventa)",        "Valor": r.cam_rec},
-                {"Categoría": "LOTE", "Métrica": "DvrREC (reventa)",        "Valor": r.dvr_rec},
-                {"Categoría": "LOTE", "Métrica": "Total reventa",           "Valor": r.equipos_reventa},
-                {"Categoría": "", "Métrica": "", "Valor": ""},
-                # Valores
-                {"Categoría": "VALORES (ARS)", "Métrica": "Cobre",     "Valor": round(r.valor_cobre, 2)},
-                {"Categoría": "VALORES (ARS)", "Métrica": "Aluminio",  "Valor": round(r.valor_aluminio, 2)},
-                {"Categoría": "VALORES (ARS)", "Métrica": "Oro",       "Valor": round(r.valor_oro, 2)},
-                {"Categoría": "VALORES (ARS)", "Métrica": "Plástico",  "Valor": round(r.valor_plastico, 2)},
-                {"Categoría": "VALORES (ARS)", "Métrica": "PMT",       "Valor": round(r.pmt, 2)},
-                {"Categoría": "VALORES (ARS)", "Métrica": "PT",        "Valor": round(r.pt, 2)},
-                {"Categoría": "VALORES (ARS)", "Métrica": "TOTAL",     "Valor": round(r.valor_total, 2)},
-                {"Categoría": "", "Métrica": "", "Valor": ""},
-                # Masa
-                {"Categoría": "MASA (kg)", "Métrica": "MT (total)",   "Valor": round(r.mt, 3)},
-                {"Categoría": "MASA (kg)", "Métrica": "PesoPlastico", "Valor": round(r.peso_plastico, 3)},
-                {"Categoría": "MASA (kg)", "Métrica": "PesoMetal",    "Valor": round(r.peso_metal, 3)},
-                {"Categoría": "MASA (kg)", "Métrica": "PesoVidrio",   "Valor": round(r.peso_vidrio, 3)},
-                {"Categoría": "", "Métrica": "", "Valor": ""},
-                # Coeficientes
-                {"Categoría": "COEFICIENTES", "Métrica": "CrPlastico (%)", "Valor": round(r.cr_plastico, 2)},
-                {"Categoría": "COEFICIENTES", "Métrica": "CrMetales (%)",  "Valor": round(r.cr_metales, 2)},
-                {"Categoría": "COEFICIENTES", "Métrica": "CrPlacas (%)",   "Valor": round(r.cr_placas, 2)},
-                {"Categoría": "COEFICIENTES", "Métrica": "CrHDD (%)",      "Valor": round(r.cr_hdd, 2)},
-                {"Categoría": "COEFICIENTES", "Métrica": "CrOptica (%)",   "Valor": round(r.cr_opt, 2)},
-                {"Categoría": "", "Métrica": "", "Valor": ""},
-                # Estaciones (Ocupación)
-                {"Categoría": "OCUPACIÓN (%)", "Métrica": "E1 — Revisión",      "Valor": round(r.ocupacion_1, 1)},
-                {"Categoría": "OCUPACIÓN (%)", "Métrica": "E2 — Cámara/Ópt",   "Valor": round(r.ocupacion_2, 1)},
-                {"Categoría": "OCUPACIÓN (%)", "Métrica": "E3 — Ópt. Mat",      "Valor": round(r.ocupacion_3, 1)},
-                {"Categoría": "OCUPACIÓN (%)", "Métrica": "E4 — Placas",        "Valor": round(r.ocupacion_4, 1)},
-                {"Categoría": "OCUPACIÓN (%)", "Métrica": "E5 — Desarme DVR",   "Valor": round(r.ocupacion_5, 1)},
-                {"Categoría": "OCUPACIÓN (%)", "Métrica": "E6 — HDD",           "Valor": round(r.ocupacion_6, 1)},
-                {"Categoría": "OCUPACIÓN (%)", "Métrica": "Cuellos de botella", "Valor": ", ".join(r.cuellos_botella) or "Ninguno"},
-                {"Categoría": "", "Métrica": "", "Valor": ""},
-                # Estaciones (Productividad)
-                {"Categoría": "PRODUCTIVIDAD", "Métrica": "E1 — Revisión",      "Valor": round(r.productividad_1, 2)},
-                {"Categoría": "PRODUCTIVIDAD", "Métrica": "E2 — Cámara/Ópt",   "Valor": round(r.productividad_2, 2)},
-                {"Categoría": "PRODUCTIVIDAD", "Métrica": "E3 — Ópt. Mat",      "Valor": round(r.productividad_3, 2)},
-                {"Categoría": "PRODUCTIVIDAD", "Métrica": "E4 — Placas",        "Valor": round(r.productividad_4, 2)},
-                {"Categoría": "PRODUCTIVIDAD", "Métrica": "E5 — Desarme DVR",   "Valor": round(r.productividad_5, 2)},
-                {"Categoría": "PRODUCTIVIDAD", "Métrica": "E6 — HDD",           "Valor": round(r.productividad_6, 2)},
-                {"Categoría": "", "Métrica": "", "Valor": ""},
-                # Demanda
-                {"Categoría": "DEMANDA", "Métrica": "Horas simuladas", "Valor": r.horas_demanda},
-                {"Categoría": "DEMANDA", "Métrica": "Clientes totales","Valor": r.clientes_totales},
-            ]
-
-            df = pd.DataFrame(filas)
-            with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
-                df.to_excel(writer, sheet_name="Reporte", index=False)
-
-            messagebox.showinfo("Exportación Exitosa", f"Archivo Excel guardado en:\n{filepath}")
-
-        except Exception as e:
-            messagebox.showwarning("Aviso", f"No se pudo exportar a Excel:\n{e}")
+    def _exportar_pdf(self):
+        exportar_a_pdf(self.resultado, parent=self)

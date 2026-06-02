@@ -1,0 +1,118 @@
+2026-06-01 12:57:18,195 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
+Traceback (most recent call last):
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\gui\vista_usuario.py", line 177, in _ejecutar
+    b_kg = Validador.validar_float(
+        self.in_b_kg.get(), "Peso total del lote (B)",
+        min_valor=0.1
+    )
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\core\validador.py", line 67, in validar_float
+    raise ValueError(f"El campo '{nombre_campo}' no puede estar vacío.")
+ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
+
+2026-06-01 12:57:22,511 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El campo 'Peso total del lote (B)' debe ser un número decimal válido. No se aceptan letras ni caracteres especiales.
+Traceback (most recent call last):
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\core\validador.py", line 76, in validar_float
+    valor = float(texto_limpio)
+ValueError: could not convert string to float: 'sex'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\gui\vista_usuario.py", line 177, in _ejecutar
+    b_kg = Validador.validar_float(
+        self.in_b_kg.get(), "Peso total del lote (B)",
+        min_valor=0.1
+    )
+  File "c:\Users\Usuario\Documents\Facultad\4to\Simulacion\TFI\SimulationProject\core\validador.py", line 78, in validar_float
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: El campo 'Peso total del lote (B)' debe ser un número decimal válido. No se aceptan letras ni caracteres especiales.
+
+2026-06-01 16:13:45,563 - ERROR - [logger.py:38] - Error al exportar los resultados a PDF en VentanaResultados | Excepción: UnicodeEncodeError: 'latin-1' codec can't encode character '\u2014' in position 635: ordinal not in range(256)
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\ventana_resultados.py", line 476, in _exportar_pdf
+    pdf.output(filepath)
+  File "C:\Users\lucia\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\fpdf\fpdf.py", line 1065, in output
+    self.close()
+  File "C:\Users\lucia\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\fpdf\fpdf.py", line 246, in close
+    self._enddoc()
+  File "C:\Users\lucia\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\fpdf\fpdf.py", line 1636, in _enddoc
+    self._putpages()
+  File "C:\Users\lucia\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\fpdf\fpdf.py", line 1170, in _putpages
+    p = self.pages[n].encode("latin1") if PY3K else self.pages[n]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'latin-1' codec can't encode character '\u2014' in position 635: ordinal not in range(256)
+
+2026-06-01 18:07:50,669 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\vista_usuario.py", line 205, in _ejecutar
+    b_kg = Validador.validar_float(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\core\validador.py", line 67, in validar_float
+    raise ValueError(f"El campo '{nombre_campo}' no puede estar vacío.")
+ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
+
+2026-06-01 18:17:35,090 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El valor de 'Peso total del lote (B)' no puede ser mayor a 10000.0.
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\vista_usuario.py", line 205, in _ejecutar
+    b_kg = Validador.validar_float(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\core\validador.py", line 90, in validar_float
+    raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}.")
+ValueError: El valor de 'Peso total del lote (B)' no puede ser mayor a 10000.0.
+
+2026-06-01 18:18:06,249 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El valor de 'Peso total del lote (B)' no puede ser mayor a 10000.0.
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\vista_usuario.py", line 205, in _ejecutar
+    b_kg = Validador.validar_float(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\core\validador.py", line 90, in validar_float
+    raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}.")
+ValueError: El valor de 'Peso total del lote (B)' no puede ser mayor a 10000.0.
+
+2026-06-01 18:18:26,688 - ERROR - [logger.py:38] - Error de validación de parámetros operativos en GerenteController | Excepción: ValueError: El valor de 'Horas de trabajo por jornada' no puede ser mayor a 8.0.
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\controllers\gerente_controller.py", line 30, in cargar_parametros
+    horas = Validador.validar_float(
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\core\validador.py", line 90, in validar_float
+    raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}.")
+ValueError: El valor de 'Horas de trabajo por jornada' no puede ser mayor a 8.0.
+
+2026-06-01 18:18:31,517 - ERROR - [logger.py:38] - Error de validación de parámetros operativos en GerenteController | Excepción: ValueError: El valor de 'Horas de trabajo por jornada' no puede ser mayor a 8.0.
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\controllers\gerente_controller.py", line 30, in cargar_parametros
+    horas = Validador.validar_float(
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\core\validador.py", line 90, in validar_float
+    raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}.")
+ValueError: El valor de 'Horas de trabajo por jornada' no puede ser mayor a 8.0.
+
+2026-06-01 18:18:35,825 - ERROR - [logger.py:38] - Error de validación de parámetros operativos en GerenteController | Excepción: ValueError: El valor de 'Cantidad de empleados' no puede ser mayor a 1000.
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\controllers\gerente_controller.py", line 35, in cargar_parametros
+    empleados = Validador.validar_entero(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\core\validador.py", line 47, in validar_entero
+    raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}.")
+ValueError: El valor de 'Cantidad de empleados' no puede ser mayor a 1000.
+
+2026-06-01 18:21:05,374 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El valor de 'Peso total del lote (B)' no puede ser mayor a 10000.0.
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\vista_usuario.py", line 206, in _ejecutar
+    b_kg = Validador.validar_float(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\core\validador.py", line 90, in validar_float
+    raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}.")
+ValueError: El valor de 'Peso total del lote (B)' no puede ser mayor a 10000.0.
+
+2026-06-01 18:21:12,023 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
+Traceback (most recent call last):
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\gui\vista_usuario.py", line 206, in _ejecutar
+    b_kg = Validador.validar_float(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lucia\Desktop\Simulador\SimulationProject\core\validador.py", line 67, in validar_float
+    raise ValueError(f"El campo '{nombre_campo}' no puede estar vacío.")
+ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
+

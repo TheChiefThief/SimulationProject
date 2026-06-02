@@ -17,6 +17,7 @@ del reloj del sistema, garantizando variabilidad entre ejecuciones.
 """
 
 import time
+import math
 
 
 class GeneradorCongruencialLineal:
@@ -96,121 +97,6 @@ class GeneradorCongruencialLineal:
         """
         return self.siguiente_crudo() / self._M
 
-    def siguiente_rango(self, a: float, b: float) -> float:
-        """
-        Genera un número pseudoaleatorio uniformemente distribuido en [a, b).
-
-        Args:
-            a: Límite inferior (inclusive).
-            b: Límite superior (exclusive).
-
-        Returns:
-            Float en [a, b).
-
-        Raises:
-            ValueError: Si a >= b.
-        """
-        if a >= b:
-            raise ValueError(f"Se requiere a < b, pero se recibió a={a}, b={b}.")
-        return a + (b - a) * self.siguiente_u()
-
-    def siguiente_entero(self, a: int, b: int) -> int:
-        """
-        Genera un entero pseudoaleatorio en el rango cerrado [a, b].
-
-        Args:
-            a: Límite inferior (inclusive).
-            b: Límite superior (inclusive).
-
-        Returns:
-            Entero en [a, b].
-
-        Raises:
-            ValueError: Si a > b.
-        """
-        if a > b:
-            raise ValueError(f"Se requiere a <= b, pero se recibió a={a}, b={b}.")
-        # Rango de (b - a + 1) valores enteros
-        rango = b - a + 1
-        return a + (self.siguiente_crudo() % rango)
-
-    def siguiente_bernoulli(self, p: float) -> bool:
-        """
-        Genera una variable de Bernoulli: True con probabilidad p.
-
-        Args:
-            p: Probabilidad de éxito, en [0, 1].
-
-        Returns:
-            True con probabilidad p, False con probabilidad (1 - p).
-        """
-        return self.siguiente_u() < p
-
-    def siguiente_triangular(self, minimo: float, moda: float, maximo: float) -> float:
-        """
-        Genera un número con distribución triangular usando el método
-        de la transformada inversa (implementación manual).
-
-        Args:
-            minimo: Valor mínimo.
-            moda:   Valor más probable (moda).
-            maximo: Valor máximo.
-
-        Returns:
-            Float con distribución triangular en [minimo, maximo].
-        """
-        if not (minimo <= moda <= maximo):
-            raise ValueError("Se requiere minimo <= moda <= maximo.")
-
-        u = self.siguiente_u()
-        rango = maximo - minimo
-        punto_corte = (moda - minimo) / rango  # F(moda)
-
-        if u <= punto_corte:
-            return minimo + (u * rango * (moda - minimo)) ** 0.5
-        else:
-            return maximo - ((1 - u) * rango * (maximo - moda)) ** 0.5
-
-    def siguiente_exponencial(self, media: float) -> float:
-        """
-        Genera un número con distribución exponencial.
-
-        Args:
-            media: Valor medio (E[x] = 1/lambda).
-                   Ojo: la fórmula es X = -media * ln(1 - U).
-
-        Returns:
-            Float con distribución exponencial.
-        """
-        if media <= 0:
-            raise ValueError("La media debe ser mayor a cero.")
-        import math
-        # Usamos 1 - u para evitar ln(0) en caso extremo, aunque u pertenece a [0, 1)
-        u = self.siguiente_u()
-        return -media * math.log(1.0 - u)
-
-    def siguiente_poisson(self, lam: float) -> int:
-        """
-        Genera un número con distribución de Poisson (algoritmo de Knuth).
-
-        Args:
-            lam: Valor de lambda (tasa media de ocurrencia).
-
-        Returns:
-            Entero con distribución de Poisson.
-        """
-        if lam <= 0:
-            raise ValueError("Lambda debe ser mayor a cero.")
-        import math
-        L = math.exp(-lam)
-        k = 0
-        p = 1.0
-        while True:
-            k += 1
-            p *= self.siguiente_u()
-            if p <= L:
-                break
-        return k - 1
 
     def __repr__(self) -> str:
         return (

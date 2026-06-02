@@ -10,6 +10,7 @@ import os
 import uuid
 from datetime import datetime
 
+from core.logger import registrar_error
 from core.parametros import ParametrosSistema
 from core.resultados import ResultadoLote
 
@@ -177,7 +178,7 @@ class HistorialSimulador:
             "hdd_f": res.hdd_f,
             "hdd_t": res.hdd_t,
             "horas_demanda": res.horas_demanda,
-            "clientes_totales": res.clientes_totales,
+            "basura_acumulada_poisson": res.basura_acumulada_poisson,
             "semilla_gcl": res.semilla_gcl,
         }
 
@@ -240,7 +241,7 @@ class HistorialSimulador:
         res.hdd_f = data.get("hdd_f", 0)
         res.hdd_t = data.get("hdd_t", 0)
         res.horas_demanda = data.get("horas_demanda", 0)
-        res.clientes_totales = data.get("clientes_totales", 0)
+        res.basura_acumulada_poisson = data.get("basura_acumulada_poisson", data.get("clientes_totales", 0))
         res.semilla_gcl = data.get("semilla_gcl", 0)
         return res
 
@@ -271,13 +272,19 @@ class HistorialSimulador:
                     historial = json.load(f)
                     if not isinstance(historial, list):
                         historial = []
-            except Exception:
+            except Exception as e:
+                # registros de errores
+                registrar_error("Error al cargar el archivo de historial JSON en guardar_simulacion", e)
                 historial = []
 
         historial.append(registro)
 
-        with open(archivo, "w", encoding="utf-8") as f:
-            json.dump(historial, f, indent=4, ensure_ascii=False)
+        try:
+            with open(archivo, "w", encoding="utf-8") as f:
+                json.dump(historial, f, indent=4, ensure_ascii=False)
+        except Exception as e:
+            # registros de errores
+            registrar_error("Error al escribir el archivo de historial JSON en guardar_simulacion", e)
 
         return registro_id
 
@@ -301,7 +308,9 @@ class HistorialSimulador:
                 # Ordenar por timestamp del más reciente al más antiguo
                 historial.sort(key=lambda x: x.get("timestamp", 0.0), reverse=True)
                 return historial
-        except Exception:
+        except Exception as e:
+            # registros de errores
+            registrar_error("Error al leer el archivo de historial JSON en obtener_historial", e)
             return []
 
     @classmethod
@@ -310,8 +319,12 @@ class HistorialSimulador:
         if archivo is None:
             archivo = cls.DEFAULT_FILE
 
-        with open(archivo, "w", encoding="utf-8") as f:
-            json.dump([], f, indent=4, ensure_ascii=False)
+        try:
+            with open(archivo, "w", encoding="utf-8") as f:
+                json.dump([], f, indent=4, ensure_ascii=False)
+        except Exception as e:
+            # registros de errores
+            registrar_error("Error al limpiar el archivo de historial JSON", e)
 
     @classmethod
     def eliminar_registro(cls, registro_id: str, archivo=None) -> bool:
@@ -330,7 +343,9 @@ class HistorialSimulador:
                 historial = json.load(f)
                 if not isinstance(historial, list):
                     return False
-        except Exception:
+        except Exception as e:
+            # registros de errores
+            registrar_error("Error al leer el archivo de historial JSON en eliminar_registro", e)
             return False
 
         original_len = len(historial)
@@ -339,7 +354,12 @@ class HistorialSimulador:
         if len(historial) == original_len:
             return False
 
-        with open(archivo, "w", encoding="utf-8") as f:
-            json.dump(historial, f, indent=4, ensure_ascii=False)
+        try:
+            with open(archivo, "w", encoding="utf-8") as f:
+                json.dump(historial, f, indent=4, ensure_ascii=False)
+        except Exception as e:
+            # registros de errores
+            registrar_error("Error al escribir el archivo de historial JSON en eliminar_registro", e)
+            return False
 
         return True

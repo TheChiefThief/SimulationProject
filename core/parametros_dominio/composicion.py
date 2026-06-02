@@ -22,11 +22,11 @@ class ComposicionParametros:
 
         # Rangos de peso para muestreo por distribución Uniforme
         # Cámara: centrado en ~1.14 kg según datos de diseño
-        self.peso_camara_min: float = 0.8
+        self.peso_camara_min: float = 0.2
         self.peso_camara_max: float = 1.5
         # DVR: centrado en ~1.12 kg según datos de diseño
-        self.peso_dvr_min: float = 0.9
-        self.peso_dvr_max: float = 1.4
+        self.peso_dvr_min: float = 0.5
+        self.peso_dvr_max: float = 1.5
 
         # Rendimientos de procesamiento
         self.rendimiento_plastico: float = 0.80
@@ -84,6 +84,12 @@ class ComposicionParametros:
             errores.append("Rendimiento de plástico debe estar entre 0 y 1.")
         if not (0.0 <= self.rendimiento_metal <= 1.0):
             errores.append("Rendimiento de metal debe estar entre 0 y 1.")
+
+        # Validar consistencia de rangos (min vs max)
+        if self.peso_camara_min >= self.peso_camara_max:
+            errores.append("El peso máximo de la cámara debe ser estrictamente mayor a su peso mínimo.")
+        if self.peso_dvr_min >= self.peso_dvr_max:
+            errores.append("El peso máximo del DVR debe ser estrictamente mayor a su peso mínimo.")
 
         return errores
 

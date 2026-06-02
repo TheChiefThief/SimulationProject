@@ -52,7 +52,6 @@ class TestPruebaKolmogorovSmirnov:
         assert resultado["d_calculado"] >= 0
         assert resultado["d_critico"] > 0
         
-        
         assert resultado["aprobado"] is True
 
     def test_ejecutar_prueba_parametros_invalidos(self):
