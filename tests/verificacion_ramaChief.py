@@ -55,13 +55,6 @@ ent_vals = [d5.siguiente_entero(250, 2000) for _ in range(5000)]
 print(f"Entero(250,2000): media={sum(ent_vals)/len(ent_vals):.1f}  (esperado ~1125)")
 assert all(250 <= x <= 2000 for x in ent_vals), "ERROR: entero fuera del rango"
 
-# Poisson
-gcl6 = GeneradorCongruencialLineal(77)
-d6 = Distribuciones(gcl6)
-p_vals = [d6.siguiente_poisson(6.849) for _ in range(10000)]
-print(f"Poisson(lambda=6.849): media={sum(p_vals)/len(p_vals):.3f}  (esperado ~6.849)")
-assert all(v >= 0 for v in p_vals), "ERROR: Poisson negativo"
-
 # Normal (Box-Muller)
 gcl7 = GeneradorCongruencialLineal(88)
 d7 = Distribuciones(gcl7)

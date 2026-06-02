@@ -15,7 +15,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from core.logger import registrar_error
 from core.resultados import ResultadoLote
-from core.exportadores import exportar_a_excel, exportar_a_pdf
+from core.exportadores import exportar_a_excel
 from gui.componentes import CTKKeyValueRow
 
 matplotlib.use("TkAgg")
@@ -121,7 +121,7 @@ class VentanaResultados(ctk.CTkToplevel):
         self._separador(scroll)
         total_frame = ctk.CTkFrame(scroll, fg_color="#1e3a5f", corner_radius=8)
         total_frame.pack(fill="x", pady=(5, 15), padx=(5, 20))
-        ctk.CTkLabel(total_frame, text="VALOR TOTAL (Metales + Plástico + Componentes)",
+        ctk.CTkLabel(total_frame, text="Valor Total:",
                      font=("Azeri Sans", 13, "bold"), text_color="#4FC3F7"
                      ).pack(side="left", padx=15, pady=10)
         ctk.CTkLabel(total_frame, text=f"$ {r.valor_total:,.2f} ARS",
@@ -159,11 +159,6 @@ class VentanaResultados(ctk.CTkToplevel):
         CTKKeyValueRow(scroll, "Cuellos de Bot. (Oc>85%)", cuellos_str,
                    destacar=bool(r.cuellos_botella))
 
-        # ── Demanda Simulada ───────────────────────────────────────────
-        self._seccion(scroll, "Demanda Simulada — Poisson (λ=6.849 kg/h)")
-        CTKKeyValueRow(scroll, "Horas simuladas (h)", f"{r.horas_demanda}")
-        CTKKeyValueRow(scroll, "Basura acumulada (kg)", f"{r.basura_acumulada_poisson}")
-
         # ── Botones de exportación ─────────────────────────────────────
         self._separador(scroll)
         btn_frame = ctk.CTkFrame(scroll, fg_color="transparent")
@@ -175,11 +170,6 @@ class VentanaResultados(ctk.CTkToplevel):
             width=200, command=self._exportar_excel
         ).pack(side="left", padx=(0, 10), fill="x", expand=True)
 
-        ctk.CTkButton(
-            btn_frame, text="📄  Exportar a PDF",
-            font=("Azeri Sans", 14, "bold"), fg_color="#E53935", hover_color="#C62828",
-            width=200, command=self._exportar_pdf
-        ).pack(side="left", padx=(10, 0), fill="x", expand=True)
     # ------------------------------------------------------------------
     # Helpers de UI del informe
     # ------------------------------------------------------------------
@@ -287,10 +277,3 @@ class VentanaResultados(ctk.CTkToplevel):
 
     def _exportar_excel(self):
         exportar_a_excel(self.resultado, parent=self)
-
-    # ------------------------------------------------------------------
-    # Exportación a PDF
-    # ------------------------------------------------------------------
-
-    def _exportar_pdf(self):
-        exportar_a_pdf(self.resultado, parent=self)

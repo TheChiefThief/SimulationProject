@@ -12,7 +12,7 @@ import customtkinter as ctk
 from core.logger import registrar_error
 from core.historial_simulador import HistorialSimulador
 from gui.ventana_resultados import VentanaResultados
-from core.exportadores import exportar_a_excel, exportar_a_pdf
+from core.exportadores import exportar_a_excel
 
 
 class VistaHistorial(ctk.CTkFrame):
@@ -194,14 +194,6 @@ class VistaHistorial(ctk.CTkFrame):
         )
         btn_detalles.pack(side="left", padx=5)
 
-        # Botón Exportar PDF
-        btn_exportar_pdf = ctk.CTkButton(
-            col2, text="📄 PDF",
-            font=("Azeri Sans", 11, "bold"), fg_color="#E53935", hover_color="#C62828",
-            width=60, command=lambda r_obj=r: self._exportar_pdf_individual(r_obj)
-        )
-        btn_exportar_pdf.pack(side="left", padx=5)
-
         # Botón Exportar Excel
         btn_exportar = ctk.CTkButton(
             col2, text="📥 Excel",
@@ -233,10 +225,6 @@ class VistaHistorial(ctk.CTkFrame):
     def _exportar_individual(self, resultado_obj):
         """Invoca la exportación a Excel directamente para este objeto de resultados."""
         exportar_a_excel(resultado_obj, parent=self)
-
-    def _exportar_pdf_individual(self, resultado_obj):
-        """Invoca la exportación a PDF directamente para este objeto de resultados."""
-        exportar_a_pdf(resultado_obj, parent=self)
 
     def _eliminar_registro(self, registro_id: str):
         """Elimina un único registro del historial."""
