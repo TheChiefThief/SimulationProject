@@ -48,9 +48,6 @@ class ResultadoLote:
     Placas y HDDs:
         placas_f, placas_t, hdd_f, hdd_t
 
-    Demanda simulada (Poisson):
-        horas_demanda, basura_acumulada_poisson
-
     Reproducibilidad:
         semilla_gcl
     """
@@ -131,10 +128,6 @@ class ResultadoLote:
         self.placas_t: int = 0   # PlacasT
         self.hdd_f: int = 0      # HDDF
         self.hdd_t: int = 0      # HDDT
-
-        # ── Demanda simulada ───────────────────────────────────────────
-        self.horas_demanda: int = 0
-        self.basura_acumulada_poisson: int = 0
 
         # ── Reproducibilidad ──────────────────────────────────────────
         self.semilla_gcl: int = 0

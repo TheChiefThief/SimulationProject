@@ -191,6 +191,34 @@ class VistaUsuario(ctk.CTkFrame):
         if self.callback_ver_historial:
             self.callback_ver_historial()
 
+    def _validar_peso_minimo_simulacion(self, texto_input: str) -> float:
+        """Valida matemáticamente que el peso ingresado sea mayor o igual al peso del dispositivo más ligero configurado."""
+        try:
+            val_flotante = float(texto_input)
+            peso_min_absoluto = min(self.params.composicion.peso_camara_min, self.params.composicion.peso_dvr_min)
+            
+            if val_flotante < peso_min_absoluto:
+                msg = (f"El lote mínimo de simulación debe ser de {peso_min_absoluto} kg "
+                       f"(el peso mínimo del dispositivo más ligero según la configuración).\n"
+                       f"No se puede simular con un peso de {val_flotante} kg.")
+                self.lbl_error.configure(text=f"⛔ Entrada inválida: debe ser >= {peso_min_absoluto} kg.")
+                self.after(3000, lambda: self.lbl_error.configure(text=""))
+                messagebox.showwarning("Atención: Peso inválido", msg)
+                return None
+            
+            return Validador.validar_float(
+                texto_input, "Peso total del lote (B)",
+                min_valor=peso_min_absoluto,
+                max_valor=100000.0
+            )
+        except ValueError as e:
+            registrar_error("Error de validación del lote B (kg) en VistaUsuario", e)
+            msg = str(e)
+            self.lbl_error.configure(text=f"⚠ {msg}")
+            self.after(3000, lambda: self.lbl_error.configure(text=""))
+            messagebox.showwarning("Aviso de entrada", msg)
+            return None
+
     def _ejecutar(self):
         """Valida la entrada B (kg) y ejecuta la simulación."""
         self.lbl_error.configure(text="")
@@ -203,27 +231,8 @@ class VistaUsuario(ctk.CTkFrame):
             return
 
         texto_input = self.in_b_kg.get().strip()
-        try:
-            val_flotante = float(texto_input)
-            if val_flotante <= 0:
-                msg = f"No se puede simular con un peso de {val_flotante} kg.\nLos resultados de la simulación serán nulos (0)."
-                self.lbl_error.configure(text="⛔ Entrada inválida: peso nulo o negativo.")
-                self.after(3000, lambda: self.lbl_error.configure(text=""))
-                messagebox.showwarning("Atención: Peso inválido", msg)
-                return
-            
-            b_kg = Validador.validar_float(
-                texto_input, "Peso total del lote (B)",
-                min_valor=0.0001,
-                max_valor=10000.0
-            )
-        except ValueError as e:
-            # registros de errores
-            registrar_error("Error de validación del lote B (kg) en VistaUsuario", e)
-            msg = str(e)
-            self.lbl_error.configure(text=f"⚠ {msg}")
-            self.after(3000, lambda: self.lbl_error.configure(text=""))
-            messagebox.showwarning("Aviso de entrada", msg)
+        b_kg = self._validar_peso_minimo_simulacion(texto_input)
+        if b_kg is None:
             return
 
         try:

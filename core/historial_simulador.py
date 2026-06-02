@@ -171,14 +171,15 @@ class HistorialSimulador:
             "valor_aluminio": res.valor_aluminio,
             "valor_oro": res.valor_oro,
             "valor_plastico": res.valor_plastico,
+            "valor_hdd": res.valor_hdd,
+            "valor_placas": res.valor_placas,
+            "valor_optica": res.valor_optica,
             "pmt": res.pmt,
             "pt": res.pt,
             "placas_f": res.placas_f,
             "placas_t": res.placas_t,
             "hdd_f": res.hdd_f,
             "hdd_t": res.hdd_t,
-            "horas_demanda": res.horas_demanda,
-            "basura_acumulada_poisson": res.basura_acumulada_poisson,
             "semilla_gcl": res.semilla_gcl,
         }
 
@@ -234,14 +235,15 @@ class HistorialSimulador:
         res.valor_aluminio = data.get("valor_aluminio", 0.0)
         res.valor_oro = data.get("valor_oro", 0.0)
         res.valor_plastico = data.get("valor_plastico", 0.0)
+        res.valor_hdd = data.get("valor_hdd", 0.0)
+        res.valor_placas = data.get("valor_placas", 0.0)
+        res.valor_optica = data.get("valor_optica", 0.0)
         res.pmt = data.get("pmt", 0.0)
         res.pt = data.get("pt", 0.0)
         res.placas_f = data.get("placas_f", 0)
         res.placas_t = data.get("placas_t", 0)
         res.hdd_f = data.get("hdd_f", 0)
         res.hdd_t = data.get("hdd_t", 0)
-        res.horas_demanda = data.get("horas_demanda", 0)
-        res.basura_acumulada_poisson = data.get("basura_acumulada_poisson", data.get("clientes_totales", 0))
         res.semilla_gcl = data.get("semilla_gcl", 0)
         return res
 

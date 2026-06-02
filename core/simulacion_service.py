@@ -121,6 +121,28 @@ class SimulacionService:
         c = self.parametros.composicion
         return dist.siguiente_rango(c.peso_dvr_min, c.peso_dvr_max)
 
+    def _determinar_tipo_dispositivo(self, gcl_u: float, restante: float, peso_dvr_min: float, peso_cam_min: float) -> bool:
+        """
+        Determina si el dispositivo será un DVR (True) o Cámara (False),
+        restringiendo la probabilidad original según el peso físico que queda.
+        """
+        if gcl_u < _P_ES_DVR:
+            return True if restante >= peso_dvr_min else False
+        else:
+            return False if restante >= peso_cam_min else True
+
+    def _muestrear_peso_ajustado(self, dist: Distribuciones, is_dvr: bool, restante: float) -> float:
+        """
+        Muestrea el peso del dispositivo y aplica un tope estricto para no 
+        superar jamás los kg de basura ingresados.
+        """
+        if is_dvr:
+            peso_bruto = self._muestrear_peso_dvr(dist)
+        else:
+            peso_bruto = self._muestrear_peso_camara(dist)
+            
+        return min(peso_bruto, restante)
+
     # ------------------------------------------------------------------
     # Simulación principal
     # ------------------------------------------------------------------
@@ -160,35 +182,43 @@ class SimulacionService:
 
         peso_acumulado = 0.0
 
+        peso_cam_min = self.parametros.composicion.peso_camara_min
+        peso_dvr_min = self.parametros.composicion.peso_dvr_min
+        peso_min_absoluto = min(peso_cam_min, peso_dvr_min)
+
         # ── Loop principal: procesar dispositivos hasta alcanzar B ─────
-        while peso_acumulado < b_kg:
+        while (b_kg - peso_acumulado) >= peso_min_absoluto:
+            restante = b_kg - peso_acumulado
 
             # ── Estación 1: Revisión General (D1 ~ Exp(3 min)) ─────────
             d1 = dist.siguiente_exponencial(_D1_REVISION)
             resultado.c1 += 1
             resultado.tdr += d1
 
+            is_dvr = self._determinar_tipo_dispositivo(
+                gcl.siguiente_u(), restante, peso_dvr_min, peso_cam_min
+            )
+
             # ── Decisión: ¿Reventa? (P=0.25) ───────────────────────────
             if gcl.siguiente_u() < _P_REVENTA:
                 resultado.equipos_reventa += 1
 
-                if gcl.siguiente_u() < _P_ES_DVR:
+                if is_dvr:
                     resultado.dvr_rec += 1
                     resultado.dvrs_reventa += 1
-                    p = self._muestrear_peso_dvr(dist)
                 else:
                     resultado.cam_rec += 1
                     resultado.camaras_reventa += 1
-                    p = self._muestrear_peso_camara(dist)
 
-                peso_acumulado += p
+                peso_acumulado += self._muestrear_peso_ajustado(dist, is_dvr, restante)
                 continue
 
-            # ── Decisión: ¿Es DVR? (P=0.113) ───────────────────────────
-            if gcl.siguiente_u() < _P_ES_DVR:
+            # ── Procesamiento Principal (Desguace) ─────────────────────────
+            p = self._muestrear_peso_ajustado(dist, is_dvr, restante)
+            peso_acumulado += p
+
+            if is_dvr:
                 # ── Procesamiento DVR ───────────────────────────────────
-                p = self._muestrear_peso_dvr(dist)
-                peso_acumulado += p
                 resultado.cant_dvr += 1
                 resultado.camaras_desguazadas += 0  # alias no aplica
                 resultado.dvrs_desguazados += 1
@@ -221,7 +251,7 @@ class SimulacionService:
                 resultado.placas_t += 1
                 if gcl.siguiente_u() < _P_PLACA_SANA_DVR:
                     resultado.placas_f += 1
-                    resultado.valor_placas += 70000 + 80000 * gcl.siguiente_u()
+                    resultado.valor_placas += 50000 + 70000 * gcl.siguiente_u()
                 else:
                     # D4: Recuperación placas (Exp(90 min))
                     d4 = dist.siguiente_exponencial(_D4_PLACAS)
@@ -232,8 +262,6 @@ class SimulacionService:
 
             else:
                 # ── Procesamiento Cámara ────────────────────────────────
-                p = self._muestrear_peso_camara(dist)
-                peso_acumulado += p
                 resultado.cant_cam += 1
                 resultado.camaras_desguazadas += 1
                 resultado.mt += p
@@ -258,7 +286,7 @@ class SimulacionService:
                 resultado.placas_t += 1
                 if gcl.siguiente_u() < _P_PLACA_SANA_CAM:
                     resultado.placas_f += 1
-                    resultado.valor_placas += 70000 + 80000 * gcl.siguiente_u()
+                    resultado.valor_placas += 50000 + 70000 * gcl.siguiente_u()
                 else:
                     # D4: Recuperación placas (Exp(90 min))
                     d4 = dist.siguiente_exponencial(_D4_PLACAS)
@@ -304,14 +332,6 @@ class SimulacionService:
             if ocup > (_UMBRAL_BOTELLA * 100):
                 resultado.cuellos_botella.append(nombre)
 
-        # ── Simulación de Demanda (Poisson λ=6.849 kg/hora) ───────
-        h = 0
-        kg_acumulado = 0
-        limite_seg = resultado.n_total * 100 + 1000
-        while kg_acumulado < resultado.peso_acumulado and h < limite_seg:
-            kg_acumulado += dist.siguiente_poisson(6.849)
-            h += 1
-        resultado.horas_demanda = h
-        resultado.basura_acumulada_poisson = kg_acumulado
-
         return resultado
+
+

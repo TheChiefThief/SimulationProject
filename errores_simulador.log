@@ -116,3 +116,21 @@ Traceback (most recent call last):
     raise ValueError(f"El campo '{nombre_campo}' no puede estar vacío.")
 ValueError: El campo 'Peso total del lote (B)' no puede estar vacío.
 
+2026-06-02 14:59:50,341 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: could not convert string to float: 's'
+Traceback (most recent call last):
+  File "C:\Users\facun\OneDrive\Documentos\GitHub\SimulationProject\gui\vista_usuario.py", line 207, in _ejecutar
+    val_flotante = float(texto_input)
+ValueError: could not convert string to float: 's'
+
+2026-06-02 14:59:56,576 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: could not convert string to float: '+'
+Traceback (most recent call last):
+  File "C:\Users\facun\OneDrive\Documentos\GitHub\SimulationProject\gui\vista_usuario.py", line 207, in _ejecutar
+    val_flotante = float(texto_input)
+ValueError: could not convert string to float: '+'
+
+2026-06-02 16:06:44,827 - ERROR - [logger.py:38] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: could not convert string to float: '0,8'
+Traceback (most recent call last):
+  File "C:\Users\facun\OneDrive\Documentos\GitHub\SimulationProject\gui\vista_usuario.py", line 197, in _validar_peso_minimo_simulacion
+    val_flotante = float(texto_input)
+ValueError: could not convert string to float: '0,8'
+

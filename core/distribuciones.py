@@ -101,25 +101,3 @@ class Distribuciones:
             raise ValueError("La media debe ser mayor a cero.")
         u = self.gcl.siguiente_u()
         return -media * math.log(1.0 - u)
-
-    def siguiente_poisson(self, lam: float) -> int:
-        """
-        Genera un número con distribución de Poisson (algoritmo de Knuth).
-
-        Args:
-            lam: Valor de lambda (tasa media de ocurrencia).
-
-        Returns:
-            Entero con distribución de Poisson.
-        """
-        if lam <= 0:
-            raise ValueError("Lambda debe ser mayor a cero.")
-        L = math.exp(-lam)
-        k = 0
-        p = 1.0
-        while True:
-            k += 1
-            p *= self.gcl.siguiente_u()
-            if p <= L:
-                break
-        return k - 1
