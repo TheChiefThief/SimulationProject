@@ -129,6 +129,9 @@ class ResultadoLote:
         self.hdd_f: int = 0      # HDDF
         self.hdd_t: int = 0      # HDDT
 
+        # ── Tiempos Operativos ─────────────────────────────────────────
+        self.horas_jornada: float = 8.0
+
         # ── Reproducibilidad ──────────────────────────────────────────
         self.semilla_gcl: int = 0
 

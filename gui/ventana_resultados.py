@@ -16,6 +16,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from core.logger import registrar_error
 from core.resultados import ResultadoLote
 from core.exportadores import exportar_a_excel
+from core.estimador_tiempo import estimar_tiempo_procesamiento, formatear_tiempo
 from gui.componentes import CTKKeyValueRow
 
 matplotlib.use("TkAgg")
@@ -105,7 +106,13 @@ class VentanaResultados(ctk.CTkToplevel):
         CTKKeyValueRow(scroll, "DVRs desguazados (CantDvr)",    f"{r.cant_dvr}")
         CTKKeyValueRow(scroll, "Cámaras reventa (CAMREC)",      f"{r.cam_rec}")
         CTKKeyValueRow(scroll, "DVRs reventa (DvrREC)",          f"{r.dvr_rec}")
-        CTKKeyValueRow(scroll, "Total reventa",                  f"{r.equipos_reventa}")
+        CTKKeyValueRow(scroll, "Total equipos a reventa", r.equipos_reventa)
+
+        # ── Estimación de Tiempo ───────────────────────────────────────
+        self._separador(scroll)
+        tiempo_minutos = estimar_tiempo_procesamiento(r)
+        tiempo_texto = formatear_tiempo(tiempo_minutos, r.horas_jornada)
+        CTKKeyValueRow(scroll, "⏳ Tiempo est. de proceso", tiempo_texto, destacar=True)
 
         # ── Monetización ───────────────────────────────────────────────
         self._seccion(scroll, "Monetización de Materiales (ARS)")

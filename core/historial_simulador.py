@@ -180,6 +180,7 @@ class HistorialSimulador:
             "placas_t": res.placas_t,
             "hdd_f": res.hdd_f,
             "hdd_t": res.hdd_t,
+            "horas_jornada": res.horas_jornada,
             "semilla_gcl": res.semilla_gcl,
         }
 
@@ -244,6 +245,7 @@ class HistorialSimulador:
         res.placas_t = data.get("placas_t", 0)
         res.hdd_f = data.get("hdd_f", 0)
         res.hdd_t = data.get("hdd_t", 0)
+        res.horas_jornada = data.get("horas_jornada", 8.0)
         res.semilla_gcl = data.get("semilla_gcl", 0)
         return res
 

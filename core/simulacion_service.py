@@ -179,6 +179,7 @@ class SimulacionService:
         resultado = ResultadoLote()
         resultado.semilla_gcl = gcl.semilla
         resultado.b_kg_input = b_kg
+        resultado.horas_jornada = self.parametros.operativo.horas_trabajo
 
         peso_acumulado = 0.0
 

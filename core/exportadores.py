@@ -11,6 +11,7 @@ import pandas as pd
 
 from core.logger import registrar_error
 from core.resultados import ResultadoLote
+from core.estimador_tiempo import estimar_tiempo_procesamiento, formatear_tiempo
 
 def exportar_a_excel(resultado: ResultadoLote, parent=None):
     """
@@ -51,6 +52,7 @@ def exportar_a_excel(resultado: ResultadoLote, parent=None):
             {"Categoría": "LOTE", "Métrica": "CAMREC (reventa)",        "Valor": resultado.cam_rec},
             {"Categoría": "LOTE", "Métrica": "DvrREC (reventa)",        "Valor": resultado.dvr_rec},
             {"Categoría": "LOTE", "Métrica": "Total reventa",           "Valor": resultado.equipos_reventa},
+            {"Categoría": "LOTE", "Métrica": "Tiempo est. proceso",     "Valor": formatear_tiempo(estimar_tiempo_procesamiento(resultado), resultado.horas_jornada)},
             {"Categoría": "", "Métrica": "", "Valor": ""},
             # Valores
             {"Categoría": "VALORES (ARS)", "Métrica": "Cobre",     "Valor": round(resultado.valor_cobre, 2)},
