@@ -89,7 +89,7 @@ class SimulacionService:
 
         cobre = p * 0.20
         aluminio = p * 0.03
-        oro = p * 0.01
+        oro = p * 0.001
         plastico = p * 0.60
 
         resultado.peso_cobre += cobre
@@ -203,8 +203,14 @@ class SimulacionService:
                 resultado.hdd_t += 1
                 if gcl.siguiente_u() < _P_HDD_SANO:
                     resultado.hdd_f += 1
-                    # Capacidad C ~ Uniforme(250, 2000) GB
-                    _capacidad_gb = dist.siguiente_entero(250, 2000)
+                    # Capacidad C ~ Normal(500, 250) GB
+                    capacidad_gb = dist.siguiente_normal(500, 250)
+                    while capacidad_gb <= 0:
+                        capacidad_gb = dist.siguiente_normal(500, 250)
+                    
+                    # PrecioGigaBit = 50 + 50u
+                    precio_gb = 50 + 50 * gcl.siguiente_u()
+                    resultado.valor_hdd += capacidad_gb * precio_gb
                 else:
                     # D6: Recuperación material HDD (Exp(3 min))
                     d6 = dist.siguiente_exponencial(_D6_HDD)
@@ -215,6 +221,7 @@ class SimulacionService:
                 resultado.placas_t += 1
                 if gcl.siguiente_u() < _P_PLACA_SANA_DVR:
                     resultado.placas_f += 1
+                    resultado.valor_placas += 70000 + 80000 * gcl.siguiente_u()
                 else:
                     # D4: Recuperación placas (Exp(90 min))
                     d4 = dist.siguiente_exponencial(_D4_PLACAS)
@@ -238,17 +245,20 @@ class SimulacionService:
 
                 # Óptica: ¿Sana? (P=0.70)
                 if gcl.siguiente_u() < _P_OPTICA_SANA:
-                    resultado.peso_vidrio += (p * 0.30)
+                    resultado.peso_vidrio += (p * 0.10)
+                    resultado.valor_optica += self.parametros.precios.precio_lentes
                 else:
                     # D3: Recuperación componente óptico (Exp(27 min))
                     d3 = dist.siguiente_exponencial(_D3_OPT_MATERIAL)
                     resultado.c3 += 1
                     resultado.tco += d3
+                    resultado.valor_optica += (p * 0.10) * self.parametros.precios.precio_vidrio
 
                 # Placas Cámara: ¿Sanas? (P=0.22)
                 resultado.placas_t += 1
                 if gcl.siguiente_u() < _P_PLACA_SANA_CAM:
                     resultado.placas_f += 1
+                    resultado.valor_placas += 70000 + 80000 * gcl.siguiente_u()
                 else:
                     # D4: Recuperación placas (Exp(90 min))
                     d4 = dist.siguiente_exponencial(_D4_PLACAS)
@@ -294,14 +304,14 @@ class SimulacionService:
             if ocup > (_UMBRAL_BOTELLA * 100):
                 resultado.cuellos_botella.append(nombre)
 
-        # ── Simulación de Demanda (Poisson λ=0.3 clientes/hora) ───────
+        # ── Simulación de Demanda (Poisson λ=6.849 kg/hora) ───────
         h = 0
-        cp = 0
+        kg_acumulado = 0
         limite_seg = resultado.n_total * 100 + 1000
-        while cp < resultado.n_total and h < limite_seg:
-            cp += dist.siguiente_poisson(0.3)
+        while kg_acumulado < resultado.peso_acumulado and h < limite_seg:
+            kg_acumulado += dist.siguiente_poisson(6.849)
             h += 1
         resultado.horas_demanda = h
-        resultado.clientes_totales = cp
+        resultado.basura_acumulada_poisson = kg_acumulado
 
         return resultado

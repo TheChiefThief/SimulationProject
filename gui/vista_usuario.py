@@ -202,10 +202,19 @@ class VistaUsuario(ctk.CTkFrame):
             self.after(3000, lambda: self.lbl_error.configure(text=""))
             return
 
+        texto_input = self.in_b_kg.get().strip()
         try:
+            val_flotante = float(texto_input)
+            if val_flotante <= 0:
+                msg = f"No se puede simular con un peso de {val_flotante} kg.\nLos resultados de la simulación serán nulos (0)."
+                self.lbl_error.configure(text="⛔ Entrada inválida: peso nulo o negativo.")
+                self.after(3000, lambda: self.lbl_error.configure(text=""))
+                messagebox.showwarning("Atención: Peso inválido", msg)
+                return
+            
             b_kg = Validador.validar_float(
-                self.in_b_kg.get(), "Peso total del lote (B)",
-                min_valor=0.1,
+                texto_input, "Peso total del lote (B)",
+                min_valor=0.0001,
                 max_valor=10000.0
             )
         except ValueError as e:

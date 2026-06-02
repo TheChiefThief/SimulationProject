@@ -242,7 +242,7 @@ class VistaGerente(ctk.CTkFrame):
         """Muestra un mensaje de error y un popup."""
         self.lbl_error.configure(text=f"⚠ {mensaje}")
         self.after(3000, self.limpiar_error)
-        messagebox.showerror("Error de Operación", mensaje)
+        messagebox.showwarning("Aviso de Operación", mensaje)
 
     def mostrar_exito(self, mensaje: str, horas, empleados, energia, tipo_maquinaria, coef):
         """Actualiza el indicador visual y muestra el resumen de carga exitosa."""

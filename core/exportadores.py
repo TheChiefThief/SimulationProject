@@ -93,7 +93,7 @@ def exportar_a_excel(resultado: ResultadoLote, parent=None):
             {"Categoría": "", "Métrica": "", "Valor": ""},
             # Demanda
             {"Categoría": "DEMANDA", "Métrica": "Horas simuladas", "Valor": resultado.horas_demanda},
-            {"Categoría": "DEMANDA", "Métrica": "Clientes totales","Valor": resultado.clientes_totales},
+            {"Categoría": "DEMANDA", "Métrica": "Basura acumulada (kg)","Valor": resultado.basura_acumulada_poisson},
         ]
 
         df = pd.DataFrame(filas)
@@ -227,7 +227,7 @@ def exportar_a_pdf(resultado: ResultadoLote, parent=None):
         # Demanda
         add_section("Demanda Simulada")
         add_row("Horas simuladas", str(r.horas_demanda))
-        add_row("Total clientes", str(r.clientes_totales))
+        add_row("Basura acumulada", str(r.basura_acumulada_poisson))
 
         pdf.output(filepath)
 

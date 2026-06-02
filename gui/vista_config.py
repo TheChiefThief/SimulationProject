@@ -176,7 +176,7 @@ class VistaConfig(ctk.CTkFrame):
             text_color="#EF5350"
         )
         self.after(3000, self.limpiar_estado)
-        messagebox.showerror("Error de Configuración", mensaje)
+        messagebox.showwarning("Aviso de Configuración", mensaje)
 
     def mostrar_exito(self, mensaje: str):
         """Muestra un mensaje de éxito en el label de estado."""

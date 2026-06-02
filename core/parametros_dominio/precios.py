@@ -6,7 +6,7 @@ class PreciosParametros:
 
     def __init__(self):
         self.precio_oro: float = 210_000.0        # ARS/kg
-        self.precio_vidrio: float = 150_000.0     # ARS/kg
+        self.precio_vidrio: float = 15_000.0      # ARS/kg
         self.precio_lentes: float = 60_000.0      # ARS/unidad
         self.precio_cobre: float = 8_500.0        # ARS/kg
         self.precio_aluminio: float = 1_500.0     # ARS/kg

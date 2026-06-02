@@ -178,7 +178,7 @@ class HistorialSimulador:
             "hdd_f": res.hdd_f,
             "hdd_t": res.hdd_t,
             "horas_demanda": res.horas_demanda,
-            "clientes_totales": res.clientes_totales,
+            "basura_acumulada_poisson": res.basura_acumulada_poisson,
             "semilla_gcl": res.semilla_gcl,
         }
 
@@ -241,7 +241,7 @@ class HistorialSimulador:
         res.hdd_f = data.get("hdd_f", 0)
         res.hdd_t = data.get("hdd_t", 0)
         res.horas_demanda = data.get("horas_demanda", 0)
-        res.clientes_totales = data.get("clientes_totales", 0)
+        res.basura_acumulada_poisson = data.get("basura_acumulada_poisson", data.get("clientes_totales", 0))
         res.semilla_gcl = data.get("semilla_gcl", 0)
         return res
 

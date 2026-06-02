@@ -113,12 +113,15 @@ class VentanaResultados(ctk.CTkToplevel):
         CTKKeyValueRow(scroll, "Aluminio", f"$ {r.valor_aluminio:>15,.2f}")
         CTKKeyValueRow(scroll, "Oro",      f"$ {r.valor_oro:>15,.2f}")
         CTKKeyValueRow(scroll, "Plástico", f"$ {r.valor_plastico:>15,.2f}")
+        CTKKeyValueRow(scroll, "HDD",      f"$ {r.valor_hdd:>15,.2f}")
+        CTKKeyValueRow(scroll, "Placas",   f"$ {r.valor_placas:>15,.2f}")
+        CTKKeyValueRow(scroll, "Óptica",   f"$ {r.valor_optica:>15,.2f}")
         CTKKeyValueRow(scroll, "PMT (metales)", f"$ {r.pmt:>15,.2f}")
 
         self._separador(scroll)
         total_frame = ctk.CTkFrame(scroll, fg_color="#1e3a5f", corner_radius=8)
         total_frame.pack(fill="x", pady=(5, 15), padx=(5, 20))
-        ctk.CTkLabel(total_frame, text="VALOR TOTAL (PMT + PT)",
+        ctk.CTkLabel(total_frame, text="VALOR TOTAL (Metales + Plástico + Componentes)",
                      font=("Azeri Sans", 13, "bold"), text_color="#4FC3F7"
                      ).pack(side="left", padx=15, pady=10)
         ctk.CTkLabel(total_frame, text=f"$ {r.valor_total:,.2f} ARS",
@@ -157,9 +160,9 @@ class VentanaResultados(ctk.CTkToplevel):
                    destacar=bool(r.cuellos_botella))
 
         # ── Demanda Simulada ───────────────────────────────────────────
-        self._seccion(scroll, "Demanda Simulada — Poisson (λ=0.3)")
+        self._seccion(scroll, "Demanda Simulada — Poisson (λ=6.849 kg/h)")
         CTKKeyValueRow(scroll, "Horas simuladas (h)", f"{r.horas_demanda}")
-        CTKKeyValueRow(scroll, "Total clientes",       f"{r.clientes_totales}")
+        CTKKeyValueRow(scroll, "Basura acumulada (kg)", f"{r.basura_acumulada_poisson}")
 
         # ── Botones de exportación ─────────────────────────────────────
         self._separador(scroll)

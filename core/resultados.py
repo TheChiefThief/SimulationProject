@@ -49,7 +49,7 @@ class ResultadoLote:
         placas_f, placas_t, hdd_f, hdd_t
 
     Demanda simulada (Poisson):
-        horas_demanda, clientes_totales
+        horas_demanda, basura_acumulada_poisson
 
     Reproducibilidad:
         semilla_gcl
@@ -120,6 +120,9 @@ class ResultadoLote:
         self.valor_aluminio: float = 0.0
         self.valor_oro: float = 0.0
         self.valor_plastico: float = 0.0
+        self.valor_hdd: float = 0.0      # Ingresos por HDDs recuperados
+        self.valor_placas: float = 0.0   # Ingresos por placas sanas
+        self.valor_optica: float = 0.0   # Ingresos por ópticas recuperadas/desguazadas
         self.pmt: float = 0.0    # PMT: plata materiales total (metales)
         self.pt: float = 0.0     # PT: plata plástico total
 
@@ -131,7 +134,7 @@ class ResultadoLote:
 
         # ── Demanda simulada ───────────────────────────────────────────
         self.horas_demanda: int = 0
-        self.clientes_totales: int = 0
+        self.basura_acumulada_poisson: int = 0
 
         # ── Reproducibilidad ──────────────────────────────────────────
         self.semilla_gcl: int = 0
@@ -140,8 +143,8 @@ class ResultadoLote:
 
     @property
     def valor_total(self) -> float:
-        """Valor total generado (PMT + PT)."""
-        return self.pmt + self.pt
+        """Valor total generado (PMT + PT + valor_hdd + valor_placas + valor_optica)."""
+        return self.pmt + self.pt + self.valor_hdd + self.valor_placas + self.valor_optica
 
     @property
     def cr_plastico(self) -> float:
