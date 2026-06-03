@@ -11,7 +11,13 @@ actúa como fuente única de verdad del estado del sistema.
 """
 
 import os
+import sys
 import tkinter as tk
+
+def resolver_ruta(ruta_relativa):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, ruta_relativa)
+    return os.path.join(os.path.abspath("."), ruta_relativa)
 
 import customtkinter as ctk
 from PIL import Image
@@ -84,7 +90,7 @@ class AppSimulador(ctk.CTk):
         header_frame.grid_columnconfigure(1, weight=1)
         
         # Logo de la empresa
-        logo_path = os.path.join(os.path.dirname(__file__), "logo.png")
+        logo_path = resolver_ruta("gui/logo.png")
         try:
             logo_image = Image.open(logo_path).convert("RGBA")
             logo_image = logo_image.resize((150, 70), Image.LANCZOS)
