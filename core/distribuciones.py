@@ -18,7 +18,7 @@ class Distribuciones:
         """
         self.gcl = gcl
 
-    def siguiente_rango(self, a: float, b: float) -> float:
+    def siguiente_uniforme(self, a: float, b: float) -> float:
         """
         Genera un número pseudoaleatorio uniformemente distribuido en [a, b).
 
@@ -49,21 +49,28 @@ class Distribuciones:
         rango = b - a + 1
         return a + (self.gcl.siguiente_crudo() % rango)
 
-    def siguiente_bernoulli(self, p: float) -> bool:
+    def siguiente_binomial(self, n: int, p: float) -> int:
         """
-        Genera una variable de Bernoulli: True con probabilidad p.
+        Genera un número pseudoaleatorio con distribución binomial
+        (cantidad de éxitos en n ensayos independientes de Bernoulli de probabilidad p).
 
         Args:
-            p: Probabilidad de éxito, en [0, 1].
+            n: Número de ensayos (no negativo).
+            p: Probabilidad de éxito en cada ensayo, en [0, 1].
 
         Returns:
-            True con probabilidad p, False con probabilidad (1 - p).
+            Entero en el rango [0, n].
         """
-        return self.gcl.siguiente_u() < p
+        if n < 0:
+            raise ValueError("El número de ensayos n debe ser no negativo.")
+        if not (0.0 <= p <= 1.0):
+            raise ValueError("La probabilidad p debe estar en el rango [0, 1].")
 
-    # Alias por compatibilidad
-    def siguiente_binomial(self, p: float) -> bool:
-        return self.siguiente_bernoulli(p)
+        exitos = 0
+        for _ in range(n):
+            if self.gcl.siguiente_u() < p:
+                exitos += 1
+        return exitos
 
     def siguiente_normal(self, media: float, desviacion_estandar: float) -> float:
         """

@@ -114,12 +114,12 @@ class SimulacionService:
     def _muestrear_peso_camara(self, dist: Distribuciones) -> float:
         """P ~ Uniforme(peso_camara_min, peso_camara_max)."""
         c = self.parametros.composicion
-        return dist.siguiente_rango(c.peso_camara_min, c.peso_camara_max)
+        return dist.siguiente_uniforme(c.peso_camara_min, c.peso_camara_max)
 
     def _muestrear_peso_dvr(self, dist: Distribuciones) -> float:
         """P ~ Uniforme(peso_dvr_min, peso_dvr_max)."""
         c = self.parametros.composicion
-        return dist.siguiente_rango(c.peso_dvr_min, c.peso_dvr_max)
+        return dist.siguiente_uniforme(c.peso_dvr_min, c.peso_dvr_max)
 
     def _determinar_tipo_dispositivo(self, gcl_u: float, restante: float, peso_dvr_min: float, peso_cam_min: float) -> bool:
         """
