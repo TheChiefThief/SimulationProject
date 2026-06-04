@@ -1,6 +1,4 @@
 """
-core/simulacion_service.py
----------------------------
 Servicio que orquesta la simulación completa de reciclaje RAEE.
 
 Entrada: B (kg) — peso total del lote de basura electrónica.
@@ -60,8 +58,8 @@ _UMBRAL_BOTELLA = 0.85
 
 class SimulacionService:
     """
-    Servicio de simulación que orquesta todos los componentes.
-    Implementa el flujo del diagrama con entrada por peso B (kg).
+    Servicio de simulación que orquesta todos los componentes
+    Implementa el flujo del diagrama con entrada por peso B (kg)
     """
 
     def __init__(
@@ -78,12 +76,12 @@ class SimulacionService:
 
     def _procesar_material(self, resultado: ResultadoLote, p: float) -> None:
         """
-        Aplica las fórmulas del subdiagrama de Recuperación de Material.
-        Composición (datos reales): Cobre 20%, Aluminio 3%, Oro 1%, Plástico 60%.
+        Aplica las fórmulas del subdiagrama de Recuperación de Material
+        Composición (datos reales): Cobre 20%, Aluminio 3%, Oro 1%, Plástico 60%
 
         Args:
-            resultado : ResultadoLote acumulador.
-            p         : Peso del dispositivo (kg).
+            resultado : ResultadoLote acumulador
+            p         : Peso del dispositivo (kg)
         """
         precios = self.parametros.precios
 
@@ -112,19 +110,19 @@ class SimulacionService:
         resultado.pt += vp
 
     def _muestrear_peso_camara(self, dist: Distribuciones) -> float:
-        """P ~ Uniforme(peso_camara_min, peso_camara_max)."""
+        """P ~ Uniforme(peso_camara_min, peso_camara_max) """
         c = self.parametros.composicion
         return dist.siguiente_uniforme(c.peso_camara_min, c.peso_camara_max)
 
     def _muestrear_peso_dvr(self, dist: Distribuciones) -> float:
-        """P ~ Uniforme(peso_dvr_min, peso_dvr_max)."""
+        """P ~ Uniforme(peso_dvr_min, peso_dvr_max) """
         c = self.parametros.composicion
         return dist.siguiente_uniforme(c.peso_dvr_min, c.peso_dvr_max)
 
     def _determinar_tipo_dispositivo(self, gcl_u: float, restante: float, peso_dvr_min: float, peso_cam_min: float) -> bool:
         """
         Determina si el dispositivo será un DVR (True) o Cámara (False),
-        restringiendo la probabilidad original según el peso físico que queda.
+        restringiendo la probabilidad original según el peso físico que queda
         """
         if gcl_u < _P_ES_DVR:
             return True if restante >= peso_dvr_min else False
@@ -134,7 +132,7 @@ class SimulacionService:
     def _muestrear_peso_ajustado(self, dist: Distribuciones, is_dvr: bool, restante: float) -> float:
         """
         Muestrea el peso del dispositivo y aplica un tope estricto para no 
-        superar jamás los kg de basura ingresados.
+        superar jamás los kg de basura ingresados
         """
         if is_dvr:
             peso_bruto = self._muestrear_peso_dvr(dist)
@@ -160,18 +158,18 @@ class SimulacionService:
                 NO → Procesar Cámara (D2, Óptica, Placas, Material)
 
         Args:
-            b_kg: B — peso total del lote en kg.
+            b_kg: B — peso total del lote en kg
 
         Returns:
-            ResultadoLote con todos los resultados agregados.
+            ResultadoLote con todos los resultados agregados
 
         Raises:
-            RuntimeError: Si los parámetros no fueron cargados.
+            RuntimeError: Si los parámetros no fueron cargados
         """
         if not self.parametros.parametros_cargados:
             raise RuntimeError(
-                "Los parámetros operativos no han sido cargados. "
-                "Por favor, complete la Vista del Gerente antes de ejecutar."
+                "Los parámetros operativos no han sido cargados "
+                "Por favor, complete la Vista del Gerente antes de ejecutar "
             )
 
         gcl = self.gcl_factory()

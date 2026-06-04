@@ -1,8 +1,6 @@
 """
-core/resultados.py
-------------------
-Clases de datos para almacenar los resultados de la simulación.
-Alineado al diagrama de flujo general con entrada por peso B (kg).
+Clases de datos para almacenar los resultados de la simulación
+Alineado al diagrama de flujo general con entrada por peso B (kg)
 """
 
 
@@ -139,30 +137,30 @@ class ResultadoLote:
 
     @property
     def valor_total(self) -> float:
-        """Valor total generado (PMT + PT + valor_hdd + valor_placas + valor_optica)."""
+        """Valor total generado (PMT + PT + valor_hdd + valor_placas + valor_optica) """
         return self.pmt + self.pt + self.valor_hdd + self.valor_placas + self.valor_optica
 
     @property
     def cr_plastico(self) -> float:
-        """CrPlástico — coeficiente de recuperación de plástico (%)."""
+        """CrPlástico — coeficiente de recuperación de plástico (%) """
         return (self.peso_plastico / self.mt) * 100 if self.mt > 0 else 0.0
 
     @property
     def cr_metales(self) -> float:
-        """CrMetales — coeficiente de recuperación de metales (%)."""
+        """CrMetales — coeficiente de recuperación de metales (%) """
         return (self.peso_metal / self.mt) * 100 if self.mt > 0 else 0.0
 
     @property
     def cr_placas(self) -> float:
-        """CrPlacas — coeficiente de recuperación de placas funcionales (%)."""
+        """CrPlacas — coeficiente de recuperación de placas funcionales (%) """
         return (self.placas_f / self.placas_t) * 100 if self.placas_t > 0 else 0.0
 
     @property
     def cr_hdd(self) -> float:
-        """CrHDD — coeficiente de recuperación de HDDs funcionales (%)."""
+        """CrHDD — coeficiente de recuperación de HDDs funcionales (%) """
         return (self.hdd_f / self.hdd_t) * 100 if self.hdd_t > 0 else 0.0
 
     @property
     def cr_opt(self) -> float:
-        """CrÓptica — coeficiente de recuperación óptica (%)."""
+        """CrÓptica — coeficiente de recuperación óptica (%) """
         return (self.peso_vidrio / self.mt) * 100 if self.mt > 0 else 0.0

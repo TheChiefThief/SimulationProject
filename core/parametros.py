@@ -1,11 +1,9 @@
 """
-core/parametros.py
-------------------
 Define la clase ParametrosSistema, que agrupa parámetros del sistema
 en dominios especializados para mejor modularidad.
 
 El flag `parametros_cargados` controla si el sistema está habilitado
-para ejecutar una simulación.
+para ejecutar una simulación
 """
 
 from core.parametros_dominio import (
@@ -62,10 +60,10 @@ class ParametrosSistema:
 
     def validar(self) -> list[str]:
         """
-        Valida todos los dominios de parámetros.
+        Valida todos los dominios de parámetros
 
         Returns:
-            Lista de mensajes de error. Lista vacía si todo es válido.
+            Lista de mensajes de error. Lista vacía si todo es válido
         """
         errores = []
         errores.extend(self.precios.validar())

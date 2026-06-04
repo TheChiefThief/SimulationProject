@@ -1,7 +1,6 @@
-"""core/validador.py
-------------------
+"""
 Módulo centralizado de validación de entradas. Proporciona métodos estrictos
-para validar tipos de datos enteros, reales, fracciones y restricciones de negocio.
+para validar tipos de datos enteros, reales, fracciones y restricciones de negocio
 """
 
 import math
@@ -10,22 +9,22 @@ import math
 class Validador:
     """
     Clase estática para validar y parsear datos de entrada.
-    Lanza ValueError con mensajes claros en español ante cualquier inconsistencia.
+    Lanza ValueError con mensajes claros en español ante cualquier inconsistencia
     """
 
     @staticmethod
     def validar_entero(texto: str, nombre_campo: str, min_valor: int = None, max_valor: int = None) -> int:
         """
-        Valida que un texto sea un número entero válido y esté dentro de un rango opcional.
+        Valida que un texto sea un número entero válido y esté dentro de un rango opcional
 
         Args:
-            texto: Texto ingresado.
-            nombre_campo: Nombre descriptivo para el error.
-            min_valor: Valor mínimo permitido (inclusive).
-            max_valor: Valor máximo permitido (inclusive).
+            texto: Texto ingresado
+            nombre_campo: Nombre descriptivo para el error
+            min_valor: Valor mínimo permitido (inclusive)
+            max_valor: Valor máximo permitido (inclusive)
 
         Returns:
-            El número entero parseado.
+            El número entero parseado
         """
         texto_limpio = texto.strip()
         if not texto_limpio:
@@ -36,28 +35,28 @@ class Validador:
             valor = int(texto_limpio)
         except ValueError:
             raise ValueError(
-                f"El campo '{nombre_campo}' debe ser un número entero válido. "
-                f"No se aceptan letras, decimales ni caracteres especiales."
+                f"El campo '{nombre_campo}' debe ser un número entero válido "
+                f"No se aceptan letras, decimales ni caracteres especiales"
             )
 
         if min_valor is not None and valor < min_valor:
-            raise ValueError(f"El valor de '{nombre_campo}' no puede ser menor a {min_valor}.")
+            raise ValueError(f"El valor de '{nombre_campo}' no puede ser menor a {min_valor}")
 
         if max_valor is not None and valor > max_valor:
-            raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}.")
+            raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}")
 
         return valor
 
     @staticmethod
     def validar_float(texto: str, nombre_campo: str, min_valor: float = None, max_valor: float = None) -> float:
         """
-        Valida que un texto sea un número decimal válido y esté dentro de un rango opcional.
+        Valida que un texto sea un número decimal válido y esté dentro de un rango opcional
 
         Args:
-            texto: Texto ingresado.
-            nombre_campo: Nombre descriptivo para el error.
-            min_valor: Valor mínimo permitido (inclusive).
-            max_valor: Valor máximo permitido (inclusive).
+            texto: Texto ingresado
+            nombre_campo: Nombre descriptivo para el error
+            min_valor: Valor mínimo permitido (inclusive)
+            max_valor: Valor máximo permitido (inclusive)
 
         Returns:
             El número decimal (float) parseado.
@@ -76,32 +75,32 @@ class Validador:
             valor = float(texto_limpio)
         except ValueError:
             raise ValueError(
-                f"El campo '{nombre_campo}' debe ser un número decimal válido. "
-                f"No se aceptan letras ni caracteres especiales."
+                f"El campo '{nombre_campo}' debe ser un número decimal válido "
+                f"No se aceptan letras ni caracteres especiales"
             )
 
         if math.isnan(valor) or math.isinf(valor):
-            raise ValueError(f"El campo '{nombre_campo}' contiene un número decimal inválido.")
+            raise ValueError(f"El campo '{nombre_campo}' contiene un número decimal inválido")
 
         if min_valor is not None and valor < min_valor:
-            raise ValueError(f"El valor de '{nombre_campo}' no puede ser menor a {min_valor}.")
+            raise ValueError(f"El valor de '{nombre_campo}' no puede ser menor a {min_valor}")
 
         if max_valor is not None and valor > max_valor:
-            raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}.")
+            raise ValueError(f"El valor de '{nombre_campo}' no puede ser mayor a {max_valor}")
 
         return valor
 
     @staticmethod
     def validar_fraccion(texto: str, nombre_campo: str) -> float:
         """
-        Valida que un texto sea una fracción decimal válida en el rango [0.0, 1.0].
+        Valida que un texto sea una fracción decimal válida en el rango [0.0, 1.0]
         """
         return Validador.validar_float(texto, nombre_campo, min_valor=0.0, max_valor=1.0)
 
     @staticmethod
     def validar_precio(texto: str, nombre_campo: str) -> float:
         """
-        Valida que un texto sea un precio válido (mayor a 0.0).
+        Valida que un texto sea un precio válido (mayor a 0.0)
         """
         return Validador.validar_float(texto, nombre_campo, min_valor=0.01)
 

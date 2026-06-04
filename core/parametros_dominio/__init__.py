@@ -1,4 +1,4 @@
-"""core/parametros_dominio/__init__.py - Exporta las clases de parámetros dominio."""
+""" Exporta las clases de parámetros dominio """
 
 from .precios import PreciosParametros
 from .composicion import ComposicionParametros

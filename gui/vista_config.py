@@ -1,6 +1,4 @@
 """
-gui/vista_config.py
---------------------
 Tab "Vista de Configuración" de la aplicación.
 
 Permite al administrador editar todos los parámetros del sistema:

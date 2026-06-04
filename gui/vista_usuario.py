@@ -1,6 +1,4 @@
 """
-gui/vista_usuario.py
----------------------
 Tab "Vista de Usuario" de la aplicación.
 
 Permite ingresar el peso total del lote (B en kg). El motor de simulación

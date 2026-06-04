@@ -23,18 +23,13 @@ class PruebaKolmogorovSmirnov:
     }
 
     def __init__(self, generador: GeneradorCongruencialLineal):
-        """
-        Inicializa la prueba con una instancia del GCL.
-        """
+        """Inicializa la prueba con una instancia del GCL"""
         self.generador = generador
 
     def calcular_estadistico(self, muestra: List[float]) -> Tuple[float, float, float]:
         """
-        Calcula el estadístico de prueba D para una muestra dada.
-        
-        Args:
-            muestra: Lista de números aleatorios en [0, 1).
-            
+        Calcula el estadístico de prueba D para una muestra dada
+
         Returns:
             Tupla (D, D_mas, D_menos)
         """
@@ -66,12 +61,10 @@ class PruebaKolmogorovSmirnov:
 
     def obtener_valor_critico(self, alpha: float, n: int) -> float:
         """
-        Calcula el valor crítico aproximado D_alpha.
-        Válido principalmente para n > 35.
+        Calcula el valor crítico aproximado D_alpha
+        Válido principalmente para n > 35
         """
         if n <= 35:
-            # Para fines del simulador y muestras grandes, la aproximación es suficiente.
-            # Podríamos implementar tabla exacta para N<=35, pero asumiremos n>35.
             pass
             
         if alpha not in self.COEFICIENTES_CRITICOS:
@@ -82,17 +75,17 @@ class PruebaKolmogorovSmirnov:
 
     def ejecutar_prueba(self, n: int = 1000, alpha: float = 0.05) -> Dict:
         """
-        Ejecuta la prueba K-S generando N números del GCL y calculando la uniformidad.
+        Ejecuta la prueba K-S generando N números del GCL y calculando la uniformidad
         
         Args:
-            n: Tamaño de la muestra a generar y evaluar.
-            alpha: Nivel de significancia.
+            n: Tamaño de la muestra a generar y evaluar
+            alpha: Nivel de significancia
             
         Returns:
-            Diccionario con los resultados detallados de la prueba.
+            Diccionario con los resultados detallados de la prueba
         """
         if n <= 0:
-            raise ValueError("El tamaño de la muestra debe ser mayor a cero.")
+            raise ValueError("El tamaño de la muestra debe ser mayor a cero ")
 
         # 1. Generar la muestra de números aleatorios en [0, 1)
         muestra = [self.generador.siguiente_u() for _ in range(n)]
@@ -103,7 +96,7 @@ class PruebaKolmogorovSmirnov:
         # 3. Calcular el valor crítico
         d_critico = self.obtener_valor_critico(alpha, n)
 
-        # 4. Decisión: Si D < D_critico, no se rechaza la hipótesis de uniformidad.
+        # 4. Decisión: Si D < D_critico, no se rechaza la hipótesis de uniformidad
         aprobado = d < d_critico
 
         return {

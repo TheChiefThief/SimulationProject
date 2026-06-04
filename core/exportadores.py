@@ -1,6 +1,4 @@
 """
-core/exportadores.py
--------------------
 Funciones para exportar los resultados de la simulación a formatos Excel (.xlsx) y PDF.
 """
 

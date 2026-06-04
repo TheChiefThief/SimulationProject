@@ -1,6 +1,4 @@
 """
-gui/controllers/config_controller.py
--------------------------------------
 Controlador para la Vista de Configuración (VistaConfig).
 Maneja la lógica de validación y guardado de los parámetros de configuración.
 """

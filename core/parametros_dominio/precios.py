@@ -1,8 +1,8 @@
-"""core/parametros_dominio/precios.py - Parámetros de precios de materiales."""
+""" Parámetros de precios de materiales """
 
 
 class PreciosParametros:
-    """Contenedor independiente para todos los precios del sistema (ARS)."""
+    """Contenedor independiente para todos los precios del sistema (ARS) """
 
     def __init__(self):
         self.precio_oro: float = 210_000.0        # ARS/kg
@@ -15,7 +15,7 @@ class PreciosParametros:
         self.precio_almacenamiento_max: float = 100.0  # ARS/GB
 
     def validar(self) -> list[str]:
-        """Valida que todos los precios sean no negativos y coherentes."""
+        """Valida que todos los precios sean no negativos y coherentes """
         errores = []
 
         precios = {
@@ -31,11 +31,11 @@ class PreciosParametros:
 
         for nombre, valor in precios.items():
             if valor < 0:
-                errores.append(f"{nombre} no puede ser negativo.")
+                errores.append(f"{nombre} no puede ser negativo ")
 
         if self.precio_almacenamiento_min > self.precio_almacenamiento_max:
             errores.append(
-                "El precio mínimo de almacenamiento no puede superar al máximo."
+                "El precio mínimo de almacenamiento no puede superar al máximo "
             )
 
         return errores

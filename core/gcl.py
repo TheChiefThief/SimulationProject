@@ -1,9 +1,4 @@
 """
-core/gcl.py
------------
-Generador Congruencial Lineal (GCL) implementado 100% en código propio,
-sin uso de librerías externas de aleatorización.
-
 Fórmula:
     X_{n+1} = (a * X_n + c) mod m
 
@@ -12,8 +7,6 @@ Constantes de Numerical Recipes (período completo garantizado para m=2^32):
     c = 1013904223
     m = 2^32  (= 4294967296)
 
-La semilla inicial se obtiene de time.time_ns() que provee nanosegundos
-del reloj del sistema, garantizando variabilidad entre ejecuciones.
 """
 
 import time
@@ -22,36 +15,24 @@ import math
 
 class GeneradorCongruencialLineal:
     """
-    Generador Congruencial Lineal (GCL) puro.
-    Genera números pseudoaleatorios sin usar ninguna librería de aleatorización.
+    Generador Congruencial Lineal (GCL)
 
     Parámetros del método:
         a = 1664525      (multiplicador)
         c = 1013904223   (incremento)
         m = 2^32         (módulo)
     """
-
-    # Constantes con período completo (Numerical Recipes)
     _A = 1664525
     _C = 1013904223
     _M = 4294967296  # 2^32
 
     def __init__(self, semilla: int = None):
-        """
-        Inicializa el GCL.
-
-        Args:
-            semilla: Valor inicial X_0. Si no se provee, se genera
-                     automáticamente a partir de los nanosegundos del
-                     reloj del sistema (time.time_ns).
-        """
+        """ Inicializa el GCL """
         if semilla is None:
-            # La semilla puede ser generada por cualquier método.
-            # Usamos nanosegundos del sistema y los reducimos al rango [0, m)
             self._x = time.time_ns() % self._M
         else:
             if not isinstance(semilla, int) or semilla < 0:
-                raise ValueError("La semilla debe ser un entero no negativo.")
+                raise ValueError("La semilla debe ser un entero no negativo")
             self._x = semilla % self._M
 
         # Guardamos la semilla original para referencia y reproducibilidad
@@ -64,12 +45,12 @@ class GeneradorCongruencialLineal:
 
     @property
     def semilla(self) -> int:
-        """Semilla con la que fue inicializado este generador."""
+        """Semilla con la que fue inicializado este generador"""
         return self._semilla_original
 
     @property
     def iteraciones(self) -> int:
-        """Cantidad de números generados hasta el momento."""
+        """Cantidad de números generados hasta el momento"""
         return self._iteraciones
 
     # ------------------------------------------------------------------
@@ -78,10 +59,10 @@ class GeneradorCongruencialLineal:
 
     def siguiente_crudo(self) -> int:
         """
-        Avanza el GCL y devuelve el próximo entero en [0, m).
+        Avanza el GCL y devuelve el próximo entero en [0, m)
 
         Returns:
-            Entero pseudoaleatorio en el rango [0, 2^32).
+            Entero pseudoaleatorio en el rango [0, 2^32)
         """
         self._x = (self._A * self._x + self._C) % self._M
         self._iteraciones += 1
@@ -90,10 +71,10 @@ class GeneradorCongruencialLineal:
     def siguiente_u(self) -> float:
         """
         Genera el próximo número pseudoaleatorio uniformemente distribuido
-        en el intervalo semi-abierto [0.0, 1.0).
+        en el intervalo semi-abierto [0.0, 1.0)
 
         Returns:
-            Float en [0.0, 1.0).
+            Float en [0.0, 1.0)
         """
         return self.siguiente_crudo() / self._M
 

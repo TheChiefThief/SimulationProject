@@ -1,8 +1,6 @@
 """
-core/estimador_tiempo.py
--------------------------
 Módulo separado para calcular el tiempo real (estimado) que tomará procesar el lote,
-teniendo en cuenta la arquitectura en serie y paralelo de las estaciones de la planta.
+teniendo en cuenta la arquitectura en serie y paralelo de las estaciones de la planta
 """
 
 from core.resultados import ResultadoLote
@@ -10,18 +8,18 @@ from core.resultados import ResultadoLote
 def estimar_tiempo_procesamiento(resultado: ResultadoLote) -> float:
     """
     Calcula el tiempo real aproximado (en minutos) de procesamiento del lote basándose 
-    en las dependencias en serie y paralelo de las estaciones de trabajo.
+    en las dependencias en serie y paralelo de las estaciones de trabajo
     
     Reglas de negocio:
-    1. Revisión general (E1) es en SERIE.
-    2. Desarmar cámara (E2), Desarmar DVR (E5) y Recuperar ópticas (E3) son PARALELAS.
-    3. Recuperar placas (E4) y Recuperar discos (E6) son en SERIE.
+    1. Revisión general (E1) es en SERIE
+    2. Desarmar cámara (E2), Desarmar DVR (E5) y Recuperar ópticas (E3) son PARALELAS
+    3. Recuperar placas (E4) y Recuperar discos (E6) son en SERIE
     
     Args:
-        resultado (ResultadoLote): El resultado de la simulación.
+        resultado (ResultadoLote): El resultado de la simulación
         
     Returns:
-        float: Tiempo total estimado en minutos.
+        float: Tiempo total estimado en minutos
     """
     # 1. Fase en serie inicial
     tiempo_revision = resultado.tdr

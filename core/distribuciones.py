@@ -5,29 +5,19 @@ from core.gcl import GeneradorCongruencialLineal
 class Distribuciones:
     """
     Clase que agrupa los métodos para generar números con distintas
-    distribuciones estadísticas a partir de un Generador Congruencial Lineal.
+    distribuciones estadísticas a partir de un Generador Congruencial Lineal
     """
 
     def __init__(self, gcl: GeneradorCongruencialLineal):
-        """
-        Inicializa la clase con un generador base.
-
-        Args:
-            gcl: Instancia de GeneradorCongruencialLineal que proveerá
-                 la aleatoriedad uniforme subyacente.
-        """
+        """ Inicializa la clase con un generador base """
         self.gcl = gcl
 
     def siguiente_uniforme(self, a: float, b: float) -> float:
         """
-        Genera un número pseudoaleatorio uniformemente distribuido en [a, b).
-
-        Args:
-            a: Límite inferior (inclusive).
-            b: Límite superior (exclusive).
+        Genera un número pseudoaleatorio uniformemente distribuido en [a, b)
 
         Returns:
-            Float en [a, b).
+            Float en [a, b)
         """
         if a >= b:
             raise ValueError(f"Se requiere a < b, pero se recibió a={a}, b={b}.")
@@ -35,14 +25,10 @@ class Distribuciones:
 
     def siguiente_entero(self, a: int, b: int) -> int:
         """
-        Genera un entero pseudoaleatorio en el rango cerrado [a, b].
-
-        Args:
-            a: Límite inferior (inclusive).
-            b: Límite superior (inclusive).
-
+        Genera un entero pseudoaleatorio en el rango cerrado [a, b]
+        
         Returns:
-            Entero en [a, b].
+            Entero en [a, b]
         """
         if a > b:
             raise ValueError(f"Se requiere a <= b, pero se recibió a={a}, b={b}.")
@@ -52,14 +38,10 @@ class Distribuciones:
     def siguiente_binomial(self, n: int, p: float) -> int:
         """
         Genera un número pseudoaleatorio con distribución binomial
-        (cantidad de éxitos en n ensayos independientes de Bernoulli de probabilidad p).
-
-        Args:
-            n: Número de ensayos (no negativo).
-            p: Probabilidad de éxito en cada ensayo, en [0, 1].
+        (cantidad de éxitos en n ensayos independientes de Bernoulli de probabilidad p)
 
         Returns:
-            Entero en el rango [0, n].
+            Entero en el rango [0, n]
         """
         if n < 0:
             raise ValueError("El número de ensayos n debe ser no negativo.")
@@ -74,14 +56,10 @@ class Distribuciones:
 
     def siguiente_normal(self, media: float, desviacion_estandar: float) -> float:
         """
-        Genera un número con distribución normal usando el método de Box-Muller.
-
-        Args:
-            media: Media de la distribución (mu).
-            desviacion_estandar: Desviación estándar (sigma).
+        Genera un número con distribución normal usando el método de Box-Muller
 
         Returns:
-            Float con distribución normal.
+            Float con distribución normal
         """
         if desviacion_estandar < 0:
             raise ValueError("La desviación estándar debe ser no negativa.")
@@ -96,13 +74,10 @@ class Distribuciones:
 
     def siguiente_exponencial(self, media: float) -> float:
         """
-        Genera un número con distribución exponencial.
-
-        Args:
-            media: Valor medio (E[x] = 1/lambda).
+        Genera un número con distribución exponencial
 
         Returns:
-            Float con distribución exponencial.
+            Float con distribución exponencial
         """
         if media <= 0:
             raise ValueError("La media debe ser mayor a cero.")
