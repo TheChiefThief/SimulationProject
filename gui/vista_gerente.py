@@ -1,6 +1,4 @@
 """
-gui/vista_gerente.py
----------------------
 Tab "Vista del Gerente" de la aplicación.
 
 Permite al administrador cargar los parámetros operativos del proceso

@@ -1,17 +1,21 @@
 """
-gui/app.py
------------
-Ventana principal de la aplicación: AppSimulador.
+Ventana principal de la aplicación: AppSimulador
 
 Orquesta los tres tabs (VistaUsuario, VistaGerente, VistaConfig)
-y el objeto ParametrosSistema compartido entre todas las vistas.
+y el objeto ParametrosSistema compartido entre todas las vistas
 
 El objeto `params` se instancia aquí y se pasa a cada vista;
-actúa como fuente única de verdad del estado del sistema.
+actúa como fuente única de verdad del estado del sistema
 """
 
 import os
+import sys
 import tkinter as tk
+
+def resolver_ruta(ruta_relativa):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, ruta_relativa)
+    return os.path.join(os.path.abspath("."), ruta_relativa)
 
 import customtkinter as ctk
 from PIL import Image
@@ -23,10 +27,10 @@ from core.simulacion_service import SimulacionService
 
 class AppSimulador(ctk.CTk):
     """
-    Ventana raíz de la aplicación de simulación de reciclaje RAEE.
+    Ventana raíz de la aplicación de simulación de reciclaje RAEE
 
     Gestiona el ciclo de vida de la GUI y coordina la comunicación
-    entre las vistas mediante el objeto ParametrosSistema compartido.
+    entre las vistas mediante el objeto ParametrosSistema compartido
     """
 
     T_USUARIO = "Vista de Usuario"
@@ -84,7 +88,7 @@ class AppSimulador(ctk.CTk):
         header_frame.grid_columnconfigure(1, weight=1)
         
         # Logo de la empresa
-        logo_path = os.path.join(os.path.dirname(__file__), "logo.png")
+        logo_path = resolver_ruta("gui/logo.png")
         try:
             logo_image = Image.open(logo_path).convert("RGBA")
             logo_image = logo_image.resize((150, 70), Image.LANCZOS)
@@ -125,7 +129,7 @@ class AppSimulador(ctk.CTk):
         self._mostrar_vista(self.T_USUARIO)
 
     def _cambiar_vista(self, nombre_vista):
-        """Cambia la vista activa y actualiza los estilos de los botones."""
+        """Cambia la vista activa y actualiza los estilos de los botones """
         self.vista_actual = nombre_vista
         self._mostrar_vista(nombre_vista)
         
@@ -137,7 +141,7 @@ class AppSimulador(ctk.CTk):
                 btn.configure(fg_color="#0E3848")
 
     def _mostrar_vista(self, nombre_vista):
-        """Muestra la vista especificada (usando lazy loading) y oculta las demás."""
+        """Muestra la vista especificada (usando lazy loading) y oculta las demás """
         if nombre_vista not in self.vistas_cacheadas:
             frame = ctk.CTkFrame(self.contenedor_vistas, fg_color="transparent")
             
@@ -191,7 +195,7 @@ class AppSimulador(ctk.CTk):
         self.vista_actual = nombre_vista
 
     def _construir_tabs(self):
-        """Método deprecado, reemplazado por _construir_vistas()."""
+        """Método deprecado, reemplazado por _construir_vistas() """
         pass
 
     # ------------------------------------------------------------------
@@ -201,10 +205,10 @@ class AppSimulador(ctk.CTk):
 
 
     def _on_simulacion_ejecutada(self):
-        """Llamado cuando se ejecuta una simulación para recargar el historial."""
+        """Llamado cuando se ejecuta una simulación para recargar el historial """
         if hasattr(self, "vista_historial"):
             self.vista_historial.recargar_historial()
 
     def _on_ver_historial(self):
-        """Redirige al usuario a la vista del historial."""
+        """Redirige al usuario a la vista del historial """
         self._cambiar_vista(self.T_HISTORIAL)

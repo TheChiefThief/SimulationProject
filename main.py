@@ -1,7 +1,5 @@
 """
-main.py
---------
-Punto de entrada del Simulador de Reciclaje RAEE.
+Punto de entrada del Simulador de Reciclaje RAEE
 
 Ejecutar con:
     python main.py

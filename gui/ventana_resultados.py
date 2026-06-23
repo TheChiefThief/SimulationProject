@@ -1,10 +1,3 @@
-"""
-gui/ventana_resultados.py
---------------------------
-Ventana Toplevel que muestra el informe de resultados de la simulación.
-Incluye gráficos estáticos (matplotlib) y botones de exportación a PDF y Excel.
-"""
-
 from tkinter import filedialog, messagebox
 from datetime import datetime
 
@@ -54,11 +47,10 @@ class VentanaResultados(ctk.CTkToplevel):
     # ------------------------------------------------------------------
 
     def _construir_layout(self):
-        # Usamos tk.PanedWindow para permitir al usuario cambiar la división a gusto
+        
         pw = tk.PanedWindow(self, orient=tk.HORIZONTAL, bg="#151b23", bd=0, sashwidth=6, sashrelief=tk.FLAT)
         pw.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        # Ajustamos cursores y sash
         try:
             pw.configure(sashcursor="sb_h_double_arrow")
         except Exception:
@@ -70,7 +62,6 @@ class VentanaResultados(ctk.CTkToplevel):
         panel_izq = ctk.CTkFrame(pw, fg_color="#12192a", corner_radius=8)
         panel_der = ctk.CTkFrame(pw, fg_color="#12192a", corner_radius=8)
 
-        # Añadimos los paneles con tamaños mínimos razonables
         pw.add(panel_izq, minsize=450, stretch="always")
         pw.add(panel_der, minsize=500, stretch="always")
 

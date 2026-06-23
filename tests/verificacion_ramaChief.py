@@ -32,19 +32,19 @@ assert all(v > 0 for v in exp_vals), "ERROR: valor exponencial <= 0"
 # Bernoulli
 gcl3 = GeneradorCongruencialLineal(99)
 d3 = Distribuciones(gcl3)
-b_vals = [d3.siguiente_bernoulli(0.25) for _ in range(10000)]
+b_vals = [d3.siguiente_binomial(1, 0.25) == 1 for _ in range(10000)]
 tasa = sum(b_vals)/len(b_vals)
-print(f"Bernoulli(p=0.25): tasa={tasa:.3f}  (esperado ~0.25)")
+print(f"Bernoulli (binomial n=1, p=0.25): tasa={tasa:.3f}  (esperado ~0.25)")
 
 gcl3b = GeneradorCongruencialLineal(99)
 d3b = Distribuciones(gcl3b)
-b2 = [d3b.siguiente_bernoulli(0.113) for _ in range(10000)]
-print(f"Bernoulli(p=0.113): tasa={sum(b2)/len(b2):.3f}  (esperado ~0.113)")
+b2 = [d3b.siguiente_binomial(1, 0.113) == 1 for _ in range(10000)]
+print(f"Bernoulli (binomial n=1, p=0.113): tasa={sum(b2)/len(b2):.3f}  (esperado ~0.113)")
 
 # Uniforme
 gcl4 = GeneradorCongruencialLineal(55)
 d4 = Distribuciones(gcl4)
-r_vals = [d4.siguiente_rango(0.9, 1.4) for _ in range(5000)]
+r_vals = [d4.siguiente_uniforme(0.9, 1.4) for _ in range(5000)]
 print(f"Uniforme(0.9, 1.4): media={sum(r_vals)/len(r_vals):.3f}  (esperado ~1.15)")
 assert all(0.9 <= x < 1.4 for x in r_vals), "ERROR: valor fuera del rango"
 

@@ -1,6 +1,4 @@
 """
-gui/vista_usuario.py
----------------------
 Tab "Vista de Usuario" de la aplicación.
 
 Permite ingresar el peso total del lote (B en kg). El motor de simulación
@@ -10,6 +8,12 @@ El botón Ejecutar funciona desde el inicio con valores por defecto.
 """
 
 import os
+import sys
+
+def resolver_ruta(ruta_relativa):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, ruta_relativa)
+    return os.path.join(os.path.abspath("."), ruta_relativa)
 
 import customtkinter as ctk
 from PIL import Image
@@ -128,7 +132,7 @@ class VistaUsuario(ctk.CTkFrame):
         self.btn_ejecutar.pack(side="bottom", fill="x")
 
     def _cargar_icono(self, nombre_archivo):
-        ruta_icono = os.path.join(os.path.dirname(__file__), "iconos", nombre_archivo)
+        ruta_icono = resolver_ruta(f"gui/iconos/{nombre_archivo}")
         try:
             imagen = Image.open(ruta_icono).convert("RGBA")
             imagen = imagen.resize((24, 24), Image.LANCZOS)

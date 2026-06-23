@@ -1,8 +1,6 @@
 """
-core/logger.py
---------------
 Módulo para registrar de manera centralizada y estructurada todos los errores y excepciones
-que ocurran durante la ejecución del simulador.
+que ocurran durante la ejecución del simulador
 """
 
 import logging
@@ -27,7 +25,7 @@ if not logger.handlers:
 def registrar_error(mensaje: str, excepcion: Exception = None):
     """
     Registra un mensaje de error y opcionalmente incluye el traceback
-    detallado de la excepción para facilitar la depuración.
+    detallado de la excepción para facilitar la depuración
     """
     if excepcion:
         tb_str = "".join(

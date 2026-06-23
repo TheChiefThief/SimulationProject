@@ -18,7 +18,7 @@ from core.resultados import ResultadoLote
 class HistorialSimulador:
     """
     Clase utilitaria con métodos estáticos para guardar, recuperar
-    y administrar el historial de simulaciones.
+    y administrar el historial de simulaciones
     """
 
     DEFAULT_FILE = "historial_simulaciones.json"
@@ -319,7 +319,7 @@ class HistorialSimulador:
 
     @classmethod
     def limpiar_historial(cls, archivo=None) -> None:
-        """Vacía todo el registro histórico de simulaciones."""
+        """Vacía todo el registro histórico de simulaciones"""
         if archivo is None:
             archivo = cls.DEFAULT_FILE
 

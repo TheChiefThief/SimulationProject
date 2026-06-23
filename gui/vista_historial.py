@@ -1,6 +1,4 @@
 """
-gui/vista_historial.py
------------------------
 Tab "Historial de Simulaciones" de la aplicación.
 Permite visualizar de manera persistente las simulaciones anteriores,
 abrir sus reportes detallados y volver a exportarlas a Excel.

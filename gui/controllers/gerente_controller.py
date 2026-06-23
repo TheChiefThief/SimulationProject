@@ -1,6 +1,4 @@
 """
-gui/controllers/gerente_controller.py
---------------------------------------
 Controlador para la Vista del Gerente (VistaGerente).
 Maneja la lógica de validación de parámetros operativos, carga de presets y restauración de valores base.
 """

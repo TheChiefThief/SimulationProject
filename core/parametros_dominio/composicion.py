@@ -1,4 +1,4 @@
-"""core/parametros_dominio/composicion.py - Parámetros de composición de materiales."""
+""" Parámetros de composición de materiales """
 
 
 class ComposicionParametros:

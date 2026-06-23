@@ -1,8 +1,8 @@
-"""core/parametros_dominio/tasas_recuperacion.py - Tasas de recuperación de componentes."""
+""" Tasas de recuperación de componentes """
 
 
 class TasasRecuperacionParametros:
-    """Contenedor independiente para tasas de recuperación de componentes."""
+    """Contenedor independiente para tasas de recuperación de componentes """
 
     def __init__(self):
         # Tasas de recuperación (fracción 0–1)
@@ -11,7 +11,7 @@ class TasasRecuperacionParametros:
         self.tasa_discos_sanos: float = 0.65
 
     def validar(self) -> list[str]:
-        """Valida que todas las tasas estén en [0, 1]."""
+        """Valida que todas las tasas estén en [0, 1]"""
         errores = []
 
         tasas = {
