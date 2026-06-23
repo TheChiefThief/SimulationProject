@@ -122,20 +122,13 @@ class SimulacionService:
         return dist.siguiente_rango(c.peso_dvr_min, c.peso_dvr_max)
 
     def _determinar_tipo_dispositivo(self, gcl_u: float, restante: float, peso_dvr_min: float, peso_cam_min: float) -> bool:
-        """
-        Determina si el dispositivo será un DVR (True) o Cámara (False),
-        restringiendo la probabilidad original según el peso físico que queda.
-        """
         if gcl_u < _P_ES_DVR:
             return True if restante >= peso_dvr_min else False
         else:
             return False if restante >= peso_cam_min else True
 
     def _muestrear_peso_ajustado(self, dist: Distribuciones, is_dvr: bool, restante: float) -> float:
-        """
-        Muestrea el peso del dispositivo y aplica un tope estricto para no 
-        superar jamás los kg de basura ingresados.
-        """
+
         if is_dvr:
             peso_bruto = self._muestrear_peso_dvr(dist)
         else:

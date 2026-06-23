@@ -21,46 +21,21 @@ import math
 
 
 class GeneradorCongruencialLineal:
-    """
-    Generador Congruencial Lineal (GCL) puro.
-    Genera números pseudoaleatorios sin usar ninguna librería de aleatorización.
 
-    Parámetros del método:
-        a = 1664525      (multiplicador)
-        c = 1013904223   (incremento)
-        m = 2^32         (módulo)
-    """
-
-    # Constantes con período completo (Numerical Recipes)
     _A = 1664525
     _C = 1013904223
     _M = 4294967296  # 2^32
 
     def __init__(self, semilla: int = None):
-        """
-        Inicializa el GCL.
-
-        Args:
-            semilla: Valor inicial X_0. Si no se provee, se genera
-                     automáticamente a partir de los nanosegundos del
-                     reloj del sistema (time.time_ns).
-        """
         if semilla is None:
-            # La semilla puede ser generada por cualquier método.
-            # Usamos nanosegundos del sistema y los reducimos al rango [0, m)
             self._x = time.time_ns() % self._M
         else:
             if not isinstance(semilla, int) or semilla < 0:
                 raise ValueError("La semilla debe ser un entero no negativo.")
             self._x = semilla % self._M
 
-        # Guardamos la semilla original para referencia y reproducibilidad
         self._semilla_original = self._x
         self._iteraciones = 0
-
-    # ------------------------------------------------------------------
-    # Propiedades de solo lectura
-    # ------------------------------------------------------------------
 
     @property
     def semilla(self) -> int:
@@ -72,29 +47,13 @@ class GeneradorCongruencialLineal:
         """Cantidad de números generados hasta el momento."""
         return self._iteraciones
 
-    # ------------------------------------------------------------------
-    # Métodos de generación
-    # ------------------------------------------------------------------
-
     def siguiente_crudo(self) -> int:
-        """
-        Avanza el GCL y devuelve el próximo entero en [0, m).
 
-        Returns:
-            Entero pseudoaleatorio en el rango [0, 2^32).
-        """
         self._x = (self._A * self._x + self._C) % self._M
         self._iteraciones += 1
         return self._x
 
     def siguiente_u(self) -> float:
-        """
-        Genera el próximo número pseudoaleatorio uniformemente distribuido
-        en el intervalo semi-abierto [0.0, 1.0).
-
-        Returns:
-            Float en [0.0, 1.0).
-        """
         return self.siguiente_crudo() / self._M
 
 
