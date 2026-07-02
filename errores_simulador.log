@@ -134,3 +134,27 @@ Traceback (most recent call last):
     val_flotante = float(texto_input)
 ValueError: could not convert string to float: '0,8'
 
+2026-06-23 17:22:31,543 - ERROR - [logger.py:36] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: could not convert string to float: 'asd'
+Traceback (most recent call last):
+  File "C:\Users\facun\OneDrive\Documentos\GitHub\SimulationProject\gui\vista_usuario.py", line 201, in _validar_peso_minimo_simulacion
+    val_flotante = float(texto_input)
+ValueError: could not convert string to float: 'asd'
+
+2026-06-23 17:22:43,819 - ERROR - [logger.py:36] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: could not convert string to float: '2,1'
+Traceback (most recent call last):
+  File "C:\Users\facun\OneDrive\Documentos\GitHub\SimulationProject\gui\vista_usuario.py", line 201, in _validar_peso_minimo_simulacion
+    val_flotante = float(texto_input)
+ValueError: could not convert string to float: '2,1'
+
+2026-06-23 17:31:11,820 - ERROR - [logger.py:36] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: could not convert string to float: 'asd'
+Traceback (most recent call last):
+  File "C:\Users\facun\OneDrive\Documentos\GitHub\SimulationProject\gui\vista_usuario.py", line 201, in _validar_peso_minimo_simulacion
+    val_flotante = float(texto_input)
+ValueError: could not convert string to float: 'asd'
+
+2026-06-23 17:41:22,950 - ERROR - [logger.py:36] - Error de validación del lote B (kg) en VistaUsuario | Excepción: ValueError: could not convert string to float: 'asd'
+Traceback (most recent call last):
+  File "C:\Users\facun\OneDrive\Documentos\GitHub\SimulationProject\gui\vista_usuario.py", line 201, in _validar_peso_minimo_simulacion
+    val_flotante = float(texto_input)
+ValueError: could not convert string to float: 'asd'
+
